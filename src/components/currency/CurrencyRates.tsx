@@ -21,7 +21,6 @@ export const CurrencyRates: React.FC = () => {
   
   const [dates, setDates] = useState<{ today: string, yesterday: string }>({ today: '', yesterday: '' });
 
-  //ვალუტები:
   const targetCurrencies = ['USD', 'EUR', 'RUB'];
 
   useEffect(()=>{
@@ -46,11 +45,10 @@ export const CurrencyRates: React.FC = () => {
 
         const apiDate = new Date(data[0].date);
         
-        //გუშინდელი თარიღი;
         const yesterdayDate = new Date(apiDate);
         yesterdayDate.setDate(apiDate.getDate() - 1);
         
-        const formatDate = (d: Date) => {
+        const formatDate = (d: Date) =>{
           const day = d.getUTCDate();
           const monthNames = ["იან", "თებ", "მარ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
           const month = monthNames[d.getUTCMonth()];
@@ -76,17 +74,16 @@ export const CurrencyRates: React.FC = () => {
 
   return(
     <div className="w-full min-w-[280px] bg-transparent text-white p-4 font-sans">
-      <h3 className="text-xl font-bold mb-6 tracking-wide">ოფიციალური კურსი</h3>
+      <h3 className="font-sanet text-xl font-bold mb-6 tracking-wide">ოფიციალური კურსი</h3>
 
       {loading ? (
-        <div className="text-center text-sm py-4 text-white/70">Loading...</div>
+        <div className="font-sanet font-bold text-center text-sm py-4 text-white/70">იტვირთება...</div>
       ) : error ? (
-        <div className="text-center text-sm py-4 text-red-400">{error}</div>
+        <div className="font-sanet text-center text-sm py-4 text-red-400">{error}</div>
       ) : (
         <>
-          {/* ცხრილის სათაურები */}
-          <div className="grid grid-cols-4 gap-2 text-[13px] font-semibold text-white/90 mb-3 text-center items-center">
-            <div></div>
+        <div className="font-sanet grid grid-cols-4 gap-2 text-[13px] font-semibold text-white/90 mb-4 text-center items-center">
+           <div></div>
             <div>{dates.yesterday}</div> 
             <div>{dates.today}</div>
             <div className="flex justify-center text-white/50">
@@ -97,11 +94,10 @@ export const CurrencyRates: React.FC = () => {
           </div>
 
           <div>
-            {currencies.map((currency) => (
-              <CurrencyRow key={currency.code} code={currency.code}
+            {currencies.map((currency) =>(
+              <CurrencyRow  key={currency.code} code={currency.code}
                 quantity={currency.quantity} rateFormated={currency.rateFormated}
-                prevRate={(parseFloat(currency.rateFormated) - currency.diff).toFixed(4)} 
-                diff={currency.diff}/>
+                prevRate={(parseFloat(currency.rateFormated) - currency.diff).toFixed(4)}diff={currency.diff}/>
             ))}
           </div>
         </>
@@ -110,7 +106,7 @@ export const CurrencyRates: React.FC = () => {
       {/* ღილაკი */}
       <div className="mt-8 flex justify-center">
         <a href="https://nbg.gov.ge/en/monetary-policy/currency" target="_blank" rel="noopener noreferrer"
-          className="bg-[#00a8e8] hover:bg-[#0086b8] text-white text-[15px] font-medium py-2 px-8 rounded-md transition-colors duration-200">
+          className="font-sanet font-medium bg-[#00a8e8] hover:bg-[#0086b8] text-white text-[15px] py-2 px-8 rounded-md transition-colors duration-200">
           ყველა ვალუტა
         </a>
       </div>
