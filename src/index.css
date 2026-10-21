@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
-
-/* 1. ფონტის ჩატვირთვა ლოკალური ფაილიდან */
 @font-face {
   font-family: 'ALK Sanet';
   src: url('./fonts/alk-sanet.ttf') format('truetype');
@@ -11,8 +8,6 @@
   font-display: swap;
 }
 
-/* 2. Tailwind-ის თემაში ფონტის დამატება */
 @theme {
-  /* ეს ქმნის კლასს `font-sanet` */
   --font-sanet: "ALK Sanet", sans-serif;
 }
