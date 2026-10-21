@@ -1,28 +1,43 @@
 /**
  * @file Header.tsx
- * @description amindi.ge-ს იდენტური ზედა ნავიგაცია (Header).
- * მოიცავს:
- * - amindi.ge-ს ორიგინალურ ლოგოს: https://amindi.ge/static/img/header-logo.png
- * - ნავიგაციის ლინკებს (ამინდის პროგნოზი, ჯანმრთელობა, რადიო, სასარგებლო ინფორმაცია, რეკლამა)
- * - "სასარგებლო ინფორმაცია" ჩამოსაშლელ მენიუს (.dropDown):
- *   1. მსოფლიო დრო
- *   2. საქართველოს დღესასწაულები
- *   3. ვალუტა
- *   4. ჰოროსკოპი
+ * @description amindi.ge-ს ზედა ნავიგაციის კომპონენტი (Header Navigation Component).
+ *
+ * კომპონენტის სტრუქტურა და ფუნქციონალი:
+ * 1. ლოგო (Navbar Brand):
+ *    - განთავსებულია მარცხნივ, იყენებს amindi.ge-ს ოფიციალურ ლოგოს: https://amindi.ge/static/img/header-logo.png
+ *
+ * 2. ნავიგაციის მენიუ (Desktop Menu - lg ეკრანებზე):
+ *    - ამინდის პროგნოზი (მთავარი გვერდი)
+ *    - ჯანმრთელობა (გადამისამართება mkurnali.ge-ზე)
+ *    - რადიო (გადამისამართება radiopalitra.ge-ზე)
+ *    - სასარგებლო ინფორმაცია: ჩამოსაშლელი Dropdown მენიუ
+ *    - რეკლამა (გადამისამართება adline.ge-ზე)
+ *
+ * 3. "სასარგებლო ინფორმაცია" ჩამოსაშლელი მენიუ (.dropDown):
+ *    - იხსნება მაუსის მიტანისას (Hover) ან კლიკზე
+ *    - სია შეიცავს 4 ძირითად პუნქტს:
+ *      1) მსოფლიო დრო
+ *      2) საქართველოს დღესასწაულები
+ *      3) ვალუტა
+ *      4) ჰოროსკოპი
+ *    - ფონი: amindi.ge-ს მუქი ლურჯი (#19375c), hover-ზე კი თეთრი ფონი შავი ტექსტით.
+ *
+ * 4. მობილური ნავიგაცია (Mobile Responsive Hamburger Menu):
+ *    - მცირე ეკრანებზე (lg-მდე) ჩნდება ჰამბურგერ ღილაკი, რომელზე დაჭერისას იხსნება მობილური მენიუ.
  */
 
 import React, { useState } from 'react';
-import { useAppDispatch } from '../../store';
-import { setViewMode } from '../../store/slices/uiSlice';
 
 export const Header: React.FC = () => {
-  const dispatch = useAppDispatch();
+  // სტეიტი დესკტოპზე "სასარგებლო ინფორმაცია"-ს ჩამოსაშლელი მენიუსთვის
   const [infoDropdownOpen, setInfoDropdownOpen] = useState(false);
+
+  // სტეიტი მობილურ ეკრანებზე ჰამბურგერ მენიუს გახსნა/დახურვისთვის
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="w-full select-none">
-      {/* amindi.ge-ს იდენტური ზედა ნავიგაციის ზოლი: height: 50px, background: rgba(25, 55, 92, 0.75), font-family: font1 */}
+      {/* amindi.ge-ს ძირითადი ნავბარი: სიმაღლე 50px, ფონი rgba(25, 55, 92, 0.75), შრიფტი font1 */}
       <nav
         className="w-full relative z-50 font-amindi1"
         style={{
@@ -30,15 +45,14 @@ export const Header: React.FC = () => {
           backgroundColor: 'rgba(25, 55, 92, 0.75)',
         }}
       >
-        <div className="max-w-[1220px] mx-auto px-[15px] flex items-center justify-between h-[50px]">
-          {/* ლოგო: https://amindi.ge/static/img/header-logo.png */}
+        {/* რესპონსიული კონტეინერი გვერდითი დაშორებებით (1220px max-width) */}
+        <div className="amindi-container h-[50px] flex items-center justify-between">
+          
+          {/* მარცხენა მხარე: amindi.ge-ს ოფიციალური ლოგო */}
           <a
             href="/ka/"
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(setViewMode('portal'));
-            }}
             className="flex items-center shrink-0"
+            title="Amindi.ge - მთავარი"
           >
             <img
               src="https://amindi.ge/static/img/header-logo.png"
@@ -47,21 +61,19 @@ export const Header: React.FC = () => {
             />
           </a>
 
-          {/* ნავიგაციის მენიუ მარჯვნივ (ml-auto), ზუსტად amindi.ge-ს სტრუქტურით */}
+          {/* დესკტოპ ნავიგაცია: ჩანს დიდ ეკრანებზე (lg-დან ზემოთ) */}
           <ul className="hidden lg:flex items-center ml-auto m-0 p-0 list-none h-[50px]">
+            {/* 1. ამინდის პროგნოზი */}
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="/ka/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  dispatch(setViewMode('portal'));
-                }}
                 className="block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
               >
                 ამინდის პროგნოზი
               </a>
             </li>
 
+            {/* 2. ჯანმრთელობა */}
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="https://mkurnali.ge/"
@@ -73,6 +85,7 @@ export const Header: React.FC = () => {
               </a>
             </li>
 
+            {/* 3. რადიო */}
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="http://radiopalitra.ge/"
@@ -84,7 +97,7 @@ export const Header: React.FC = () => {
               </a>
             </li>
 
-            {/* სასარგებლო ინფორმაცია + .dropDown */}
+            {/* 4. სასარგებლო ინფორმაცია (Dropdown) */}
             <li
               className={`relative h-[50px] flex items-center transition-colors ${
                 infoDropdownOpen ? 'bg-[#19375c]' : 'hover:bg-[#19375c]'
@@ -99,11 +112,13 @@ export const Header: React.FC = () => {
                 სასარგებლო ინფორმაცია
               </span>
 
+              {/* ჩამოსაშლელი სია hover-ზე ან კლიკზე */}
               {infoDropdownOpen && (
                 <div
                   className="dropDown absolute right-0 top-[49px] bg-[#19375c] z-[99999]"
                 >
                   <ul className="m-0 p-0 list-none">
+                    {/* პუნქტი: მსოფლიო დრო */}
                     <li className="bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
                       <a
                         href="https://amindi.ge/ka/world-clock/"
@@ -114,6 +129,7 @@ export const Header: React.FC = () => {
                         მსოფლიო დრო
                       </a>
                     </li>
+                    {/* პუნქტი: საქართველოს დღესასწაულები */}
                     <li className="bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
                       <a
                         href="https://amindi.ge/ka/georgian-holiday/"
@@ -124,6 +140,7 @@ export const Header: React.FC = () => {
                         საქართველოს დღესასწაულები
                       </a>
                     </li>
+                    {/* პუნქტი: ვალუტა */}
                     <li className="bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
                       <a
                         href="https://www.bpn.ge/currency"
@@ -134,6 +151,7 @@ export const Header: React.FC = () => {
                         ვალუტა
                       </a>
                     </li>
+                    {/* პუნქტი: ჰოროსკოპი */}
                     <li className="bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
                       <a
                         href="https://www.ambebi.ge/astrology/"
@@ -149,6 +167,7 @@ export const Header: React.FC = () => {
               )}
             </li>
 
+            {/* 5. რეკლამა */}
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
@@ -161,7 +180,7 @@ export const Header: React.FC = () => {
             </li>
           </ul>
 
-          {/* მობილური მენიუს ღილაკი */}
+          {/* მობილური მენიუს ჰამბურგერ ღილაკი (ჩანს მხოლოდ lg-ზე დაბალ ეკრანებზე) */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen((p) => !p)}
@@ -172,7 +191,7 @@ export const Header: React.FC = () => {
           </button>
         </div>
 
-        {/* მობილური მენიუ */}
+        {/* მობილური ჩამოსაშლელი მენიუს ბლოკი */}
         {mobileMenuOpen && (
           <div
             className="lg:hidden absolute left-0 right-0 top-[49px] z-50 px-4 py-3 border-t border-white/15 flex flex-col gap-1 shadow-lg"
@@ -180,11 +199,6 @@ export const Header: React.FC = () => {
           >
             <a
               href="/ka/"
-              onClick={(e) => {
-                e.preventDefault();
-                dispatch(setViewMode('portal'));
-                setMobileMenuOpen(false);
-              }}
               className="py-1.5 text-[14px] text-white no-underline"
             >
               ამინდის პროგნოზი
@@ -206,7 +220,7 @@ export const Header: React.FC = () => {
               რადიო
             </a>
             <div className="py-1 text-[14px] text-white">
-              <div className="mb-1">სასარგებლო ინფორმაცია</div>
+              <div className="mb-1 font-semibold">სასარგებლო ინფორმაცია:</div>
               <div className="pl-3 flex flex-col border-l border-white/20">
                 <a
                   href="https://amindi.ge/ka/world-clock/"
