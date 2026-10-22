@@ -1,6 +1,4 @@
-import React from 'react';
-
-interface CurrencyRowProps {
+interface CurrencyRowProps{
   code: string;
   quantity: number;
   rateFormated: string;
@@ -8,20 +6,20 @@ interface CurrencyRowProps {
   prevRate: string;
 }
 
-export const CurrencyRow: React.FC<CurrencyRowProps> = ({ 
+export function CurrencyRow({ 
   code, 
   quantity, 
   rateFormated, 
   diff,
   prevRate
-})=>{
+}: CurrencyRowProps) {
   const percentChange = (diff * 100).toFixed(2);
   
   const isNegative = diff < 0;
-  const diffColor = isNegative ? 'text-white' : diff > 0 ? 'text-green-400' : 'text-white';
+  const diffColor = isNegative ? 'text-white' : diff > 0 ? 'text-green-500' : 'text-white';
 
-  return (
-    <div className="grid grid-cols-4 gap-2 py-3.5 border-t border-b border-white/20 text-[15px] text-center items-center">
+  return(
+    <div className="grid grid-cols-4 gap-2 py-3 border-t border-b border-white/20 text-[15px] text-center items-center">
       <div className="font-sanet text-left font-bold text-white">
         {quantity} {code}
       </div>
