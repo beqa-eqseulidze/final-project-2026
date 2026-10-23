@@ -22,6 +22,20 @@ import React from 'react';
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
+import { IWindAndPressureProps } from './features/LeftBarWindAndPressure';
+
+const info: IWindAndPressureProps = {
+  windSpeed: 11,
+  windUnit: 'kph',
+  windDirection: 'ENE',
+  pressure: 102.60,
+  pressureUnit: 'kpa',
+  feelsLikeTemp: '19°',
+  feelsLikeWind: '17°',
+  humidity: 'SSW',
+  visibility: '82 %',
+  isLoading: false,
+}
 
 export default function App() {
   return (
