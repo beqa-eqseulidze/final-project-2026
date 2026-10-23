@@ -17,8 +17,6 @@
  */
 
 import React from 'react';
-
-// განლაგების ძირითადი კომპონენტების იმპორტი
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
