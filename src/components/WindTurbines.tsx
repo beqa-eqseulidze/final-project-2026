@@ -1,0 +1,40 @@
+import standsImage from '../assets/Towers.png';
+import rotorbig from '../assets/rotorbig.png';
+import rotorsmall from '../assets/rotorsmall.png';
+
+interface WindTurbinesProps {
+    windSpeed: number;
+}
+
+export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
+    return (
+        <div className="relative w-20 h-28 flex items-center justify-center shrink-0">
+            {/* სადგამების ფოტო */}
+            <img
+                src={standsImage}
+                alt="Windmill Stands"
+                className="absolute bottom-0 h-24 w-full object-contain z-10 opacity-90"
+            />
+
+            {/* 1. დიდი ტურბინა */}
+            <img
+                src={rotorbig}
+                alt="Large Rotor"
+                className="absolute top-[15px] left-[-1px] h-12 w-12 object-contain animate-spin z-20 mix-blend-screen"
+                style={{
+                    animationDuration: `${Math.max(0.1, 1.5 - windSpeed / 15)}s`,
+                }}
+            />
+
+            {/* 2. პატარა ტურბინა */}
+            <img
+                src={rotorsmall}
+                alt="Small Rotor"
+                className="absolute top-[35px] right-[25px] h-7 w-7 object-contain animate-spin z-20 mix-blend-screen"
+                style={{
+                    animationDuration: `${Math.max(0.1, 1.1 - windSpeed / 15)}s`,
+                }}
+            />
+        </div>
+    );
+};
