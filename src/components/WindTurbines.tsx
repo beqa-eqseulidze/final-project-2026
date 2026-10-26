@@ -16,7 +16,7 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
                 className="absolute bottom-0 h-24 w-full object-contain z-10 opacity-90"
             />
 
-            {/* 1. დიდი ტურბინა */}
+            {/* დიდი ტურბინა */}
             <img
                 src={rotorbig}
                 alt="Large Rotor"
@@ -26,7 +26,7 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
                 }}
             />
 
-            {/* 2. პატარა ტურბინა */}
+            {/* პატარა ტურბინა */}
             <img
                 src={rotorsmall}
                 alt="Small Rotor"
