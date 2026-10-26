@@ -20,7 +20,7 @@ import React from 'react';
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
-import { IWindAndPressureProps } from './features/LeftBarWindAndPressure';
+import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
 
 const info: IWindAndPressureProps = {
   windSpeed: 11,
@@ -33,7 +33,7 @@ const info: IWindAndPressureProps = {
   humidity: 'SSW',
   visibility: '82 %',
   isLoading: false,
-}
+};
 
 export default function App() {
   return (
@@ -42,8 +42,16 @@ export default function App() {
       {/* 1. ზედა ნავიგაციის პანელი */}
       <Header />
 
-      {/* 2. ცენტრალური ნაწილი (მომავალი კონტენტის განსათავსებლად) */}
-      <main role="main" className="flex-1 w-full" />
+      {/* 2. ცენტრალური ნაწილი (მთავარი კონტენტი) */}
+      <main role="main" className="flex-1 w-full py-6">
+        <div className="amindi-container">
+          <div className="flex flex-col md:flex-row gap-6">
+            <aside className="w-full md:w-auto">
+              <WindAndPressure {...info} />
+            </aside>
+          </div>
+        </div>
+      </main>
 
       {/* 3. ქვედა ნავიგაციისა და რეიტინგის პანელი */}
       <Footer />
