@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import "tailwindcss";
 
 @font-face {
@@ -11,3 +12,147 @@
 @theme {
   --font-sanet: "ALK Sanet", sans-serif;
 }
+=======
+/* ==========================================================================
+   1. Tailwind CSS ბიბლიოთეკის იმპორტი
+   ========================================================================== */
+@import "tailwindcss";
+
+/* ==========================================================================
+   2. amindi.ge-ს ორიგინალი ქართული შრიფტების (WebFonts) შემოტანა
+   ========================================================================== */
+
+/* font1: გამოიყენება ჰედერში, ნავიგაციის მენიუში და ფუტერში */
+@font-face {
+  font-family: "font1";
+  src: url("https://amindi.ge/static/fonts/font1.woff");
+  font-display: swap;
+}
+
+/* font2: გამოიყენება როგორც ძირითადი ტექსტური შრიფტი მთელ საიტზე */
+@font-face {
+  font-family: "font2";
+  src: url("https://amindi.ge/static/fonts/bbe.woff");
+  font-display: swap;
+}
+
+/* BPG Arial: გამოიყენება ალტერნატიულ სექციებსა და სტატიების სათაურებში */
+@font-face {
+  font-family: "BPG Arial";
+  src: url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff2") format("woff2"),
+       url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff") format("woff");
+  font-display: swap;
+}
+
+/* ==========================================================================
+   3. საბაზისო გლობალური სტილები (Base Styles & Reset)
+   ========================================================================== */
+@layer base {
+  /* ყველა ელემენტისთვის Box-Sizing-ის სტანდარტიზაცია (Border-Box) */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  /* მობილურ მოწყობილობებზე ტექსტის ზომის არასასურველი ავტო-გადიდების თავიდან აცილება */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* მთლიანი გვერდის (Body) ძირითადი პარამეტრები:
+     - font-family: ნაგულისხმევად font2
+     - background-color: მუქი ლურჯი (#19375c), სანამ ფონის სურათი ჩაიტვირთება
+     - min-width: 320px, მცირე ზომის მობილურებზე სწორი გამოჩენისთვის
+     - overflow-x: hidden, ჰორიზონტალური სქროლის გამორიცხვა
+  */
+  body {
+    font-family: "font2", "FiraGO", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #19375c;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+    overflow-x: hidden;
+  }
+}
+
+/* ==========================================================================
+   4. შრიფტების დამხმარე კლასები (Font Utility Classes)
+   ========================================================================== */
+
+/* კლასი ჰედერის და ფუტერის ნავიგაციის ტექსტებისთვის */
+.font-amindi1 {
+  font-family: "font1", "FiraGO", sans-serif;
+}
+
+/* კლასი ძირითადი ტექსტური ბლოკებისთვის */
+.font-amindi2 {
+  font-family: "font2", "FiraGO", sans-serif;
+}
+
+/* კლასი სათაურებისა და დამხმარე ინფორმაციისთვის */
+.font-bpg-arial {
+  font-family: "BPG Arial", "FiraGO", sans-serif;
+}
+
+/* ==========================================================================
+   5. amindi.ge-ს რესპონსიული კონტეინერი (Responsive Layout Container)
+   უზრუნველყოფს, რომ შიგთავსი (ჰედერი, ფუტერი და ა.შ.) იყოს ცენტრალიზებული
+   და გვერდებზე ჰქონდეს amindi.ge-ს იდენტური დაშორებები (Padding & Max-Width)
+   სხვადასხვა ეკრანის ზომაზე (Mobile -> Tablet -> Desktop).
+   ========================================================================== */
+.amindi-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* მცირე ეკრანები (Mobile Landscape): 576px-დან */
+@media (min-width: 576px) {
+  .amindi-container {
+    max-width: 540px;
+  }
+}
+
+/* ტაბლეტები (Tablets): 768px-დან */
+@media (min-width: 768px) {
+  .amindi-container {
+    max-width: 720px;
+  }
+}
+
+/* ლეპტოპები (Small Laptops / Desktops): 992px-დან */
+@media (min-width: 992px) {
+  .amindi-container {
+    max-width: 960px;
+  }
+}
+
+/* დიდი მონიტორები (Desktop / Full HD): 1280px-დან (amindi.ge-ს მაქსიმალური სიგანე 1220px) */
+@media (min-width: 1280px) {
+  .amindi-container {
+    max-width: 1220px;
+  }
+}
+
+/* ==========================================================================
+   6. სქროლბარის (Scrollbar) სტილიზაცია
+   საიტზე ჩამოსაშლელი სიებისთვის ან გვერდის სქროლისთვის ვიზუალური გაუმჯობესება
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(21, 170, 220, 0.5);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(21, 170, 220, 0.8);
+}
+>>>>>>> origin/master
