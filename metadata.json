@@ -1,0 +1,8 @@
+{
+    "name": "Amindi Weather Portal - Redux & CRUD Components",
+    "description": "ამინდის საინფორმაციო პორტალი - ქალაქების ამინდი, პროგნოზები, ვალუტები, Redux Toolkit State და Formik/Yup CRUD კომპონენტები.",
+    "requestFramePermissions": [],
+    "majorCapabilities": [
+        "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+    ]
+}
