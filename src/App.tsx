@@ -9,8 +9,9 @@
  * 2. Header (ზედა ნავიგაცია):
  *    - შეიცავს amindi.ge-ს ლოგოს, ნავიგაციის მენიუს და ჩამოსაშლელ პუნქტებს.
  *
- * 3. <main role="main" className="flex-1 w-full" /> (ძირითადი სამუშაო არეალი):
+ * 3. main (ძირითადი სამუშაო არეალი):
  *    - იკავებს დარჩენილ თავისუფალ ვერტიკალურ სივრცეს ჰედერსა და ფუტერს შორის (`flex-1`).
+ *    - შეიცავს Converter კომპონენტს: მობილურზე ცენტრში, sm-დან მარჯვენა მხარეს.
  *
  * 4. Footer (ქვედა ნავიგაცია და მთვლელი):
  *    - შეიცავს ქვედა ბმულებს, ლოგოს და TOP.GE მთვლელს.
@@ -20,6 +21,7 @@ import React from 'react';
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
+import { Converter } from './components/Converter';
 import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
 
 const info: IWindAndPressureProps = {
@@ -45,10 +47,13 @@ export default function App() {
       {/* 2. ცენტრალური ნაწილი (მთავარი კონტენტი) */}
       <main role="main" className="flex-1 w-full py-6">
         <div className="amindi-container">
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-6">
             <aside className="w-full md:w-auto">
               <WindAndPressure {...info} />
             </aside>
+            <div className="flex justify-center sm:justify-end w-full md:w-auto">
+              <Converter />
+            </div>
           </div>
         </div>
       </main>
