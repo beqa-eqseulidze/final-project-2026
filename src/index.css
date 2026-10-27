@@ -1,111 +1,153 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+/* ==========================================================================
+   2. amindi.ge-ს ორიგინალი ქართული შრიფტების (WebFonts) შემოტანა
+   ========================================================================== */
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 1. ფონტის ჩატვირთვა ლოკალური ფაილიდან */
+@font-face {
+  font-family: 'ALK Sanet';
+  src: url('./fonts/alk-sanet.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+/* 2. Tailwind v4-ის კონფიგურაცია - font-sanet კლასის შექმნა */
+@theme {
+  --font-sanet: "ALK Sanet", sans-serif;
+}   
+
+/* font1: გამოიყენება ჰედერში, ნავიგაციის მენიუში და ფუტერში */
+@font-face {
+  font-family: "font1";
+  src: url("https://amindi.ge/static/fonts/font1.woff");
+  font-display: swap;
+}
+
+/* font2: გამოიყენება როგორც ძირითადი ტექსტური შრიფტი მთელ საიტზე */
+@font-face {
+  font-family: "font2";
+  src: url("https://amindi.ge/static/fonts/bbe.woff");
+  font-display: swap;
+}
+
+/* BPG Arial: გამოიყენება ალტერნატიულ სექციებსა და სტატიების სათაურებში */
+@font-face {
+  font-family: "BPG Arial";
+  src: url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff2") format("woff2"),
+       url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff") format("woff");
+  font-display: swap;
+}
+
+/* ==========================================================================
+   3. საბაზისო გლობალური სტილები (Base Styles & Reset)
+   ========================================================================== */
+@layer base {
+  /* ყველა ელემენტისთვის Box-Sizing-ის სტანდარტიზაცია (Border-Box) */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  /* მობილურ მოწყობილობებზე ტექსტის ზომის არასასურველი ავტო-გადიდების თავიდან აცილება */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* მთლიანი გვერდის (Body) ძირითადი პარამეტრები:
+     - font-family: ნაგულისხმევად font2
+     - background-color: მუქი ლურჯი (#19375c), სანამ ფონის სურათი ჩაიტვირთება
+     - min-width: 320px, მცირე ზომის მობილურებზე სწორი გამოჩენისთვის
+     - overflow-x: hidden, ჰორიზონტალური სქროლის გამორიცხვა
+  */
+  body {
+    font-family: "font2", "FiraGO", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #19375c;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+    overflow-x: hidden;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* ==========================================================================
+   4. შრიფტების დამხმარე კლასები (Font Utility Classes)
+   ========================================================================== */
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* კლასი ჰედერის და ფუტერის ნავიგაციის ტექსტებისთვის */
+.font-amindi1 {
+  font-family: "font1", "FiraGO", sans-serif;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+/* კლასი ძირითადი ტექსტური ბლოკებისთვის */
+.font-amindi2 {
+  font-family: "font2", "FiraGO", sans-serif;
 }
 
-body {
-  margin: 0;
+/* კლასი სათაურებისა და დამხმარე ინფორმაციისთვის */
+.font-bpg-arial {
+  font-family: "BPG Arial", "FiraGO", sans-serif;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ==========================================================================
+   5. amindi.ge-ს რესპონსიული კონტეინერი (Responsive Layout Container)
+   უზრუნველყოფს, რომ შიგთავსი (ჰედერი, ფუტერი და ა.შ.) იყოს ცენტრალიზებული
+   და გვერდებზე ჰქონდეს amindi.ge-ს იდენტური დაშორებები (Padding & Max-Width)
+   სხვადასხვა ეკრანის ზომაზე (Mobile -> Tablet -> Desktop).
+   ========================================================================== */
+.amindi-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/* მცირე ეკრანები (Mobile Landscape): 576px-დან */
+@media (min-width: 576px) {
+  .amindi-container {
+    max-width: 540px;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+/* ტაბლეტები (Tablets): 768px-დან */
+@media (min-width: 768px) {
+  .amindi-container {
+    max-width: 720px;
   }
 }
-p {
-  margin: 0;
+
+/* ლეპტოპები (Small Laptops / Desktops): 992px-დან */
+@media (min-width: 992px) {
+  .amindi-container {
+    max-width: 960px;
+  }
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* დიდი მონიტორები (Desktop / Full HD): 1280px-დან (amindi.ge-ს მაქსიმალური სიგანე 1220px) */
+@media (min-width: 1280px) {
+  .amindi-container {
+    max-width: 1220px;
+  }
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ==========================================================================
+   6. სქროლბარის (Scrollbar) სტილიზაცია
+   საიტზე ჩამოსაშლელი სიებისთვის ან გვერდის სქროლისთვის ვიზუალური გაუმჯობესება
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(21, 170, 220, 0.5);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(21, 170, 220, 0.8);
 }
