@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CurrencyRow } from './CurrencyRow';
 
-// API-დან მომავალი მონაცემების ტიპები
 interface CurrencyData {
   code: string;
   quantity: number;
@@ -15,47 +14,41 @@ interface ApiResponse {
   currencies: CurrencyData[];
 }
 
-export const CurrencyRates: React.FC = () => {
-  // სთეითები მონაცემების, ჩატვირთვის, შეცდომისა და თარიღების შესანახად
+export function CurrencyRates() {
   const [currencies, setCurrencies] = useState<CurrencyData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  
   const [dates, setDates] = useState<{ today: string, yesterday: string }>({ today: '', yesterday: '' });
 
-  //საჭირო ვალუტების სია 
   const targetCurrencies = ['USD', 'EUR', 'RUB'];
 
-  // მონაცემების წამოღება გვერდის ჩატვირთვისთანავე
   useEffect(()=>{
     const fetchCurrencies = async ()=>{
-      try {
+      try{
         const response = await fetch('https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json');
-        if (!response.ok)
-             throw new Error('Failed to fetch data');
+        if(!response.ok)
+           throw new Error('failed to fetch');
         
         const data: ApiResponse[] = await response.json();
         
-        // ვტოვებთ მხოლოდ საჭირო ვალუტებს
-        const filtered = data[0].currencies.filter((c) => 
+        const filtered = data[0].currencies.filter((c)=> 
           targetCurrencies.includes(c.code)
         );
 
-        // ვალუტების სორტირება სწორი რიგით
-        const sorted = filtered.sort((a, b) => {
+        const sorted = filtered.sort((a, b)=>{
           return targetCurrencies.indexOf(a.code) - 
           targetCurrencies.indexOf(b.code);
         });
         
         setCurrencies(sorted);
 
-        // თარიღების დამუშავება
         const apiDate = new Date(data[0].date);
         
         const yesterdayDate = new Date(apiDate);
         yesterdayDate.setDate(apiDate.getDate() - 1);
         
-        // თარიღის ფორმატირება ("21 ოქტ")
-        const formatDate = (d: Date) =>{
+        const formatDate = (d: Date)=>{
           const day = d.getUTCDate();
           const monthNames = ["იან", "თებ", "მარ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
           const month = monthNames[d.getUTCMonth()];
@@ -69,53 +62,49 @@ export const CurrencyRates: React.FC = () => {
 
         setLoading(false);
       } catch (err) {
-        // შეცდომის დაჭერა
         console.error(err);
         setError('Failed to fetch data');
         setLoading(false);
       }
     };
-
     fetchCurrencies();
   }, []);
 
 
   return(
-    <div className="w-full min-w-[280px] bg-transparent text-white p-4 font-sans">
-      <h3 className="font-sanet text-xl font-bold mb-6 tracking-wide">ოფიციალური კურსი</h3>
+    <div className="w-full bg-transparent text-white p-2 font-sanet">
+      <h3 className="text-[13px] font-bold mb-3 tracking-wide text-center">ოფიციალური კურსი</h3>
 
       {loading ? (
-        <div className="font-sanet font-bold text-center text-sm py-4 text-white/70">იტვირთება...</div>
+        <div className="font-bold text-center text-xs py-2 text-white/70">იტვირთება..</div>
       ) : error ? (
-        <div className="font-sanet text-center text-sm py-4 text-red-400">{error}</div>
+        <div className="text-center text-xs py-2 text-red-400">{error}</div>
       ) : (
         <>
-        <div className="font-sanet grid grid-cols-4 gap-2 text-[13px] font-semibold text-white/90 mb-4 text-center items-center">
-           <div></div>
+          <div className="grid grid-cols-4 gap-1 text-[10px] text-white/90 mb-2 text-center items-center">
+            <div></div>
             <div>{dates.yesterday}</div> 
             <div>{dates.today}</div>
             <div className="flex justify-center text-white/50">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
               </svg>
             </div>
           </div>
 
           <div>
-            {/* ვალუტების მასივის გადავლა და თითოეულისთვის CurrencyRow-ს გამოძახება */}
-            {currencies.map((currency) =>(
-              <CurrencyRow  key={currency.code} code={currency.code}
+            {currencies.map((currency)=>(
+              <CurrencyRow key={currency.code} code={currency.code}
                 quantity={currency.quantity} rateFormated={currency.rateFormated}
-                prevRate={(parseFloat(currency.rateFormated) - currency.diff).toFixed(4)}diff={currency.diff}/>
+                prevRate={(parseFloat(currency.rateFormated) - currency.diff).toFixed(4)} diff={currency.diff}/>
             ))}
           </div>
         </>
       )}
 
-      {/* ღილაკი */}
-      <div className="mt-8 flex justify-center">
-        <a href="https://nbg.gov.ge/en/monetary-policy/currency" target="_blank" rel="noopener noreferrer"
-          className="font-sanet font-medium bg-[#00a8e8] hover:bg-[#0086b8] text-white text-[15px] py-2 px-8 rounded-md transition-colors duration-200">
+      <div className="mt-3 flex justify-center">
+        <a href="https://www.bpn.ge/currency/" target="_blank" rel="noopener noreferrer"
+          className="font-medium bg-[#00a8e8] hover:bg-[#0086b8] text-white text-[11px] py-1.5 px-4 rounded transition-colors duration-200">
           ყველა ვალუტა
         </a>
       </div>

@@ -4,6 +4,20 @@
    2. amindi.ge-ს ორიგინალი ქართული შრიფტების (WebFonts) შემოტანა
    ========================================================================== */
 
+/* 1. ფონტის ჩატვირთვა ლოკალური ფაილიდან */
+@font-face {
+  font-family: 'ALK Sanet';
+  src: url('./fonts/alk-sanet.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Tailwind v4-ის კონფიგურაცია - font-sanet კლასის შექმნა */
+@theme {
+  --font-sanet: "ALK Sanet", sans-serif;
+}   
+
 /* font1: გამოიყენება ჰედერში, ნავიგაციის მენიუში და ფუტერში */
 @font-face {
   font-family: "font1";
