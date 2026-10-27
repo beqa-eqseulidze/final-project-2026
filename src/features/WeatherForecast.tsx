@@ -191,8 +191,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
       </div>
 
       {/* 2. ქვედა ტაბ-ბარი: amindi.ge-ს ცისფერი (#15aadc) */}
+      {/* 2. ქვედა ტაბ-ბარი: სქროლის გარეშე, თანაბრად განაწილებული */}
       <nav
-        className="flex flex-wrap items-center bg-[#15aadc] overflow-x-auto"
+        className="grid grid-cols-5 items-stretch bg-[#15aadc] w-full"
         role="tablist"
       >
         {TABS.map((tab) => {
@@ -204,15 +205,17 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={`
-                flex-1 min-w-[70px] sm:min-w-0 py-2 sm:py-2.5 px-1 sm:px-3 text-center
-                font-amindi1 text-[11px] sm:text-[13px] transition-colors whitespace-nowrap cursor-pointer border-0
+                w-full py-2 px-1 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+                leading-tight flex items-center justify-center transition-colors cursor-pointer border-0
                 ${isActive
                   ? 'bg-[#0a8ab5] text-white font-bold'
                   : 'text-white hover:bg-[#129ac6]'
                 }
               `}
             >
-              {tab.label}
+              <span className="line-clamp-2 text-center">
+                {tab.label}
+              </span>
             </button>
           );
         })}

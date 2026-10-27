@@ -1,56 +1,123 @@
-const Box = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+/**
+ * @file App.tsx
+ * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
+ */
+
+import React from 'react';
+import { Header } from './components/layout/Header';
+import { BackgroundSky } from './components/layout/BackgroundSky';
+import { Footer } from './components/layout/Footer';
+import { Converter } from './components/Converter';
+import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
+import { WeatherForecast } from './features/WeatherForecast';
+import { CurrentWeather } from './features/CurrentWeather';
+
+const info: IWindAndPressureProps = {
+  windSpeed: 11,
+  windUnit: 'kph',
+  windDirection: 'ENE',
+  pressure: 102.60,
+  pressureUnit: 'kpa',
+  feelsLikeTemp: '19°',
+  feelsLikeWind: '17°',
+  humidity: 'SSW',
+  visibility: '82 %',
+  isLoading: false,
+};
+
+const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <div className={`flex items-center justify-center border-2 border-dashed border-slate-400 bg-white/90 text-center text-[11px] font-bold text-slate-600 ${className}`}>
     {children}
   </div>
-)
+);
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-sky-200 px-3 py-4 text-slate-700">
-      <div className="mx-auto w-full max-w-[760px] bg-white shadow-xl">
-        <Box className="h-12">top ad / header here</Box>
+    <BackgroundSky>
+      <div className="min-h-screen text-slate-700">
 
-        <div className="grid grid-cols-[190px_1fr_150px] gap-2 p-2">
-          <aside className="space-y-2">
-            <Box className="h-44">weather sidebar here</Box>
-            <Box className="h-28">city list here</Box>
-            <Box className="h-24">wind / info here</Box>
-            <Box className="h-28">currency here</Box>
-          </aside>
+        {/* 1. Header (სრული სიგანით ზემოთ) */}
+        <Header />
 
-          <main className="space-y-2">
-            <Box className="h-16">search / city selector here</Box>
-            <Box className="h-28">forecast cards here</Box>
-            <Box className="h-6">forecast navigation here</Box>
-            <Box className="h-44 bg-slate-100">video here</Box>
+        {/* 2. ცენტრალური შეფუთვა (Container) */}
+        <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 py-3">
 
-            <div className="grid grid-cols-2 gap-2">
-              <Box className="h-32">card here</Box>
-              <Box className="h-32">card here</Box>
-            </div>
+          {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
+          <div className="w-full mb-3">
+            <Box className="h-[90px] w-full bg-[#3d4b3c] text-white text-base">
+              Top Banner (რადიო პალიტრა FM 103.9)
+            </Box>
+          </div>
 
-            <Box className="h-7">section title here</Box>
+          {/* 3-Column Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] gap-4">
 
-            <div className="grid grid-cols-2 gap-2">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <Box key={i} className="h-28">news card here</Box>
-              ))}
-            </div>
+            {/* მარცხენა სვეტი */}
+            {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
+            <aside className="w-full lg:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-4 flex flex-col shadow-lg backdrop-blur-sm self-start">
 
-            <Box className="h-28">bottom info here</Box>
-          </main>
+              {/* 1. მიმდინარე ამინდი */}
+              <div className="w-full pb-4 border-b border-white/20">
+                <CurrentWeather />
+              </div>
 
-          <aside className="space-y-2">
-            <Box className="h-24">ad here</Box>
-            <Box className="h-36">ad here</Box>
-            <Box className="h-28">ad here</Box>
-          </aside>
+              {/* 2. ამინდი საათების მიხედვით */}
+              <div className="w-full bg-[#2c3e55]/85 text-white p-4 rounded-[4px] shadow-sm">
+                <div className="h-44 w-full flex items-center justify-center text-white/70 text-sm">
+                  ამინდი საათების მიხედვით
+                </div>
+              </div>
+
+              {/* 3. ქარი და წნევა */}
+              <div className="w-full pt-4">
+                <WindAndPressure {...info} />
+              </div>
+
+            </aside>
+
+            {/* ცენტრალური სვეტი */}
+            <main className="space-y-4 min-w-0">
+              {/* Search & Selectors Header */}
+              <Box className="h-10 w-full"></Box>
+
+              {/* ამინდი დღეების მიხედვით (პროგნოზი) */}
+              <div className="w-full">
+                <WeatherForecast />
+              </div>
+
+              {/* ვიდეო / ლაივ კამერა */}
+              <Box className="h-[340px] w-full bg-slate-900 text-white">
+                Live Video / კამერა (თბილისი)
+              </Box>
+            </main>
+
+            {/* მარჯვენა სვეტი */}
+            <aside className="space-y-4 flex flex-col">
+              {/* ზედა რეკლამა (Palitra News) */}
+              <Box className="h-[280px] w-full bg-[#c9252c] text-white">
+                Palitra News Ad Banner
+              </Box>
+
+              {/* კონვერტორი (ზუსტად ბანერის ქვეშ) */}
+              <div className="w-full">
+                <Converter />
+              </div>
+
+              {/* ქვედა რეკლამა */}
+              <Box className="h-[260px] w-full bg-[#1e3d2f] text-white">
+                Bottom Ad Banner
+              </Box>
+            </aside>
+
+          </div>
         </div>
-      </div>
 
-      <Box className="mx-auto mt-0 h-14 max-w-[1100px] border-slate-500 bg-slate-700/70 text-white">
-        footer here
-      </Box>
-    </div>
-  )
+        {/* 3. Footer */}
+        <div className="w-full mt-8">
+          <Footer />
+        </div>
+
+      </div>
+    </BackgroundSky>
+  );
 }

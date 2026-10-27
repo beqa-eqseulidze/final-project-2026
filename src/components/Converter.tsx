@@ -23,18 +23,18 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
   const [leftLabel, rightLabel] = reversed ? [to, from] : [from, to];
 
   return (
-    <div className="mb-3 sm:mb-4">
-      <div className="flex justify-between text-[12px] sm:text-[14px] font-bold text-[#19375c] mb-1">
-        <span className="flex items-center gap-1 w-[100px] sm:w-[110px]">{leftLabel}</span>
-        <span className="flex items-center gap-1 w-[100px] sm:w-[110px]">{rightLabel}</span>
+    <div className="mb-3 w-full">
+      <div className="flex justify-between items-center text-[12px] font-bold text-[#19375c] mb-1 px-1">
+        <span className="flex items-center gap-1 min-w-0 truncate">{leftLabel}</span>
+        <span className="flex items-center gap-1 min-w-0 truncate">{rightLabel}</span>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <input
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="w-[100px] sm:w-[110px] h-[36px] sm:h-[46px] px-2 text-[14px] bg-white border border-[#2da9e0] rounded outline-none"
+          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] bg-white border border-[#2da9e0] rounded outline-none"
         />
 
         {/* swap ღილაკი */}
@@ -42,7 +42,7 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
           type="button"
           onClick={() => setReversed((p) => !p)}
           aria-label="Swap"
-          className="w-[22px] h-[22px] sm:w-[26px] sm:h-[26px] rounded-full bg-[#2da9e0] flex items-center justify-center cursor-pointer border-0"
+          className="shrink-0 w-[24px] h-[24px] rounded-full bg-[#2da9e0] flex items-center justify-center cursor-pointer border-0"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
             <path d="M21 12a9 9 0 0 1-15 6.7M3 12a9 9 0 0 1 15-6.7M18 2v4h-4M6 22v-4h4" />
@@ -52,7 +52,7 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
         <input
           readOnly
           value={result}
-          className="w-[100px] sm:w-[110px] h-[36px] sm:h-[46px] px-2 text-[14px] bg-[#cde9f6] border border-[#2da9e0] rounded outline-none"
+          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] bg-[#cde9f6] border border-[#2da9e0] rounded outline-none"
         />
       </div>
     </div>
@@ -61,25 +61,25 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
 
 /** Flag + კოდი (USD / GEL) */
 const Currency = ({ flag, code }: { flag: string; code: string }) => (
-  <>
-    <img src={`https://flagcdn.com/w40/${flag}.png`} alt={code} className="h-[12px] sm:h-[14px]" />
+  <span className="inline-flex items-center gap-1">
+    <img src={`https://flagcdn.com/w40/${flag}.png`} alt={code} className="h-[12px]" />
     {code}
-  </>
+  </span>
 );
 
-/** USD → GEL კურსი (ფიქსირებული მნიშვნელობა, API-ზე მოგვიანებით დავაკავშირებთ) */
+/** USD → GEL კურსი */
 const USD_GEL_RATE = 2.7;
 
 export const Converter = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-[240px] sm:w-[280px] font-amindi1 select-none">
+    <div className="w-full font-amindi1 select-none">
       {/* სათაური / toggle */}
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className="w-full h-[38px] sm:h-[46px] px-4 text-[14px] sm:text-[16px] bg-[#2da9e0] text-white font-bold rounded flex items-center justify-between cursor-pointer border-0"
+        className="w-full h-[38px] px-3 text-[14px] bg-[#2da9e0] text-white font-bold rounded flex items-center justify-between cursor-pointer border-0"
       >
         <span className="flex-1 text-center">კონვერტორი</span>
         <svg
@@ -89,14 +89,14 @@ export const Converter = () => {
           fill="none"
           stroke="white"
           strokeWidth="3"
-          className={`transition-transform ${open ? '' : 'rotate-180'}`}
+          className={`shrink-0 transition-transform ${open ? '' : 'rotate-180'}`}
         >
           <path d="M6 15l6-6 6 6" />
         </svg>
       </button>
 
       {open && (
-        <div className="pt-3 sm:pt-4">
+        <div className="pt-3 w-full">
           <ConverterRow
             from="C°"
             to="F°"
@@ -104,7 +104,7 @@ export const Converter = () => {
             backward={(f) => ((f - 32) * 5) / 9}
           />
           <ConverterRow
-            from="კილომეტრი"
+            from="კმ"
             to="მილი"
             forward={(km) => km * 0.621371}
             backward={(mi) => mi / 0.621371}
