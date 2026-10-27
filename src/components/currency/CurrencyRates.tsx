@@ -22,7 +22,7 @@ export const CurrencyRates: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [dates, setDates] = useState<{ today: string, yesterday: string }>({ today: '', yesterday: '' });
 
-  //საჭირო ვალუტების სია
+  //საჭირო ვალუტების სია 
   const targetCurrencies = ['USD', 'EUR', 'RUB'];
 
   // მონაცემების წამოღება გვერდის ჩატვირთვისთანავე
