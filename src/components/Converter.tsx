@@ -71,7 +71,7 @@ const Currency = ({ flag, code }: { flag: string; code: string }) => (
 const USD_GEL_RATE = 2.7;
 
 export const Converter = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="w-[240px] sm:w-[280px] font-amindi1 select-none">
