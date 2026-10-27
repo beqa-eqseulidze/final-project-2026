@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CurrencyRow } from './CurrencyRow';
 
+// API-დან მომავალი მონაცემების ტიპები
 interface CurrencyData {
   code: string;
   quantity: number;
@@ -15,14 +16,16 @@ interface ApiResponse {
 }
 
 export const CurrencyRates: React.FC = () => {
+  // სთეითები მონაცემების, ჩატვირთვის, შეცდომისა და თარიღების შესანახად
   const [currencies, setCurrencies] = useState<CurrencyData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
   const [dates, setDates] = useState<{ today: string, yesterday: string }>({ today: '', yesterday: '' });
 
+  //საჭირო ვალუტების სია
   const targetCurrencies = ['USD', 'EUR', 'RUB'];
 
+  // მონაცემების წამოღება გვერდის ჩატვირთვისთანავე
   useEffect(()=>{
     const fetchCurrencies = async ()=>{
       try {
@@ -32,10 +35,12 @@ export const CurrencyRates: React.FC = () => {
         
         const data: ApiResponse[] = await response.json();
         
+        // ვტოვებთ მხოლოდ საჭირო ვალუტებს
         const filtered = data[0].currencies.filter((c) => 
           targetCurrencies.includes(c.code)
         );
 
+        // ვალუტების სორტირება სწორი რიგით
         const sorted = filtered.sort((a, b) => {
           return targetCurrencies.indexOf(a.code) - 
           targetCurrencies.indexOf(b.code);
@@ -43,11 +48,13 @@ export const CurrencyRates: React.FC = () => {
         
         setCurrencies(sorted);
 
+        // თარიღების დამუშავება
         const apiDate = new Date(data[0].date);
         
         const yesterdayDate = new Date(apiDate);
         yesterdayDate.setDate(apiDate.getDate() - 1);
         
+        // თარიღის ფორმატირება ("21 ოქტ")
         const formatDate = (d: Date) =>{
           const day = d.getUTCDate();
           const monthNames = ["იან", "თებ", "მარ", "აპრ", "მაი", "ივნ", "ივლ", "აგვ", "სექ", "ოქტ", "ნოე", "დეკ"];
@@ -62,6 +69,7 @@ export const CurrencyRates: React.FC = () => {
 
         setLoading(false);
       } catch (err) {
+        // შეცდომის დაჭერა
         console.error(err);
         setError('Failed to fetch data');
         setLoading(false);
@@ -94,6 +102,7 @@ export const CurrencyRates: React.FC = () => {
           </div>
 
           <div>
+            {/* ვალუტების მასივის გადავლა და თითოეულისთვის CurrencyRow-ს გამოძახება */}
             {currencies.map((currency) =>(
               <CurrencyRow  key={currency.code} code={currency.code}
                 quantity={currency.quantity} rateFormated={currency.rateFormated}

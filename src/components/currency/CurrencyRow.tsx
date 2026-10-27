@@ -1,5 +1,6 @@
 import React from 'react';
 
+// კომპონენტისთვის გადასაცემი მონაცემების ტიპები
 interface CurrencyRowProps {
   code: string;
   quantity: number;
@@ -15,6 +16,7 @@ export const CurrencyRow: React.FC<CurrencyRowProps> = ({
   diff,
   prevRate
 })=>{
+  // ვითვლით პროცენტულ ცვლილებას
   const percentChange = (diff * 100).toFixed(2);
   
   const isNegative = diff < 0;
@@ -25,8 +27,11 @@ export const CurrencyRow: React.FC<CurrencyRowProps> = ({
       <div className="font-sanet text-left font-bold text-white">
         {quantity} {code}
       </div>
+      {/* წინა დღის კურსი */}
       <div className="font-sanet text-white/90">{prevRate}</div>
+      {/* ახლანდელი კურსი */}
       <div className="font-sanet text-white/90">{rateFormated}</div>
+      {/* ცვლილება პროცენტულად */}
       <div className={`font-sanet font-medium ${diffColor}`}>
         {percentChange}%
       </div>
