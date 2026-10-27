@@ -1,3 +1,19 @@
+import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
+
+// სტატიკური მონაცემები დროებით
+const info: IWindAndPressureProps = {
+  windSpeed: 6,
+  windUnit: 'kph',
+  windDirection: 'ENE',
+  pressure: 102.60,
+  pressureUnit: 'kpa',
+  feelsLikeTemp: '19°',
+  feelsLikeWind: '17°',
+  humidity: 'SSW',
+  visibility: '82 %',
+  isLoading: false,
+};
+
 import { CurrencyRates } from './components/currency/CurrencyRates';
 
 const Box = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
@@ -13,14 +29,13 @@ export default function App() {
         <Box className="h-12">top ad / header here</Box>
 
         <div className="grid grid-cols-[230px_1fr_150px] gap-2 p-2">
-          
+
           <aside className="space-y-2">
             <Box className="h-44">weather sidebar here</Box>
             <Box className="h-28">city list here</Box>
-            <Box className="h-24">wind / info here</Box>
-
+            <WindAndPressure {...info} />
             <div className="w-full flex justify-center bg-blue-900 rounded-md overflow-hidden">
-              <CurrencyRates/>
+              <CurrencyRates />
             </div>
 
           </aside>
