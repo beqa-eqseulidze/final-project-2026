@@ -34,9 +34,6 @@ export default function App() {
             <Box className="h-44">weather sidebar here</Box>
             <Box className="h-28">city list here</Box>
             <WindAndPressure {...info} />
-            <Box className="h-28">currency here</Box>
-            <Box className="h-24">wind / info here</Box>
-
             <div className="w-full flex justify-center bg-blue-900 rounded-md overflow-hidden">
               <CurrencyRates />
             </div>
