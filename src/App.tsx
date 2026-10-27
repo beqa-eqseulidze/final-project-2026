@@ -1,77 +1,56 @@
-/**
- * @file App.tsx
- * @description აპლიკაციის მთავარი შესასვლელი ფაილი (Root Application Entrypoint).
- *
- * არქიტექტურა და სტრუქტურა:
- * 1. BackgroundSky (ფონის კონტეინერი):
- *    - უზრუნველყოფს მთელი ეკრანის დაფარვას და GMT+4 დროით დღე-ღამის მიხედვით ფონის ავტომატურ ცვლას.
- * 2. Header (ზედა ნავიგაცია):
- *    - amindi.ge-ს ოფიციალური ნავიგაციის პანელი.
- * 3. main (ძირითადი სამუშაო არეალი):
- *    - მარცხნივ: CurrentWeather (მიმდინარე ამინდი: ქალაქი, საათი, დიდი იკონი, ტემპერატურა) და WindAndPressure (ქარი, წნევა, ტურბინები)
- *    - ცენტრში/მარჯვნივ: WeatherForecast (ამინდი დღეების მიხედვით) და Converter (კონვერტორი) გვერდიგვერდ ზედა პოზიციაზე
- * 4. Footer (ქვედა ნავიგაცია და მთვლელი):
- *    - ქვედა ბმულები, ლოგო და TOP.GE მთვლელი.
- */
-
-import React from 'react';
-import { Header } from './components/layout/Header';
-import { BackgroundSky } from './components/layout/BackgroundSky';
-import { Footer } from './components/layout/Footer';
-import { Converter } from './components/Converter';
-import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
-import { WeatherForecast } from './features/WeatherForecast';
-import { CurrentWeather } from './features/CurrentWeather';
-
-const info: IWindAndPressureProps = {
-  windSpeed: 11,
-  windUnit: 'kph',
-  windDirection: 'ENE',
-  pressure: 102.60,
-  pressureUnit: 'kpa',
-  feelsLikeTemp: '19°',
-  feelsLikeWind: '17°',
-  humidity: 'SSW',
-  visibility: '82 %',
-  isLoading: false,
-};
+const Box = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`flex items-center justify-center border-2 border-dashed border-slate-400 bg-white/90 text-center text-[11px] font-bold text-slate-600 ${className}`}>
+    {children}
+  </div>
+)
 
 export default function App() {
   return (
-    <BackgroundSky>
-      {/* 1. ზედა ნავიგაციის პანელი */}
-      <Header />
+    <div className="min-h-screen bg-sky-200 px-3 py-4 text-slate-700">
+      <div className="mx-auto w-full max-w-[760px] bg-white shadow-xl">
+        <Box className="h-12">top ad / header here</Box>
 
-      {/* 2. ცენტრალური ნაწილი (მთავარი კონტენტი) */}
-      <main role="main" className="flex-1 w-full py-6">
-        <div className="amindi-container">
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
+        <div className="grid grid-cols-[190px_1fr_150px] gap-2 p-2">
+          <aside className="space-y-2">
+            <Box className="h-44">weather sidebar here</Box>
+            <Box className="h-28">city list here</Box>
+            <Box className="h-24">wind / info here</Box>
+            <Box className="h-28">currency here</Box>
+          </aside>
 
-            {/* მარცხენა მხარე: მიმდინარე ამინდი + ქარი და წნევა */}
-            <aside className="w-full lg:w-auto shrink-0 flex flex-col items-center lg:items-start">
-              <CurrentWeather />
-              <WindAndPressure {...info} />
-            </aside>
+          <main className="space-y-2">
+            <Box className="h-16">search / city selector here</Box>
+            <Box className="h-28">forecast cards here</Box>
+            <Box className="h-6">forecast navigation here</Box>
+            <Box className="h-44 bg-slate-100">video here</Box>
 
-            {/* ცენტრალური და მარჯვენა მხარე: პროგნოზი და კონვერტორი ზემოთ გვერდიგვერდ */}
-            <div className="flex-1 w-full min-w-0 flex flex-col md:flex-row items-start gap-4">
-              {/* ამინდი დღეების მიხედვით */}
-              <div className="flex-1 w-full min-w-0">
-                <WeatherForecast />
-              </div>
-
-              {/* კონვერტორი */}
-              <div className="w-full md:w-auto shrink-0 flex justify-center md:justify-start">
-                <Converter />
-              </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Box className="h-32">card here</Box>
+              <Box className="h-32">card here</Box>
             </div>
 
-          </div>
-        </div>
-      </main>
+            <Box className="h-7">section title here</Box>
 
-      {/* 3. ქვედა ნავიგაციისა და რეიტინგის პანელი */}
-      <Footer />
-    </BackgroundSky>
-  );
+            <div className="grid grid-cols-2 gap-2">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <Box key={i} className="h-28">news card here</Box>
+              ))}
+            </div>
+
+            <Box className="h-28">bottom info here</Box>
+          </main>
+
+          <aside className="space-y-2">
+            <Box className="h-24">ad here</Box>
+            <Box className="h-36">ad here</Box>
+            <Box className="h-28">ad here</Box>
+          </aside>
+        </div>
+      </div>
+
+      <Box className="mx-auto mt-0 h-14 max-w-[1100px] border-slate-500 bg-slate-700/70 text-white">
+        footer here
+      </Box>
+    </div>
+  )
 }
