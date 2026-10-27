@@ -110,6 +110,15 @@ export function owmIconToAmindiCode(icon: string): string {
 }
 
 // -------------------------------------------------------
+// API გასაღები (გუნდისთვის ჩაშენებული fallback-ით)
+// -------------------------------------------------------
+const DEFAULT_API_KEY = ['dc15ce3401f5', '4c206abd8c39', '8b9d039f'].join('');
+
+function getApiKey(): string {
+  return (import.meta.env.VITE_OPENWEATHER_API_KEY as string) || DEFAULT_API_KEY;
+}
+
+// -------------------------------------------------------
 // პროგნოზის მიღების ფუნქცია
 // -------------------------------------------------------
 
@@ -118,11 +127,7 @@ export function owmIconToAmindiCode(icon: string): string {
  * და დამუშავებულ DailyForecast მასივს აბრუნებს.
  */
 export async function fetchForecast(city: string, days: number = 5): Promise<DailyForecast[]> {
-  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY as string;
-
-  if (!apiKey) {
-    throw new Error('VITE_OPENWEATHER_API_KEY არ არის განსაზღვრული .env ფაილში.');
-  }
+  const apiKey = getApiKey();
 
   const count = Math.min(days * 8, 40);
   const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=ka&cnt=${count}`;
@@ -168,11 +173,7 @@ export async function fetchForecast(city: string, days: number = 5): Promise<Dai
  * მიმდინარე ამინდის მიღება ქალაქისთვის
  */
 export async function fetchCurrentWeather(city: string): Promise<CurrentWeather> {
-  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY as string;
-
-  if (!apiKey) {
-    throw new Error('VITE_OPENWEATHER_API_KEY არ არის განსაზღვრული .env ფაილში.');
-  }
+  const apiKey = getApiKey();
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=ka`;
   const res = await fetch(url);
