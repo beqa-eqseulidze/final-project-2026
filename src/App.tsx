@@ -11,6 +11,7 @@ import { Converter } from './components/Converter';
 import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
+import { CurrencyRates } from './components/currency/CurrencyRates';
 
 const info: IWindAndPressureProps = {
   windSpeed: 11,
@@ -34,13 +35,13 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
 export default function App() {
   return (
     <BackgroundSky>
-      <div className="min-h-screen text-slate-700">
+      <div className="min-h-screen text-slate-700 flex flex-col justify-between">
 
         {/* 1. Header (სრული სიგანით ზემოთ) */}
         <Header />
 
         {/* 2. ცენტრალური შეფუთვა (Container) */}
-        <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 py-3">
+        <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 py-3 flex-1">
 
           {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
           <div className="w-full mb-3">
@@ -52,9 +53,8 @@ export default function App() {
           {/* 3-Column Grid Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] gap-4">
 
-            {/* მარცხენა სვეტი */}
             {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
-            <aside className="w-full lg:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-4 flex flex-col shadow-lg backdrop-blur-sm self-start">
+            <aside className="w-full lg:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-4 flex flex-col gap-4 shadow-lg backdrop-blur-sm self-start">
 
               {/* 1. მიმდინარე ამინდი */}
               <div className="w-full pb-4 border-b border-white/20">
@@ -69,17 +69,19 @@ export default function App() {
               </div>
 
               {/* 3. ქარი და წნევა */}
-              <div className="w-full pt-4">
+              <div className="w-full">
                 <WindAndPressure {...info} />
+              </div>
+
+              {/* 4. ვალუტის კურსები */}
+              <div className="w-full flex justify-center bg-blue-900 rounded-md overflow-hidden">
+                <CurrencyRates />
               </div>
 
             </aside>
 
             {/* ცენტრალური სვეტი */}
             <main className="space-y-4 min-w-0">
-              {/* Search & Selectors Header */}
-              <Box className="h-10 w-full"></Box>
-
               {/* ამინდი დღეების მიხედვით (პროგნოზი) */}
               <div className="w-full">
                 <WeatherForecast />
@@ -113,9 +115,9 @@ export default function App() {
         </div>
 
         {/* 3. Footer */}
-        <div className="w-full mt-8">
+        <footer className="w-full mt-8">
           <Footer />
-        </div>
+        </footer>
 
       </div>
     </BackgroundSky>

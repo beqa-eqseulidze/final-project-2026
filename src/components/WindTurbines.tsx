@@ -16,23 +16,23 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
                 className="absolute bottom-0 h-24 w-full object-contain z-10 opacity-90"
             />
 
-            {/* 1. დიდი ტურბინა */}
+            {/* დიდი ტურბინა */}
             <img
                 src={rotorbig}
                 alt="Large Rotor"
                 className="absolute top-[15px] left-[-1px] h-12 w-12 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
-                    animationDuration: `${Math.max(0.1, 1.5 - windSpeed / 15)}s`,
+                    animationDuration: `${Math.max(0.2, 1.7 - (windSpeed || 0) * 0.15)}s`,
                 }}
             />
 
-            {/* 2. პატარა ტურბინა */}
+            {/* პატარა ტურბინა */}
             <img
                 src={rotorsmall}
                 alt="Small Rotor"
-                className="absolute top-[35px] right-[25px] h-7 w-7 object-contain animate-spin z-20 mix-blend-screen"
+                className="absolute top-[38px] right-[25px] h-7 w-7 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
-                    animationDuration: `${Math.max(0.1, 1.1 - windSpeed / 15)}s`,
+                    animationDuration: `${Math.max(0.2, 1.6 - (windSpeed || 0) * 0.15)}s`,
                 }}
             />
         </div>
