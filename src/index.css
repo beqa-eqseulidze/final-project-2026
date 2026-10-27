@@ -16,7 +16,7 @@
 /* 2. Tailwind v4-ის კონფიგურაცია - font-sanet კლასის შექმნა */
 @theme {
   --font-sanet: "ALK Sanet", sans-serif;
-}   
+}
 
 /* font1: გამოიყენება ჰედერში, ნავიგაციის მენიუში და ფუტერში */
 @font-face {
@@ -36,7 +36,7 @@
 @font-face {
   font-family: "BPG Arial";
   src: url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff2") format("woff2"),
-       url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff") format("woff");
+    url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff") format("woff");
   font-display: swap;
 }
 
@@ -44,8 +44,11 @@
    3. საბაზისო გლობალური სტილები (Base Styles & Reset)
    ========================================================================== */
 @layer base {
+
   /* ყველა ელემენტისთვის Box-Sizing-ის სტანდარტიზაცია (Border-Box) */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
@@ -141,13 +144,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(21, 170, 220, 0.5);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(21, 170, 220, 0.8);
 }
