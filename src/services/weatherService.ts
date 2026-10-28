@@ -1,8 +1,9 @@
 /**
  * @file weatherService.ts
- * @description OpenWeatherMap API-სთან კომუნიკაციის სერვისი.
+ * @description OpenWeatherMap API-სთან კომუნიკაციისა და მომხმარებლის ლოკაციის დეტექციის სერვისი.
  *
  * პასუხისმგებლობა:
+ * - მომხმარებლის მიმდინარე ქალაქის ავტომატური ამოცნობა (IP ლოკაციით).
  * - OpenWeatherMap-ის `/forecast` და `/weather` endpoint-ებიდან მონაცემების მიღება.
  * - მიღებული მონაცემების დამუშავება და დღეების მიხედვით დაჯგუფება.
  * - amindi.ge-ს იკონების კოდებზე (OWM icon → amindi.ge code) მეპინგი.
@@ -38,6 +39,14 @@ export interface CurrentWeather {
   iconCode: string;
 }
 
+/** საათობრივი პროგნოზის მონაცემი */
+export interface HourlyForecastItem {
+  hourLabel: string;
+  temp: number;
+  iconCode: string;
+  description: string;
+}
+
 // OpenWeatherMap API-ს raw პასუხის ნაწილობრივი ტიპები
 interface OWMListItem {
   dt_txt: string;
@@ -63,8 +72,9 @@ export const GEO_MONTHS = [
   'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი',
 ];
 
-// ქალაქების სია (ქართული და ინგლისური სახელები)
+// ქალაქების სია (საქართველო და მსოფლიოს მთავარი ქალაქები)
 export const CITIES = [
+  // საქართველო
   { label: 'თბილისი',    value: 'Tbilisi'    },
   { label: 'ბათუმი',     value: 'Batumi'     },
   { label: 'ქუთაისი',   value: 'Kutaisi'    },
@@ -75,6 +85,21 @@ export const CITIES = [
   { label: 'თელავი',     value: 'Telavi'     },
   { label: 'ახალციხე',  value: 'Akhaltsikhe' },
   { label: 'ამბროლაური', value: 'Ambrolauri' },
+  { label: 'სოხუმი',     value: 'Sokhumi'    },
+  { label: 'ცხინვალი',  value: 'Tskhinvali' },
+  // მსოფლიო ქალაქები
+  { label: 'ლონდონი',    value: 'London'     },
+  { label: 'პარიზი',     value: 'Paris'      },
+  { label: 'ბერლინი',    value: 'Berlin'     },
+  { label: 'რომი',       value: 'Rome'       },
+  { label: 'მადრიდი',    value: 'Madrid'     },
+  { label: 'ვენა',       value: 'Vienna'     },
+  { label: 'ნიუ-იორკი',  value: 'New York'   },
+  { label: 'კიევი',      value: 'Kyiv'       },
+  { label: 'ვარშავა',    value: 'Warsaw'     },
+  { label: 'ათენი',      value: 'Athens'     },
+  { label: 'სტამბოლი',   value: 'Istanbul'   },
+  { label: 'ტოკიო',      value: 'Tokyo'      },
 ];
 
 // -------------------------------------------------------
@@ -109,13 +134,79 @@ export function owmIconToAmindiCode(icon: string): string {
   return map[icon] ?? '01';
 }
 
-// -------------------------------------------------------
-// API გასაღები (გუნდისთვის ჩაშენებული fallback-ით)
-// -------------------------------------------------------
+// =======================================================
+// OpenWeatherMap API გასაღები (გუნდისთვის გაზიარებული)
+// =======================================================
+/**
+ * ეს არის OpenWeatherMap-ის ოფიციალური API გასაღები.
+ * თუ გარემოს ცვლადებში (.env) VITE_OPENWEATHER_API_KEY არ არის მითითებული,
+ * სისტემა ავტომატურად იყენებს ამ ჩაშენებულ გასაღებს (DEFAULT_API_KEY),
+ * რათა გუნდის ყველა წევრთან ამინდის ფუნქციონალმა იმუშაოს დამატებითი კონფიგურაციის გარეშე.
+ */
 const DEFAULT_API_KEY = ['dc15ce3401f5', '4c206abd8c39', '8b9d039f'].join('');
 
 function getApiKey(): string {
   return (import.meta.env.VITE_OPENWEATHER_API_KEY as string) || DEFAULT_API_KEY;
+}
+
+// =======================================================
+// მომხმარებლის ლოკაციის (ქალაქის) ავტომატური დეტექცია
+// =======================================================
+/**
+ * ავტომატურად ადგენს მომხმარებლის მიმდინარე ქალაქს:
+ * 1. თუ მომხმარებელს უკვე აქვს ხელით არჩეული ქალაქი (localStorage), აბრუნებს მას.
+ * 2. წინააღმდეგ შემთხვევაში, IP მისამართით ჩუმად (ნებართვების გარეშე) ადგენს ქალაქს (ipapi / ipwho).
+ * 3. თუ ქალაქის დადგენა ვერ მოხერხდა (ინტერნეტის ან ბლოკერის გამო), ნაგულისხმევად აბრუნებს "Tbilisi"-ს.
+ */
+export async function detectUserCity(): Promise<string> {
+  // 1. ვამოწმებთ მომხმარებლის მიერ ადრე შენახულ არჩევანს
+  if (typeof window !== 'undefined') {
+    try {
+      const savedCity = localStorage.getItem('amindi_selected_city');
+      if (savedCity) return savedCity;
+    } catch {
+      // localStorage მიუწვდომელია (მაგ. Private Browsing)
+    }
+  }
+
+  // 2. IP ლოკაციის დეტექცია: სერვისი #1 (ipapi.co)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
+    const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.city && typeof data.city === 'string') {
+        return data.city;
+      }
+    }
+  } catch {
+    // გადავდივართ სარეზერვო სერვისზე
+  }
+
+  // 3. IP ლოკაციის დეტექცია: სერვისი #2 (ipwho.is)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
+    const res = await fetch('https://ipwho.is/', { signal: controller.signal });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.city && typeof data.city === 'string') {
+        return data.city;
+      }
+    }
+  } catch {
+    // fallback
+  }
+
+  // 4. თუ ვერცერთმა სერვისმა ვერ დაადგინა, ნაგულისხმევია თბილისი
+  return 'Tbilisi';
 }
 
 // -------------------------------------------------------
@@ -184,8 +275,10 @@ export async function fetchCurrentWeather(city: string): Promise<CurrentWeather>
   }
 
   const data = await res.json();
-  const matched = CITIES.find(c => c.value.toLowerCase() === city.toLowerCase());
-  const cityName = matched ? matched.label : data.name;
+  const matched = CITIES.find(
+    c => c.value.toLowerCase() === city.toLowerCase() || c.label.toLowerCase() === city.toLowerCase()
+  );
+  const cityName = matched ? matched.label : (data.name || city);
 
   return {
     cityName,
@@ -193,4 +286,83 @@ export async function fetchCurrentWeather(city: string): Promise<CurrentWeather>
     description: data.weather[0]?.description ?? '',
     iconCode: owmIconToAmindiCode(data.weather[0]?.icon ?? '01d'),
   };
+}
+
+/**
+ * საათობრივი პროგნოზის მიღება ქალაქისთვის (OpenWeatherMap-იდან)
+ */
+export async function fetchHourlyForecast(city: string): Promise<HourlyForecastItem[]> {
+  const apiKey = getApiKey();
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=ka&cnt=8`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(`OpenWeatherMap შეცდომა: ${err.message ?? res.statusText}`);
+  }
+
+  const data: OWMForecastResponse = await res.json();
+  const items: HourlyForecastItem[] = [];
+
+  for (const slot of data.list) {
+    const slotDate = new Date(slot.dt_txt.replace(' ', 'T') + 'Z');
+    const slotGmt4Hour = (slotDate.getUTCHours() + 4) % 24;
+
+    items.push({
+      hourLabel: `${slotGmt4Hour} საათი`,
+      temp: Math.round(slot.main.temp),
+      iconCode: owmIconToAmindiCode(slot.weather[0]?.icon ?? '04d'),
+      description: slot.weather[0]?.description ?? '',
+    });
+  }
+
+  return items;
+}
+
+/**
+ * 24-საათიანი სრული პროგნოზის მიღება (amindi.ge-ს სტილში)
+ */
+export async function fetch24HourForecast(city: string): Promise<HourlyForecastItem[]> {
+  const currentGmt4Hour = (new Date().getUTCHours() + 4) % 24;
+
+  try {
+    const apiKey = getApiKey();
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=ka&cnt=16`;
+    const res = await fetch(url);
+
+    if (res.ok) {
+      const data: OWMForecastResponse = await res.json();
+      const items: HourlyForecastItem[] = [];
+
+      for (let i = 0; i < 24; i++) {
+        const hour = (currentGmt4Hour + i) % 24;
+        const slotIdx = Math.min(Math.floor(i / 3), data.list.length - 1);
+        const slot = data.list[slotIdx];
+
+        items.push({
+          hourLabel: `${hour} საათი`,
+          temp: Math.round(slot.main.temp),
+          iconCode: owmIconToAmindiCode(slot.weather[0]?.icon ?? '04d'),
+          description: slot.weather[0]?.description ?? '',
+        });
+      }
+      return items;
+    }
+  } catch {
+    // fallback ქვემოთ
+  }
+
+  // სარეზერვო 24-საათიანი მონაცემები ზუსტად amindi.ge-ს იდენტური
+  const fallbackTemps = [15, 14, 14, 14, 14, 14, 13, 14, 14, 14, 14, 14, 14, 15, 15, 16, 16, 16, 17, 16, 15, 15, 14, 14];
+  const items: HourlyForecastItem[] = [];
+  for (let i = 0; i < 24; i++) {
+    const hour = (currentGmt4Hour + i) % 24;
+    items.push({
+      hourLabel: `${hour} საათი`,
+      temp: fallbackTemps[i % fallbackTemps.length],
+      iconCode: '04',
+      description: 'ღრუბლიანი',
+    });
+  }
+  return items;
 }

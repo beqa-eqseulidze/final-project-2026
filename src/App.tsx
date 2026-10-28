@@ -3,7 +3,7 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
@@ -11,7 +11,10 @@ import { Converter } from './components/Converter';
 import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
+import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
+import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
+import { detectUserCity } from './services/weatherService';
 
 const info: IWindAndPressureProps = {
   windSpeed: 11,
@@ -33,6 +36,20 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
 );
 
 export default function App() {
+  // მომხმარებლის მიმდინარე ქალაქი (საწყისად Tbilisi, შემდეგ დეტექტირდება ავტომატურად)
+  const [city, setCity] = useState<string>('Tbilisi');
+  // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
+  const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
+
+  // აპლიკაციის ჩატვირთვისას ავტომატურად ვადგენთ მომხმარებლის ქვეყანას/ქალაქს
+  useEffect(() => {
+    detectUserCity().then((detected) => {
+      if (detected) {
+        setCity(detected);
+      }
+    });
+  }, []);
+
   return (
     <BackgroundSky>
       <div className="min-h-screen text-slate-700 flex flex-col justify-between">
@@ -57,15 +74,17 @@ export default function App() {
             <aside className="w-full lg:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-4 flex flex-col gap-4 shadow-lg backdrop-blur-sm self-start">
 
               {/* 1. მიმდინარე ამინდი */}
-              <div className="w-full pb-4 border-b border-white/20">
-                <CurrentWeather />
+              <div className="w-full pb-3 border-b border-white/20">
+                <CurrentWeather city={city} />
               </div>
 
               {/* 2. ამინდი საათების მიხედვით */}
-              <div className="w-full bg-[#2c3e55]/85 text-white p-4 rounded-[4px] shadow-sm">
-                <div className="h-44 w-full flex items-center justify-center text-white/70 text-sm">
-                  ამინდი საათების მიხედვით
-                </div>
+              <div className="w-full pb-3 border-b border-white/20">
+                <HourlyWeatherForecast
+                  city={city}
+                  isFullHourlyOpen={centerView === 'hourly'}
+                  onViewFullHourly={() => setCenterView((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
+                />
               </div>
 
               {/* 3. ქარი და წნევა */}
@@ -82,14 +101,18 @@ export default function App() {
 
             {/* ცენტრალური სვეტი */}
             <main className="space-y-4 min-w-0">
-              {/* ამინდი დღეების მიხედვით (პროგნოზი) */}
+              {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
               <div className="w-full">
-                <WeatherForecast />
+                {centerView === 'hourly' ? (
+                  <FullHourlyForecast city={city} />
+                ) : (
+                  <WeatherForecast city={city} />
+                )}
               </div>
 
               {/* ვიდეო / ლაივ კამერა */}
               <Box className="h-[340px] w-full bg-slate-900 text-white">
-                Live Video / კამერა (თბილისი)
+                Live Video / კამერა
               </Box>
             </main>
 
