@@ -93,7 +93,7 @@ export default function App() {
               </div>
 
               {/* 4. ვალუტის კურსები */}
-              <div className="w-full flex justify-center bg-blue-900 rounded-md overflow-hidden">
+              <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden">
                 <CurrencyRates />
               </div>
 
