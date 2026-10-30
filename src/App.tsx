@@ -15,9 +15,10 @@ import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { detectUserCity } from './services/weatherService';
+import { Slider } from './components/slider/Slider';
 
 const info: IWindAndPressureProps = {
-  windSpeed: 11,
+  windSpeed: 6,
   windUnit: 'kph',
   windDirection: 'ENE',
   pressure: 102.60,
@@ -114,6 +115,11 @@ export default function App() {
               <Box className="h-[340px] w-full bg-slate-900 text-white">
                 Live Video / კამერა
               </Box>
+              
+              {/*სლაიდერი */}
+              <div className="w-full">
+                <Slider />
+              </div>
             </main>
 
             {/* მარჯვენა სვეტი */}

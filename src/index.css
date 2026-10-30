@@ -13,6 +13,22 @@
   font-display: swap;
 }
 
+/* 2. BPG ფონტი - სახელი შევამოკლეთ 'BPG'-მდე */
+@font-face {
+  font-family: 'BPG';
+  src: url('./fonts/bpg-web-002-23de2b8e.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sanet: "ALK Sanet", sans-serif;
+  /* Tailwind-ს ვეუბნებით, რომ font-bpg კლასი გამოიყენოს 'BPG' ფონტს */
+  --font-bpg: "BPG", sans-serif; 
+}
+
+
 /* 2. Tailwind v4-ის კონფიგურაცია - font-sanet კლასის შექმნა */
 @theme {
   --font-sanet: "ALK Sanet", sans-serif;
