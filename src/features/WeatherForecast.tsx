@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchForecast, DailyForecast } from '../services/weatherService';
+import { fetchForecast, DailyForecast, UserCoordinates } from '../services/weatherService';
 
 type TabId = '5days' | '10days' | '2weeks' | '1month' | 'moon';
 
@@ -45,12 +45,14 @@ const MOON_PHASES: MoonPhase[] = [
 interface WeatherForecastProps {
   /** არჩეული ქალაქი (ნაგულისხმევი: Tbilisi) */
   city?: string;
+  coordinates?: UserCoordinates | null;
   /** დღის არჩევის callback */
   onSelectDay?: (day: DailyForecast) => void;
 }
 
 export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   city = 'Tbilisi',
+  coordinates,
   onSelectDay,
 }) => {
   const [activeTab, setActiveTab]         = useState<TabId>('5days');
@@ -60,11 +62,11 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   const [error, setError]                 = useState<string | null>(null);
 
   // მონაცემების მიღება OpenWeatherMap-იდან
-  const loadForecast = useCallback(async (targetCity: string) => {
+  const loadForecast = useCallback(async (targetCity: string, targetCoordinates?: UserCoordinates | null) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchForecast(targetCity, 5);
+      const data = await fetchForecast(targetCity, 5, targetCoordinates);
       setForecast(data);
       if (data.length > 0) {
         setSelectedDayIdx(0);
@@ -79,9 +81,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
 
   useEffect(() => {
     if (activeTab !== 'moon') {
-      loadForecast(city);
+      loadForecast(city, coordinates);
     }
-  }, [city, activeTab, loadForecast]);
+  }, [city, coordinates, activeTab, loadForecast]);
 
   const handleCardClick = (day: DailyForecast, index: number) => {
     setSelectedDayIdx(index);
@@ -134,7 +136,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
           <div className="py-6 text-center">
             <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{error}</p>
             <button
-              onClick={() => loadForecast(city)}
+              onClick={() => loadForecast(city, coordinates)}
               className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
             >
               ხელახლა ცდა

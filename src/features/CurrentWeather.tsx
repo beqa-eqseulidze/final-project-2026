@@ -15,10 +15,12 @@ import {
   CurrentWeather as ICurrentWeatherData,
   GEO_DAYS,
   GEO_MONTHS,
+  UserCoordinates,
 } from '../services/weatherService';
 
 interface CurrentWeatherProps {
   city?: string;
+  coordinates?: UserCoordinates | null;
 }
 
 /**
@@ -44,7 +46,7 @@ const getGmt4DateTime = () => {
   return { dateStr, timeStr };
 };
 
-export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi' }) => {
+export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates }) => {
   // საწყისი მნიშვნელობები ზუსტად სქრინშოტის იდენტურია
   const [weather, setWeather] = useState<ICurrentWeatherData>({
     cityName: 'თბილისი',
@@ -66,7 +68,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
   // OpenWeatherMap API-დან მიმდინარე მონაცემების მიღება
   useEffect(() => {
     let isMounted = true;
-    fetchCurrentWeather(city)
+    fetchCurrentWeather(city, coordinates)
       .then((data) => {
         if (isMounted) setWeather(data);
       })
@@ -77,7 +79,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     return () => {
       isMounted = false;
     };
-  }, [city]);
+  }, [city, coordinates]);
 
   return (
     <div className="w-full max-w-[320px] text-white font-amindi1 select-none mb-4">
