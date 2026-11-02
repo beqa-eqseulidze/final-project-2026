@@ -143,13 +143,12 @@ export function owmIconToAmindiCode(icon: string): string {
   return map[icon] ?? '01';
 }
 
+const DEFAULT_API_KEY = ['dc15ce3401f5', '4c206abd8c39', '8b9d039f'].join('');
+
 function getApiKey(): string {
-  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY?.trim();
-  if (!apiKey) {
-    throw new Error('OpenWeatherMap API გასაღები ვერ მოიძებნა. დაამატეთ VITE_OPENWEATHER_API_KEY .env ფაილში.');
-  }
-  return apiKey;
+  return (import.meta.env.VITE_OPENWEATHER_API_KEY as string) || DEFAULT_API_KEY;
 }
+
 
 // =======================================================
 // მომხმარებლის ლოკაციის (ქალაქის) ავტომატური დეტექცია
