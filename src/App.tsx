@@ -8,26 +8,13 @@ import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
 import { Converter } from './components/Converter';
-import { WindAndPressure, IWindAndPressureProps } from './features/LeftBarWindAndPressure';
+import { WindAndPressure } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { detectUserCity } from './services/weatherService';
-
-const info: IWindAndPressureProps = {
-  windSpeed: 11,
-  windUnit: 'kph',
-  windDirection: 'ENE',
-  pressure: 102.60,
-  pressureUnit: 'kpa',
-  feelsLikeTemp: '19°',
-  feelsLikeWind: '17°',
-  humidity: 'SSW',
-  visibility: '82 %',
-  isLoading: false,
-};
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <div className={`flex items-center justify-center border-2 border-dashed border-slate-400 bg-white/90 text-center text-[11px] font-bold text-slate-600 ${className}`}>
@@ -87,9 +74,9 @@ export default function App() {
                 />
               </div>
 
-              {/* 3. ქარი და წნევა */}
+              {/* 3. ქარი და წნევა (დინამიური მონაცემებით) */}
               <div className="w-full">
-                <WindAndPressure {...info} />
+                <WindAndPressure city={city} />
               </div>
 
               {/* 4. ვალუტის კურსები */}

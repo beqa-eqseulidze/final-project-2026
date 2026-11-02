@@ -75,31 +75,31 @@ export const GEO_MONTHS = [
 // ქალაქების სია (საქართველო და მსოფლიოს მთავარი ქალაქები)
 export const CITIES = [
   // საქართველო
-  { label: 'თბილისი',    value: 'Tbilisi'    },
-  { label: 'ბათუმი',     value: 'Batumi'     },
-  { label: 'ქუთაისი',   value: 'Kutaisi'    },
-  { label: 'რუსთავი',   value: 'Rustavi'    },
-  { label: 'გორი',       value: 'Gori'       },
-  { label: 'ზუგდიდი',   value: 'Zugdidi'    },
-  { label: 'ფოთი',       value: 'Poti'       },
-  { label: 'თელავი',     value: 'Telavi'     },
-  { label: 'ახალციხე',  value: 'Akhaltsikhe' },
+  { label: 'თბილისი', value: 'Tbilisi' },
+  { label: 'ბათუმი', value: 'Batumi' },
+  { label: 'ქუთაისი', value: 'Kutaisi' },
+  { label: 'რუსთავი', value: 'Rustavi' },
+  { label: 'გორი', value: 'Gori' },
+  { label: 'ზუგდიდი', value: 'Zugdidi' },
+  { label: 'ფოთი', value: 'Poti' },
+  { label: 'თელავი', value: 'Telavi' },
+  { label: 'ახალციხე', value: 'Akhaltsikhe' },
   { label: 'ამბროლაური', value: 'Ambrolauri' },
-  { label: 'სოხუმი',     value: 'Sokhumi'    },
-  { label: 'ცხინვალი',  value: 'Tskhinvali' },
+  { label: 'სოხუმი', value: 'Sokhumi' },
+  { label: 'ცხინვალი', value: 'Tskhinvali' },
   // მსოფლიო ქალაქები
-  { label: 'ლონდონი',    value: 'London'     },
-  { label: 'პარიზი',     value: 'Paris'      },
-  { label: 'ბერლინი',    value: 'Berlin'     },
-  { label: 'რომი',       value: 'Rome'       },
-  { label: 'მადრიდი',    value: 'Madrid'     },
-  { label: 'ვენა',       value: 'Vienna'     },
-  { label: 'ნიუ-იორკი',  value: 'New York'   },
-  { label: 'კიევი',      value: 'Kyiv'       },
-  { label: 'ვარშავა',    value: 'Warsaw'     },
-  { label: 'ათენი',      value: 'Athens'     },
-  { label: 'სტამბოლი',   value: 'Istanbul'   },
-  { label: 'ტოკიო',      value: 'Tokyo'      },
+  { label: 'ლონდონი', value: 'London' },
+  { label: 'პარიზი', value: 'Paris' },
+  { label: 'ბერლინი', value: 'Berlin' },
+  { label: 'რომი', value: 'Rome' },
+  { label: 'მადრიდი', value: 'Madrid' },
+  { label: 'ვენა', value: 'Vienna' },
+  { label: 'ნიუ-იორკი', value: 'New York' },
+  { label: 'კიევი', value: 'Kyiv' },
+  { label: 'ვარშავა', value: 'Warsaw' },
+  { label: 'ათენი', value: 'Athens' },
+  { label: 'სტამბოლი', value: 'Istanbul' },
+  { label: 'ტოკიო', value: 'Tokyo' },
 ];
 
 // -------------------------------------------------------
@@ -280,13 +280,23 @@ export async function fetchCurrentWeather(city: string): Promise<CurrentWeather>
   );
   const cityName = matched ? matched.label : (data.name || city);
 
+  const windSpeedKmh = data.wind?.speed ? Math.round(data.wind.speed * 3.6) : 0;
+  const windDeg = data.wind?.deg ?? 0;
+  const visibilityInKm = data.visibility ? `${Math.round(data.visibility / 1000)} კმ` : 'მონაცემი არ არის';
+
   return {
     cityName,
     temp: Math.round(data.main.temp),
     description: data.weather[0]?.description ?? '',
     iconCode: owmIconToAmindiCode(data.weather[0]?.icon ?? '01d'),
+    windSpeed: windSpeedKmh,
+    windDirectionText: getWindDirection(windDeg),
+    pressure: data.main?.pressure ? Math.round(data.main.pressure) : 1013,
+    humidity: data.main?.humidity ?? 0,
+    visibility: visibilityInKm,
   };
 }
+
 
 /**
  * საათობრივი პროგნოზის მიღება ქალაქისთვის (OpenWeatherMap-იდან)
@@ -365,4 +375,22 @@ export async function fetch24HourForecast(city: string): Promise<HourlyForecastI
     });
   }
   return items;
+}
+
+export interface CurrentWeather {
+  cityName: string;
+  temp: number;
+  description: string;
+  iconCode: string;
+  windSpeed: number;
+  windDirectionText: string;
+  pressure: number;
+  humidity: number;
+  visibility: string;
+}
+
+function getWindDirection(deg: number): string {
+  const directions = ['ჩრდ', 'ჩრდ-აღმ', 'აღმ', 'სამხ-აღმ', 'სამხ', 'სამხ-დას', 'დას', 'ჩრდ-დას'];
+  const index = Math.round((deg % 360) / 45);
+  return directions[index % 8];
 }
