@@ -390,7 +390,7 @@ export interface CurrentWeather {
 }
 
 function getWindDirection(deg: number): string {
-  const directions = ['ჩრდ', 'ჩრდ-აღმ', 'აღმ', 'სამხ-აღმ', 'სამხ', 'სამხ-დასამ', 'დასამ', 'ჩრდ-დასამ'];
+  const directions = ['ჩრდ', 'ჩრდ-აღმ', 'აღმ', 'სამხ-აღმ', 'სამხ', 'სამხ-დას', 'დას', 'ჩრდ-დას'];
   const index = Math.round((deg % 360) / 45);
   return directions[index % 8];
 }

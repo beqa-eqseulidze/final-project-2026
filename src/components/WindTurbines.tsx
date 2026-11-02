@@ -22,7 +22,7 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
                 alt="Large Rotor"
                 className="absolute top-[15px] left-[-1px] h-12 w-12 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
-                    animationDuration: `${Math.min(6, Math.max(0.2, 2.7 - (windSpeed || 0) * 0.15))}s`,
+                    animationDuration: `${Math.min(6, Math.max(0.2, 6 * 0.15))}s`,
                 }}
             />
 
@@ -32,7 +32,7 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
                 alt="Small Rotor"
                 className="absolute top-[38px] right-[25px] h-7 w-7 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
-                    animationDuration: `${Math.min(6, Math.max(0.2, 2.6 - (windSpeed || 0) * 0.15))}s`,
+                    animationDuration: `${Math.min(6, Math.max(0.2, 5 * 0.15))}s`,
                 }}
             />
         </div>
