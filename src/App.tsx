@@ -14,6 +14,8 @@ import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
+import { Slider } from './components/slider/Slider';
+import { sliderData } from './components/slider/data';
 import { detectUserCity } from './services/weatherService';
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
@@ -101,6 +103,11 @@ export default function App() {
               <Box className="h-[340px] w-full bg-slate-900 text-white">
                 Live Video / კამერა
               </Box>
+
+              {/* სლაიდერი */}
+              <div className="w-full">
+                <Slider slides={sliderData} />
+              </div>
             </main>
 
             {/* მარჯვენა სვეტი */}
