@@ -1,4 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import { WindTurbines } from '../components/WindTurbines';
+import { fetchCurrentWeather } from '../services/weatherService';
 
 export interface IWindAndPressureProps {
     windSpeed: number;
@@ -13,7 +15,57 @@ export interface IWindAndPressureProps {
     isLoading: boolean;
 }
 
-export const WindAndPressure = (props: IWindAndPressureProps) => {
+interface Props {
+    city: string;
+}
+
+export const WindAndPressure = ({ city }: Props) => {
+    const [data, setData] = useState<IWindAndPressureProps>({
+        windSpeed: 0,
+        windUnit: 'კმ/სთ',
+        windDirection: '',
+        pressure: 0,
+        pressureUnit: 'ჰექტოპასკალი',
+        feelsLikeTemp: '',
+        feelsLikeWind: '',
+        humidity: '',
+        visibility: '',
+        isLoading: true,
+    });
+
+    // ქალაქის შეცვლისას მონაცემების დინამიურად ჩამოტვირთვა API-დან
+    useEffect(() => {
+        let isMounted = true;
+        setData(prev => ({ ...prev, isLoading: true }));
+
+        fetchCurrentWeather(city)
+            .then((weatherData) => {
+                if (isMounted) {
+                    setData({
+                        windSpeed: weatherData.windSpeed,
+                        windUnit: 'კმ/სთ',
+                        windDirection: weatherData.windDirectionText,
+                        pressure: weatherData.pressure,
+                        pressureUnit: 'ჰპა',
+                        feelsLikeTemp: `${weatherData.temp}°`,
+                        feelsLikeWind: `${weatherData.temp}°`,
+                        humidity: `${weatherData.humidity}%`,
+                        visibility: weatherData.visibility,
+                        isLoading: false,
+                    });
+                }
+            })
+            .catch(() => {
+                if (isMounted) {
+                    setData(prev => ({ ...prev, isLoading: false }));
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [city]);
+
     const {
         windSpeed,
         windUnit,
@@ -25,9 +77,8 @@ export const WindAndPressure = (props: IWindAndPressureProps) => {
         humidity,
         visibility,
         isLoading,
-    } = props;
+    } = data;
 
-    //ქარი და წნევის ასახვა html ში
     return (
         <div className="w-full bg-[#1a2c42]/60 backdrop-blur-md text-white font-sans shadow-xl border-t border-white/10 overflow-hidden">
             {isLoading ? (
