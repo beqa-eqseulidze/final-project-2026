@@ -1,15 +1,15 @@
 import { SlideData } from './types';
 
 // სურათების იმპორტი
-import img1 from './images/slider1.png';
-import img2 from './images/slider2.png';
-import img3 from './images/slider3.png';
-import img4 from './images/slider4.png';
+import img1 from '../assets/images/slider1.png';
+import img2 from '../assets/images/slider2.png';
+import img3 from '../assets/images/slider3.png';
+import img4 from '../assets/images/slider4.png';
 
-import logo1 from './logo/logo1.png';
-import logo2 from './logo/logo2.png';
-import logo3 from './logo/logo3.png';
-import logo4 from './logo/logo4.png';
+import logo1 from '../assets/logo/logo1.png';
+import logo2 from '../assets/logo/logo2.png';
+import logo3 from '../assets/logo/logo3.png';
+import logo4 from '../assets/logo/logo4.png';
 
 // მასივი, რომელსაც App.tsx-ში გადავცემთ
 export const sliderData: SlideData[] = [

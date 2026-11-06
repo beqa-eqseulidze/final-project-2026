@@ -14,8 +14,8 @@ import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
-import { Slider } from './components/slider/Slider';
-import { sliderData } from './components/slider/data';
+import { Slider } from './features/Slider';
+import { sliderData } from './services/data';
 import { detectUserCity } from './services/weatherService';
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
