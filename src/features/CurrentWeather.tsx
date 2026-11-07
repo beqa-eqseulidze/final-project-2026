@@ -53,6 +53,11 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     temp: 14,
     description: 'ღრუბლიანი',
     iconCode: '04',
+    windSpeed: 11,
+    windDirectionText: 'ჩრდ',
+    pressure: 1018,
+    humidity: 67,
+    visibility: '10 კმ',
   });
 
   const [{ dateStr, timeStr }, setDateTime] = useState(getGmt4DateTime);

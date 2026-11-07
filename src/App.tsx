@@ -16,6 +16,8 @@ import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { AstrologyHoroscope } from './features/AstrologyHoroscope';
 import { ZodiacDetailPage } from './features/ZodiacDetailPage';
 import { CurrencyRates } from './components/currency/CurrencyRates';
+import { Slider } from './features/Slider';
+import { sliderData } from './services/data';
 import { detectUserCity, UserCoordinates } from './services/weatherService';
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
@@ -170,12 +172,16 @@ export default function App() {
                   Live Video / კამერა
                 </Box>
 
-                {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში, როგორც სურათზეა) */}
+                {/* სლაიდერი */}
+                <div className="w-full">
+                  <Slider slides={sliderData} />
+                </div>
+
+                {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
                 <div className="w-full">
                   <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
                 </div>
               </main>
-
               {/* მარჯვენა სვეტი */}
               <aside className="space-y-4 flex flex-col">
                 {/* ზედა რეკლამა (Palitra News) */}
