@@ -15,15 +15,17 @@ import React, { useState, useEffect } from 'react';
 import {
   fetch24HourForecast,
   HourlyForecastItem,
-  WeatherLocation,
+  UserCoordinates,
 } from '../services/weatherService';
 
 interface FullHourlyForecastProps {
-  city?: WeatherLocation;
+  city?: string;
+  coordinates?: UserCoordinates | null;
 }
 
 export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
   city = 'Tbilisi',
+  coordinates,
 }) => {
   const [items, setItems] = useState<HourlyForecastItem[]>([]);
   const [selectedIdx, setSelectedIdx] = useState<number>(8); // სქრინშოტის მსგავსად (მაგ. მე-8 საათი)
@@ -33,7 +35,7 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
     let isMounted = true;
     setLoading(true);
 
-    fetch24HourForecast(city)
+    fetch24HourForecast(city, coordinates)
       .then((data) => {
         if (isMounted) {
           setItems(data);
@@ -47,7 +49,7 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [city]);
+  }, [city, coordinates]);
 
   return (
     <div className="w-full bg-[#eeeeee] rounded-[4px] shadow-md border border-black/10 select-none p-4 sm:p-5">

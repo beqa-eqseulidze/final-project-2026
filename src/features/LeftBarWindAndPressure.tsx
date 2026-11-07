@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { WindTurbines } from '../components/WindTurbines';
-import { fetchCurrentWeather, WeatherLocation } from '../services/weatherService';
+import { fetchCurrentWeather } from '../services/weatherService';
 
 export interface IWindAndPressureProps {
     windSpeed: number;
@@ -16,7 +16,7 @@ export interface IWindAndPressureProps {
 }
 
 interface Props {
-    city: WeatherLocation;
+    city: string;
 }
 
 export const WindAndPressure = ({ city }: Props) => {

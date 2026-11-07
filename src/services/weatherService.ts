@@ -3,24 +3,15 @@
  * @description OpenWeatherMap API-სთან კომუნიკაციისა და მომხმარებლის ლოკაციის დეტექციის სერვისი.
  *
  * პასუხისმგებლობა:
- * - მომხმარებლის მიმდინარე ლოკაციის ავტომატური დადგენა (Geolocation API კოორდინატებით ან IP ლოკაციით).
- * - OpenWeatherMap-ის `/forecast` და `/weather` endpoint-ებიდან მონაცემების მიღება (როგორც ქალაქის სახელით, ისე კოორდინატებით).
- * - მიღებული მონაცემების დამუშავება და დღეების/საათების მიხედვით დაჯგუფება.
+ * - მომხმარებლის ლოკაციის ავტომატური ამოცნობა (GPS კოორდინატებით ან IP ქალაქით).
+ * - OpenWeatherMap-ის `/forecast` და `/weather` endpoint-ებიდან მონაცემების მიღება.
+ * - მიღებული მონაცემების დამუშავება და დღეების მიხედვით დაჯგუფება.
  * - amindi.ge-ს იკონების კოდებზე (OWM icon → amindi.ge code) მეპინგი.
  */
 
 // -------------------------------------------------------
 // ტიპები / Types
 // -------------------------------------------------------
-
-/** გეოგრაფიული კოორდინატები */
-export interface Coordinates {
-  lat: number;
-  lon: number;
-}
-
-/** ლოკაცია: ქალაქის სახელი ან კოორდინატები */
-export type WeatherLocation = string | Coordinates;
 
 /** ერთი დღის დამუშავებული ამინდის მონაცემი */
 export interface DailyForecast {
@@ -46,11 +37,6 @@ export interface CurrentWeather {
   temp: number;
   description: string;
   iconCode: string;
-  windSpeed: number;
-  windDirectionText: string;
-  pressure: number;
-  humidity: number;
-  visibility: string;
 }
 
 /** საათობრივი პროგნოზის მონაცემი */
@@ -60,6 +46,15 @@ export interface HourlyForecastItem {
   iconCode: string;
   description: string;
 }
+
+export interface UserCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
+export type DetectedLocation =
+  | { kind: 'coordinates'; coordinates: UserCoordinates }
+  | { kind: 'city'; city: string };
 
 // OpenWeatherMap API-ს raw პასუხის ნაწილობრივი ტიპები
 interface OWMListItem {
@@ -148,117 +143,102 @@ export function owmIconToAmindiCode(icon: string): string {
   return map[icon] ?? '01';
 }
 
-function getWindDirection(deg: number): string {
-  const directions = ['ჩრდ', 'ჩრდ-აღმ', 'აღმ', 'სამხ-აღმ', 'სამხ', 'სამხ-დას', 'დას', 'ჩრდ-დას'];
-  const index = Math.round((deg % 360) / 45);
-  return directions[index % 8];
-}
-
-// =======================================================
-// OpenWeatherMap API გასაღები (გუნდისთვის გაზიარებული)
-// =======================================================
-/**
- * ეს არის OpenWeatherMap-ის ოფიციალური API გასაღები.
- * თუ გარემოს ცვლადებში (.env) VITE_OPENWEATHER_API_KEY არ არის მითითებული,
- * სისტემა ავტომატურად იყენებს ამ ჩაშენებულ გასაღებს (DEFAULT_API_KEY),
- * რათა გუნდის ყველა წევრთან ამინდის ფუნქციონალმა იმუშაოს დამატებითი კონფიგურაციის გარეშე.
- */
 const DEFAULT_API_KEY = ['dc15ce3401f5', '4c206abd8c39', '8b9d039f'].join('');
 
 function getApiKey(): string {
   return (import.meta.env.VITE_OPENWEATHER_API_KEY as string) || DEFAULT_API_KEY;
 }
 
-/**
- * ლოკაციის მიხედვით ამზადებს OpenWeatherMap-ის შესაბამის query პარამეტრს:
- * - კოორდინატებისთვის: lat={lat}&lon={lon}
- * - ქალაქის სახელისთვის: q={cityName}
- */
-function buildLocationQuery(location: WeatherLocation): string {
-  if (typeof location === 'object' && location !== null && 'lat' in location && 'lon' in location) {
-    return `lat=${location.lat}&lon=${location.lon}`;
-  }
-  return `q=${encodeURIComponent(String(location))}`;
-}
 
 // =======================================================
-// მომხმარებლის ლოკაციის ავტომატური დეტექცია
+// მომხმარებლის ლოკაციის (ქალაქის) ავტომატური დეტექცია
 // =======================================================
-/**
- * ოპტიმიზებული ფუნქცია მომხმარებლის ლოკაციის დასადგენად (მხოლოდ 1 try...catch ბლოკით):
- * 1. ამოწმებს localStorage-ს (თუ მომხმარებელს ადრე უკვე არჩეული ჰქონდა ქალაქი).
- * 2. Geolocation API-ით იღებს კოორდინატებს ({ lat, lon }).
- * 3. თუ Geolocation უარყოფილია ან გათიშულია, IP-ით ადგენს ქალაქს (Fallback).
- * 4. შეცდომის შემთხვევაში უსაფრთხოდ აბრუნებს "Tbilisi"-ს.
- */
-export async function detectUserCity(): Promise<WeatherLocation> {
+async function getGeolocation(): Promise<UserCoordinates | null> {
+  if (typeof navigator === 'undefined' || !navigator.geolocation) return null;
+
   try {
-    // 1. ადრე შენახული ქალაქის შემოწმება
-    if (typeof window !== 'undefined') {
-      const savedCity = localStorage.getItem('amindi_selected_city');
-      if (savedCity) {
-        return savedCity;
-      }
-    }
-
-    // 2. Geolocation API-ით კოორდინატების ამოღების მცდელობა
-    if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
-      const position = await new Promise<GeolocationPosition | null>((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => resolve(pos),
-          () => resolve(null),
-          { timeout: 5000, maximumAge: 600000, enableHighAccuracy: false }
-        );
-      });
-
-      if (position?.coords) {
-        return {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-      }
-    }
-
-    // 3. Fallback: IP მისამართით ქალაქის დადგენა
-    const ipRes = await fetch('https://ipwho.is/');
-    if (ipRes.ok) {
-      const ipData = await ipRes.json();
-      if (ipData?.city && typeof ipData.city === 'string') {
-        return ipData.city;
-      }
-    }
-
-    const backupRes = await fetch('https://ipapi.co/json/');
-    if (backupRes.ok) {
-      const backupData = await backupRes.json();
-      if (backupData?.city && typeof backupData.city === 'string') {
-        return backupData.city;
-      }
-    }
-
-    return 'Tbilisi';
-  } catch (err) {
-    console.warn('ლოკაციის დადგენა ვერ მოხერხდა, გამოყენებულია ნაგულისხმევი (თბილისი):', err);
-    return 'Tbilisi';
+    return await new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude }),
+        () => resolve(null),
+        { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 },
+      );
+    });
+  } catch {
+    return null;
   }
 }
 
+function getSavedCity(): string | null {
+  try {
+    return typeof window === 'undefined' ? null : localStorage.getItem('amindi_selected_city');
+  } catch {
+    return null;
+  }
+}
+
+async function fetchIpCity(url: string): Promise<string | null> {
+  const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return typeof data?.city === 'string' && data.city ? data.city : null;
+}
+
+async function detectCityByIp(): Promise<string | null> {
+  const results = await Promise.allSettled([
+    fetchIpCity('https://ipapi.co/json/'),
+    fetchIpCity('https://ipwho.is/'),
+  ]);
+
+  for (const result of results) {
+    if (result.status === 'fulfilled' && result.value) return result.value;
+  }
+  return null;
+}
+
+/** Detects a saved city first, then browser coordinates, then city by IP. */
+export async function detectUserCity(): Promise<DetectedLocation> {
+  try {
+    const savedCity = getSavedCity();
+    if (savedCity) return { kind: 'city', city: savedCity };
+
+    const coordinates = await getGeolocation();
+    if (coordinates) return { kind: 'coordinates', coordinates };
+
+    return { kind: 'city', city: (await detectCityByIp()) ?? 'Tbilisi' };
+  } catch {
+    return { kind: 'city', city: 'Tbilisi' };
+  }
+}
+
+function buildWeatherUrl(
+  endpoint: 'forecast' | 'weather',
+  city: string,
+  coordinates?: UserCoordinates | null,
+  options = '',
+): string {
+  const location = coordinates
+    ? `lat=${coordinates.latitude}&lon=${coordinates.longitude}`
+    : `q=${encodeURIComponent(city)}`;
+  return `https://api.openweathermap.org/data/2.5/${endpoint}?${location}&appid=${getApiKey()}&units=metric&lang=ka${options}`;
+}
+
 // -------------------------------------------------------
-// პროგნოზის მიღების ფუნქცია (ქალაქით ან კოორდინატებით)
+// პროგნოზის მიღების ფუნქცია
 // -------------------------------------------------------
 
 /**
- * OpenWeatherMap-ის /forecast endpoint-იდან 5-დღიანი პროგნოზის მიღება
- * (მხარს უჭერს როგორც ქალაქის სახელს, ასევე { lat, lon } კოორდინატებს).
+ * ქალაქის სახელით OpenWeatherMap-ის /forecast endpoint-ს ეკითხება
+ * და დამუშავებულ DailyForecast მასივს აბრუნებს.
  */
 export async function fetchForecast(
-  location: WeatherLocation,
-  days: number = 5
+  city: string,
+  days: number = 5,
+  coordinates?: UserCoordinates | null,
 ): Promise<DailyForecast[]> {
-  const apiKey = getApiKey();
-  const locQuery = buildLocationQuery(location);
   const count = Math.min(days * 8, 40);
-  const url = `https://api.openweathermap.org/data/2.5/forecast?${locQuery}&appid=${apiKey}&units=metric&lang=ka&cnt=${count}`;
+  const url = buildWeatherUrl('forecast', city, coordinates, `&cnt=${count}`);
 
   const res = await fetch(url);
 
@@ -284,10 +264,10 @@ export async function fetchForecast(
     const dayName = GEO_DAYS[dateObj.getDay()];
     const dateLabel = `${dateObj.getDate()} ${GEO_MONTHS[dateObj.getMonth()]}`;
 
-    const tempMax = Math.round(Math.max(...items.map((i) => i.main.temp_max)));
-    const tempMin = Math.round(Math.min(...items.map((i) => i.main.temp_min)));
+    const tempMax = Math.round(Math.max(...items.map(i => i.main.temp_max)));
+    const tempMin = Math.round(Math.min(...items.map(i => i.main.temp_min)));
 
-    const noonItem = items.find((i) => i.dt_txt.includes('12:00:00')) ?? items[0];
+    const noonItem = items.find(i => i.dt_txt.includes('12:00:00')) ?? items[0];
     const iconCode = owmIconToAmindiCode(noonItem.weather[0].icon);
     const description = noonItem.weather[0].description;
 
@@ -298,12 +278,13 @@ export async function fetchForecast(
 }
 
 /**
- * მიმდინარე ამინდის მიღება (ქალაქით ან კოორდინატებით)
+ * მიმდინარე ამინდის მიღება ქალაქისთვის
  */
-export async function fetchCurrentWeather(location: WeatherLocation): Promise<CurrentWeather> {
-  const apiKey = getApiKey();
-  const locQuery = buildLocationQuery(location);
-  const url = `https://api.openweathermap.org/data/2.5/weather?${locQuery}&appid=${apiKey}&units=metric&lang=ka`;
+export async function fetchCurrentWeather(
+  city: string,
+  coordinates?: UserCoordinates | null,
+): Promise<CurrentWeather> {
+  const url = buildWeatherUrl('weather', city, coordinates);
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -312,19 +293,10 @@ export async function fetchCurrentWeather(location: WeatherLocation): Promise<Cu
   }
 
   const data = await res.json();
-
-  // ქალაქის სახელის განსაზღვრა
-  let cityName = data.name || (typeof location === 'string' ? location : 'ჩემი ლოკაცია');
-  const matched = CITIES.find(
-    (c) =>
-      (typeof location === 'string' &&
-        (c.value.toLowerCase() === location.toLowerCase() ||
-          c.label.toLowerCase() === location.toLowerCase())) ||
-      c.value.toLowerCase() === (data.name || '').toLowerCase()
+  const matched = coordinates ? undefined : CITIES.find(
+    c => c.value.toLowerCase() === city.toLowerCase() || c.label.toLowerCase() === city.toLowerCase()
   );
-  if (matched) {
-    cityName = matched.label;
-  }
+  const cityName = matched ? matched.label : (data.name || city);
 
   const windSpeedKmh = data.wind?.speed ? Math.round(data.wind.speed * 3.6) : 0;
   const windDeg = data.wind?.deg ?? 0;
@@ -343,13 +315,15 @@ export async function fetchCurrentWeather(location: WeatherLocation): Promise<Cu
   };
 }
 
+
 /**
- * საათობრივი პროგნოზის მიღება (ქალაქით ან კოორდინატებით)
+ * საათობრივი პროგნოზის მიღება ქალაქისთვის (OpenWeatherMap-იდან)
  */
-export async function fetchHourlyForecast(location: WeatherLocation): Promise<HourlyForecastItem[]> {
-  const apiKey = getApiKey();
-  const locQuery = buildLocationQuery(location);
-  const url = `https://api.openweathermap.org/data/2.5/forecast?${locQuery}&appid=${apiKey}&units=metric&lang=ka&cnt=8`;
+export async function fetchHourlyForecast(
+  city: string,
+  coordinates?: UserCoordinates | null,
+): Promise<HourlyForecastItem[]> {
+  const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=8');
 
   const res = await fetch(url);
   if (!res.ok) {
@@ -376,15 +350,16 @@ export async function fetchHourlyForecast(location: WeatherLocation): Promise<Ho
 }
 
 /**
- * 24-საათიანი სრული პროგნოზის მიღება (ქალაქით ან კოორდინატებით)
+ * 24-საათიანი სრული პროგნოზის მიღება (amindi.ge-ს სტილში)
  */
-export async function fetch24HourForecast(location: WeatherLocation): Promise<HourlyForecastItem[]> {
+export async function fetch24HourForecast(
+  city: string,
+  coordinates?: UserCoordinates | null,
+): Promise<HourlyForecastItem[]> {
   const currentGmt4Hour = (new Date().getUTCHours() + 4) % 24;
 
   try {
-    const apiKey = getApiKey();
-    const locQuery = buildLocationQuery(location);
-    const url = `https://api.openweathermap.org/data/2.5/forecast?${locQuery}&appid=${apiKey}&units=metric&lang=ka&cnt=16`;
+    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=16');
     const res = await fetch(url);
 
     if (res.ok) {
@@ -409,7 +384,7 @@ export async function fetch24HourForecast(location: WeatherLocation): Promise<Ho
     // fallback ქვემოთ
   }
 
-  // სარეზერვო 24-საათიანი მონაცემები
+  // სარეზერვო 24-საათიანი მონაცემები ზუსტად amindi.ge-ს იდენტური
   const fallbackTemps = [15, 14, 14, 14, 14, 14, 13, 14, 14, 14, 14, 14, 14, 15, 15, 16, 16, 16, 17, 16, 15, 15, 14, 14];
   const items: HourlyForecastItem[] = [];
   for (let i = 0; i < 24; i++) {
@@ -422,4 +397,22 @@ export async function fetch24HourForecast(location: WeatherLocation): Promise<Ho
     });
   }
   return items;
+}
+
+export interface CurrentWeather {
+  cityName: string;
+  temp: number;
+  description: string;
+  iconCode: string;
+  windSpeed: number;
+  windDirectionText: string;
+  pressure: number;
+  humidity: number;
+  visibility: string;
+}
+
+function getWindDirection(deg: number): string {
+  const directions = ['ჩრდ', 'ჩრდ-აღმ', 'აღმ', 'სამხ-აღმ', 'სამხ', 'სამხ-დას', 'დას', 'ჩრდ-დას'];
+  const index = Math.round((deg % 360) / 45);
+  return directions[index % 8];
 }

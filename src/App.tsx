@@ -16,7 +16,7 @@ import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { AstrologyHoroscope } from './features/AstrologyHoroscope';
 import { ZodiacDetailPage } from './features/ZodiacDetailPage';
 import { CurrencyRates } from './components/currency/CurrencyRates';
-import { detectUserCity, WeatherLocation } from './services/weatherService';
+import { detectUserCity, UserCoordinates } from './services/weatherService';
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <div className={`flex items-center justify-center border-2 border-dashed border-slate-400 bg-white/90 text-center text-[11px] font-bold text-slate-600 ${className}`}>
@@ -25,8 +25,9 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
 );
 
 export default function App() {
-  // მომხმარებლის მიმდინარე ლოკაცია (ქალაქი ან კოორდინატები, საწყისად Tbilisi)
-  const [city, setCity] = useState<WeatherLocation>('Tbilisi');
+  // მომხმარებლის მიმდინარე ქალაქი (საწყისად Tbilisi, შემდეგ დეტექტირდება ავტომატურად)
+  const [city, setCity] = useState<string>('Tbilisi');
+  const [coordinates, setCoordinates] = useState<UserCoordinates | null>(null);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
 
@@ -79,11 +80,19 @@ export default function App() {
 
   // აპლიკაციის ჩატვირთვისას ავტომატურად ვადგენთ მომხმარებლის ქვეყანას/ქალაქს
   useEffect(() => {
+    let cancelled = false;
     detectUserCity().then((detected) => {
-      if (detected) {
-        setCity(detected);
+      if (cancelled) return;
+      if (detected.kind === 'coordinates') {
+        setCoordinates(detected.coordinates);
+      } else {
+        setCoordinates(null);
+        setCity(detected.city);
       }
     });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -120,13 +129,14 @@ export default function App() {
 
                 {/* 1. მიმდინარე ამინდი */}
                 <div className="w-full pb-3 border-b border-white/20">
-                  <CurrentWeather city={city} />
+                  <CurrentWeather city={city} coordinates={coordinates} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
                 <div className="w-full pb-3 border-b border-white/20">
                   <HourlyWeatherForecast
                     city={city}
+                    coordinates={coordinates}
                     isFullHourlyOpen={centerView === 'hourly'}
                     onViewFullHourly={() => setCenterView((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
                   />
@@ -149,9 +159,9 @@ export default function App() {
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                 <div className="w-full">
                   {centerView === 'hourly' ? (
-                    <FullHourlyForecast city={city} />
+                    <FullHourlyForecast city={city} coordinates={coordinates} />
                   ) : (
-                    <WeatherForecast city={city} />
+                    <WeatherForecast city={city} coordinates={coordinates} />
                   )}
                 </div>
 
