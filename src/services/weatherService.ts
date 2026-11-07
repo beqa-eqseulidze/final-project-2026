@@ -116,10 +116,10 @@ export const CITIES = [
 // -------------------------------------------------------
 
 /**
- * OWM icon string-ს (e.g. "01d", "10n") გარდაქმნის amindi.ge-ს კოდად.
+ * OWM icon string-ს (მაგ. "01d", "10n") გარდაქმნის amindi.ge-ს კოდად.
  * amindi.ge icon URL: https://amindi.ge/static/img/weather_small_{code}.png
  */
-export function owmIconToAmindiCode(icon: string): string {
+export function amindiCode(icon: string): string {
   const map: Record<string, string> = {
     '01d': '01', // მზიანი
     '01n': '38', // ნათელი ღამე
@@ -142,6 +142,10 @@ export function owmIconToAmindiCode(icon: string): string {
   };
   return map[icon] ?? '01';
 }
+
+// ალიასები მოხერხებულობისთვის და უკუთავსებადობისთვის
+export const AmindiCode = amindiCode;
+export const owmIconToAmindiCode = amindiCode;
 
 const DEFAULT_API_KEY = ['dc15ce3401f5', '4c206abd8c39', '8b9d039f'].join('');
 
@@ -268,7 +272,7 @@ export async function fetchForecast(
     const tempMin = Math.round(Math.min(...items.map(i => i.main.temp_min)));
 
     const noonItem = items.find(i => i.dt_txt.includes('12:00:00')) ?? items[0];
-    const iconCode = owmIconToAmindiCode(noonItem.weather[0].icon);
+    const iconCode = amindiCode(noonItem.weather[0].icon);
     const description = noonItem.weather[0].description;
 
     result.push({ date: dateKey, dayName, dateLabel, iconCode, tempMax, tempMin, description });
@@ -306,7 +310,7 @@ export async function fetchCurrentWeather(
     cityName,
     temp: Math.round(data.main.temp),
     description: data.weather[0]?.description ?? '',
-    iconCode: owmIconToAmindiCode(data.weather[0]?.icon ?? '01d'),
+    iconCode: amindiCode(data.weather[0]?.icon ?? '01d'),
     windSpeed: windSpeedKmh,
     windDirectionText: getWindDirection(windDeg),
     pressure: data.main?.pressure ? Math.round(data.main.pressure) : 1013,
@@ -341,7 +345,7 @@ export async function fetchHourlyForecast(
     items.push({
       hourLabel: `${slotGmt4Hour} საათი`,
       temp: Math.round(slot.main.temp),
-      iconCode: owmIconToAmindiCode(slot.weather[0]?.icon ?? '04d'),
+      iconCode: amindiCode(slot.weather[0]?.icon ?? '04d'),
       description: slot.weather[0]?.description ?? '',
     });
   }
@@ -374,7 +378,7 @@ export async function fetch24HourForecast(
         items.push({
           hourLabel: `${hour} საათი`,
           temp: Math.round(slot.main.temp),
-          iconCode: owmIconToAmindiCode(slot.weather[0]?.icon ?? '04d'),
+          iconCode: amindiCode(slot.weather[0]?.icon ?? '04d'),
           description: slot.weather[0]?.description ?? '',
         });
       }
