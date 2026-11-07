@@ -12,10 +12,11 @@ import React, { useState, useEffect } from 'react';
 import {
   fetchHourlyForecast,
   HourlyForecastItem,
+  WeatherLocation,
 } from '../services/weatherService';
 
 interface HourlyWeatherForecastProps {
-  city?: string;
+  city?: WeatherLocation;
   onViewFullHourly?: () => void;
   isFullHourlyOpen?: boolean;
 }

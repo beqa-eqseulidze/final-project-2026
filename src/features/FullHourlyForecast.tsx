@@ -15,10 +15,11 @@ import React, { useState, useEffect } from 'react';
 import {
   fetch24HourForecast,
   HourlyForecastItem,
+  WeatherLocation,
 } from '../services/weatherService';
 
 interface FullHourlyForecastProps {
-  city?: string;
+  city?: WeatherLocation;
 }
 
 export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({

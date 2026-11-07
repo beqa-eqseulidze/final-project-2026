@@ -13,12 +13,13 @@ import React, { useState, useEffect } from 'react';
 import {
   fetchCurrentWeather,
   CurrentWeather as ICurrentWeatherData,
+  WeatherLocation,
   GEO_DAYS,
   GEO_MONTHS,
 } from '../services/weatherService';
 
 interface CurrentWeatherProps {
-  city?: string;
+  city?: WeatherLocation;
 }
 
 /**
@@ -51,6 +52,11 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     temp: 14,
     description: 'ღრუბლიანი',
     iconCode: '04',
+    windSpeed: 11,
+    windDirectionText: 'ჩრდ-აღმ',
+    pressure: 1013,
+    humidity: 70,
+    visibility: '10 კმ',
   });
 
   const [{ dateStr, timeStr }, setDateTime] = useState(getGmt4DateTime);

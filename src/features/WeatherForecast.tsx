@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchForecast, DailyForecast } from '../services/weatherService';
+import { fetchForecast, DailyForecast, WeatherLocation } from '../services/weatherService';
 
 type TabId = '5days' | '10days' | '2weeks' | '1month' | 'moon';
 
@@ -43,8 +43,8 @@ const MOON_PHASES: MoonPhase[] = [
 ];
 
 interface WeatherForecastProps {
-  /** არჩეული ქალაქი (ნაგულისხმევი: Tbilisi) */
-  city?: string;
+  /** არჩეული ქალაქი ან კოორდინატები (ნაგულისხმევი: Tbilisi) */
+  city?: WeatherLocation;
   /** დღის არჩევის callback */
   onSelectDay?: (day: DailyForecast) => void;
 }
@@ -60,7 +60,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   const [error, setError]                 = useState<string | null>(null);
 
   // მონაცემების მიღება OpenWeatherMap-იდან
-  const loadForecast = useCallback(async (targetCity: string) => {
+  const loadForecast = useCallback(async (targetCity: WeatherLocation) => {
     setLoading(true);
     setError(null);
     try {
