@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchForecast, DailyForecast } from '../services/weatherService';
+import { fetchForecast, DailyForecast, UserCoordinates } from '../services/weatherService';
 
 type TabId = '5days' | '10days' | '2weeks' | '1month' | 'moon';
 
@@ -45,12 +45,14 @@ const MOON_PHASES: MoonPhase[] = [
 interface WeatherForecastProps {
   /** არჩეული ქალაქი (ნაგულისხმევი: Tbilisi) */
   city?: string;
+  coordinates?: UserCoordinates | null;
   /** დღის არჩევის callback */
   onSelectDay?: (day: DailyForecast) => void;
 }
 
 export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   city = 'Tbilisi',
+  coordinates,
   onSelectDay,
 }) => {
   const [activeTab, setActiveTab]         = useState<TabId>('5days');
@@ -60,11 +62,11 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   const [error, setError]                 = useState<string | null>(null);
 
   // მონაცემების მიღება OpenWeatherMap-იდან
-  const loadForecast = useCallback(async (targetCity: string) => {
+  const loadForecast = useCallback(async (targetCity: string, targetCoordinates?: UserCoordinates | null) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchForecast(targetCity, 5);
+      const data = await fetchForecast(targetCity, 5, targetCoordinates);
       setForecast(data);
       if (data.length > 0) {
         setSelectedDayIdx(0);
@@ -79,9 +81,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
 
   useEffect(() => {
     if (activeTab !== 'moon') {
-      loadForecast(city);
+      loadForecast(city, coordinates);
     }
-  }, [city, activeTab, loadForecast]);
+  }, [city, coordinates, activeTab, loadForecast]);
 
   const handleCardClick = (day: DailyForecast, index: number) => {
     setSelectedDayIdx(index);
@@ -134,7 +136,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
           <div className="py-6 text-center">
             <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{error}</p>
             <button
-              onClick={() => loadForecast(city)}
+              onClick={() => loadForecast(city, coordinates)}
               className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
             >
               ხელახლა ცდა
@@ -151,7 +153,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                   onClick={() => handleCardClick(day, idx)}
                   className={`
                     flex flex-col items-center justify-between cursor-pointer
-                    py-2 px-1 transition-all duration-150 rounded-t-[3px]
+                    py-1.5 sm:py-2 px-0.5 sm:px-1 transition-all duration-150 rounded-t-[3px]
                     ${isSelected
                       ? 'bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] relative z-10'
                       : 'bg-transparent hover:bg-white/60'
@@ -159,12 +161,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                   `}
                 >
                   {/* კვირის დღე */}
-                  <span className="font-amindi1 text-[11px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
+                  <span className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
                     {day.dayName}
                   </span>
 
                   {/* თარიღი */}
-                  <span className="font-amindi2 text-[10px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
+                  <span className="font-amindi2 text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
                     {day.dateLabel}
                   </span>
 
@@ -172,7 +174,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                   <img
                     src={`https://amindi.ge/static/img/weather_small_${day.iconCode}.png`}
                     alt={day.description}
-                    className="w-10 h-10 sm:w-12 sm:h-12 object-contain my-1.5"
+                    className="w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain my-1 sm:my-1.5"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
                         'https://amindi.ge/static/img/weather_small_01.png';
@@ -180,7 +182,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                   />
 
                   {/* ტემპერატურა: ღამე° დღე° გვერდიგვერდ */}
-                  <div className="font-amindi1 text-[11px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1.5 sm:gap-2.5 pb-1">
+                  <div className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1 sm:gap-2.5 pb-1">
                     <span>{day.tempMin}°</span>
                     <span>{day.tempMax}°</span>
                   </div>
@@ -192,7 +194,6 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
       </div>
 
       {/* 2. ქვედა ტაბ-ბარი: amindi.ge-ს ცისფერი (#15aadc) */}
-      {/* 2. ქვედა ტაბ-ბარი: სქროლის გარეშე, თანაბრად განაწილებული */}
       <nav
         className="grid grid-cols-5 items-stretch bg-[#15aadc] w-full"
         role="tablist"
@@ -206,7 +207,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={`
-                w-full py-2 px-1 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+                w-full py-1.5 sm:py-2 px-0.5 sm:px-1 text-center font-amindi1 text-[9px] xs:text-[10px] sm:text-[12px] md:text-[13px] 
                 leading-tight flex items-center justify-center transition-colors cursor-pointer border-0
                 ${isActive
                   ? 'bg-[#0a8ab5] text-white font-bold'
@@ -215,7 +216,14 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               `}
             >
               <span className="line-clamp-2 text-center">
-                {tab.label}
+                {tab.id === 'moon' ? (
+                  <>
+                    <span className="sm:hidden">მთვარე</span>
+                    <span className="hidden sm:inline">მთვარის ფაზები</span>
+                  </>
+                ) : (
+                  tab.label
+                )}
               </span>
             </button>
           );
