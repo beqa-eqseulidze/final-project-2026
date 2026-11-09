@@ -65,16 +65,14 @@ export const Header: React.FC = () => {
           <ul className="hidden lg:flex items-center ml-auto m-0 p-0 list-none h-[50px]">
             {/* 1. ამინდის პროგნოზი */}
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
-              <a
-                href="/ka/"
-                className="block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
-              >
+              <a href="/ka/"
+                className="font-sanet block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]">
                 ამინდის პროგნოზი
               </a>
             </li>
 
             {/* 2. ჯანმრთელობა */}
-            <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
+            <li className=" font-sanet relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="https://mkurnali.ge/"
                 target="_blank"
@@ -86,7 +84,7 @@ export const Header: React.FC = () => {
             </li>
 
             {/* 3. რადიო */}
-            <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
+            <li className="relative font-sanet h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
                 href="http://radiopalitra.ge/"
                 target="_blank"
@@ -107,7 +105,7 @@ export const Header: React.FC = () => {
             >
               <span
                 onClick={() => setInfoDropdownOpen((prev) => !prev)}
-                className="block px-[8px] py-[14px] text-[14px] text-white cursor-pointer leading-[22px]"
+                className="font-sanet block px-[8px] py-[14px] text-[14px] text-white cursor-pointer leading-[22px]"
               >
                 სასარგებლო ინფორმაცია
               </span>
@@ -124,7 +122,7 @@ export const Header: React.FC = () => {
                         href="https://amindi.ge/ka/world-clock/"
                         target="_blank"
                         rel="noreferrer"
-                        className="block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
+                        className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         მსოფლიო დრო
                       </a>
@@ -135,7 +133,7 @@ export const Header: React.FC = () => {
                         href="https://amindi.ge/ka/georgian-holiday/"
                         target="_blank"
                         rel="noreferrer"
-                        className="block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
+                        className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         საქართველოს დღესასწაულები
                       </a>
@@ -146,13 +144,13 @@ export const Header: React.FC = () => {
                         href="https://www.bpn.ge/currency"
                         target="_blank"
                         rel="noreferrer"
-                        className="block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
+                        className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         ვალუტა
                       </a>
                     </li>
                     {/* პუნქტი: ჰოროსკოპი */}
-                    <li className="bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
+                    <li className="font-sanet bg-[#19375c] text-white text-[14px] leading-[30px] block w-[300px]">
                       <a
                         href="https://www.ambebi.ge/astrology/"
                         target="_blank"
@@ -173,7 +171,7 @@ export const Header: React.FC = () => {
                 href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
                 target="_blank"
                 rel="noreferrer"
-                className="block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
+                className="font-sanet block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
               >
                 რეკლამა
               </a>
@@ -199,7 +197,7 @@ export const Header: React.FC = () => {
           >
             <a
               href="/ka/"
-              className="py-1.5 text-[14px] text-white no-underline"
+              className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               ამინდის პროგნოზი
             </a>
@@ -207,7 +205,7 @@ export const Header: React.FC = () => {
               href="https://mkurnali.ge/"
               target="_blank"
               rel="noreferrer"
-              className="py-1.5 text-[14px] text-white no-underline"
+              className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               ჯანმრთელობა
             </a>
@@ -215,18 +213,18 @@ export const Header: React.FC = () => {
               href="http://radiopalitra.ge/"
               target="_blank"
               rel="noreferrer"
-              className="py-1.5 text-[14px] text-white no-underline"
+              className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               რადიო
             </a>
             <div className="py-1 text-[14px] text-white">
-              <div className="mb-1 font-semibold">სასარგებლო ინფორმაცია:</div>
+              <div className="font-sanet mb-1 font-medium">სასარგებლო ინფორმაცია:</div>
               <div className="pl-3 flex flex-col border-l border-white/20">
                 <a
                   href="https://amindi.ge/ka/world-clock/"
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
+                  className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   მსოფლიო დრო
                 </a>
@@ -234,7 +232,7 @@ export const Header: React.FC = () => {
                   href="https://amindi.ge/ka/georgian-holiday/"
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
+                  className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   საქართველოს დღესასწაულები
                 </a>
@@ -242,7 +240,7 @@ export const Header: React.FC = () => {
                   href="https://www.bpn.ge/currency"
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
+                  className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   ვალუტა
                 </a>
@@ -250,7 +248,7 @@ export const Header: React.FC = () => {
                   href="https://www.ambebi.ge/astrology/"
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
+                  className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   ჰოროსკოპი
                 </a>
@@ -260,7 +258,7 @@ export const Header: React.FC = () => {
               href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
               target="_blank"
               rel="noreferrer"
-              className="py-1.5 text-[14px] text-white no-underline"
+              className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               რეკლამა
             </a>
