@@ -1,6 +1,6 @@
-import standsImage from '../assets/Towers.png';
-import rotorbig from '../assets/rotorbig.png';
-import rotorsmall from '../assets/rotorsmall.png';
+import standsImage from '../assets/wind turbine/Towers.png';
+import rotorbig from '../assets/wind turbine/rotorbig.png';
+import rotorsmall from '../assets/wind turbine/rotorsmall.png';
 
 interface WindTurbinesProps {
     windSpeed: number;
