@@ -12,10 +12,12 @@ import React, { useState, useEffect } from 'react';
 import {
   fetchHourlyForecast,
   HourlyForecastItem,
+  UserCoordinates,
 } from '../services/weatherService';
 
 interface HourlyWeatherForecastProps {
   city?: string;
+  coordinates?: UserCoordinates | null;
   onViewFullHourly?: () => void;
   isFullHourlyOpen?: boolean;
 }
@@ -30,6 +32,7 @@ const DEFAULT_HOURLY: HourlyForecastItem[] = [
 
 export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
   city = 'Tbilisi',
+  coordinates,
   onViewFullHourly,
   isFullHourlyOpen = false,
 }) => {
@@ -38,7 +41,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
 
   useEffect(() => {
     let isMounted = true;
-    fetchHourlyForecast(city)
+    fetchHourlyForecast(city, coordinates)
       .then((items) => {
         if (isMounted && items.length > 0) {
           setHourlyData(items);
@@ -51,7 +54,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [city]);
+  }, [city, coordinates]);
 
   // თუ გაშლილი არაა, ვაჩვენებთ პირველ 3 საათს (როგორც სქრინშოტზეა)
   const visibleItems = expanded ? hourlyData : hourlyData.slice(0, 3);

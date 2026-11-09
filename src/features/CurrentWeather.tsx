@@ -15,10 +15,12 @@ import {
   CurrentWeather as ICurrentWeatherData,
   GEO_DAYS,
   GEO_MONTHS,
+  UserCoordinates,
 } from '../services/weatherService';
 
 interface CurrentWeatherProps {
   city?: string;
+  coordinates?: UserCoordinates | null;
 }
 
 /**
@@ -44,13 +46,18 @@ const getGmt4DateTime = () => {
   return { dateStr, timeStr };
 };
 
-export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi' }) => {
+export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates }) => {
   // საწყისი მნიშვნელობები ზუსტად სქრინშოტის იდენტურია
   const [weather, setWeather] = useState<ICurrentWeatherData>({
     cityName: 'თბილისი',
     temp: 14,
     description: 'ღრუბლიანი',
     iconCode: '04',
+    windSpeed: 11,
+    windDirectionText: 'ჩრდ',
+    pressure: 1018,
+    humidity: 67,
+    visibility: '10 კმ',
   });
 
   const [{ dateStr, timeStr }, setDateTime] = useState(getGmt4DateTime);
@@ -66,7 +73,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
   // OpenWeatherMap API-დან მიმდინარე მონაცემების მიღება
   useEffect(() => {
     let isMounted = true;
-    fetchCurrentWeather(city)
+    fetchCurrentWeather(city, coordinates)
       .then((data) => {
         if (isMounted) setWeather(data);
       })
@@ -77,46 +84,46 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     return () => {
       isMounted = false;
     };
-  }, [city]);
+  }, [city, coordinates]);
 
   return (
-    <div className="w-full max-w-[320px] text-white font-amindi1 select-none mb-4">
+    <div className="w-full max-w-full sm:max-w-[320px] text-white font-amindi1 select-none mb-3 sm:mb-4">
       {/* 1. ქალაქის სახელი */}
-      <h1 className="text-[32px] sm:text-[38px] font-bold tracking-tight leading-none text-white m-0">
+      <h1 className="text-[28px] sm:text-[38px] font-bold tracking-tight leading-none text-white m-0">
         {weather.cityName}
       </h1>
 
       {/* 2. თარიღი (e.g. ორშაბათი, 26 ოქტომბერი) */}
-      <div className="text-[13px] sm:text-[14px] text-white/90 mt-1.5 leading-tight font-medium">
+      <div className="text-[12px] sm:text-[14px] text-white/90 mt-1.5 leading-tight font-medium">
         {dateStr}
       </div>
 
       {/* 3. ცოცხალი საათი წამებით (e.g. 18:53:40) GMT+4 */}
-      <div className="text-[13px] sm:text-[14px] text-white font-bold tracking-wider mt-0.5">
+      <div className="text-[12px] sm:text-[14px] text-white font-bold tracking-wider mt-0.5">
         {timeStr}
       </div>
 
       {/* 4. ამინდის დიდი იკონი, აღწერა და დიდი ტემპერატურა */}
-      <div className="flex items-center justify-between mt-3">
+      <div className="flex items-center justify-between mt-2.5 sm:mt-3">
         {/* მარცხენა მხარე: იკონი და მის ქვემოთ აღწერა */}
         <div className="flex flex-col items-center">
           <img
             src={`https://amindi.ge/static/img/weather_big_${weather.iconCode}.png`}
             alt={weather.description}
-            className="w-[115px] sm:w-[130px] h-auto object-contain drop-shadow"
+            className="w-[95px] sm:w-[130px] h-auto object-contain drop-shadow"
             onError={(e) => {
               // fallback: თუ weather_big ვერ ჩაიტვირთა
               (e.currentTarget as HTMLImageElement).src =
                 `https://amindi.ge/static/img/weather_small_${weather.iconCode}.png`;
             }}
           />
-          <span className="text-[13px] sm:text-[14px] font-bold text-white tracking-wide mt-1 text-center">
+          <span className="text-[12px] sm:text-[14px] font-bold text-white tracking-wide mt-1 text-center">
             {weather.description}
           </span>
         </div>
 
         {/* მარჯვენა მხარე: დიდი ტემპერატურა */}
-        <div className="text-[58px] sm:text-[68px] font-bold text-white leading-none pr-3 sm:pr-4">
+        <div className="text-[48px] sm:text-[68px] font-bold text-white leading-none pr-2 sm:pr-4">
           {weather.temp}°
         </div>
       </div>
