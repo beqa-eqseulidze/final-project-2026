@@ -57,7 +57,7 @@ export const Header: React.FC = () => {
             <img
               src="https://amindi.ge/static/img/header-logo.png"
               alt="amindi.ge"
-              style={{ height: '40px' }}
+              className="h-[32px] sm:h-[40px] w-auto object-contain"
             />
           </a>
 
