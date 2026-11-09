@@ -16,7 +16,7 @@ import { FullHourlyForecast } from './features/FullHourlyForecast';
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
-import { detectUserCity } from './services/weatherService';
+import { detectUserCity, UserCoordinates} from './services/weatherService';
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <div className={`flex items-center justify-center border-2 border-dashed border-slate-400 bg-white/90 text-center text-[11px] font-bold text-slate-600 ${className}`}>
