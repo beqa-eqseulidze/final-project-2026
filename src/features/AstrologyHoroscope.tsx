@@ -205,10 +205,10 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
       >
         {/* მარცხენა კალენდარული კვადრატი */}
         <div className="bg-[#0e5aa7] w-full sm:w-[105px] md:w-[120px] xl:w-[130px] shrink-0 rounded-[3px] p-2.5 sm:p-4 flex flex-row sm:flex-col items-center justify-center gap-2 sm:gap-1 text-center shadow-inner">
-          <span className="text-2xl sm:text-4xl xl:text-5xl font-black font-amindi1 leading-none text-white tracking-tight">
+          <span className="text-2xl sm:text-4xl xl:text-5xl font-black font-bpg font-medium leading-none text-white tracking-tight">
             {dayNumber}
           </span>
-          <span className="text-xs sm:text-sm font-bold font-amindi1 uppercase tracking-wider text-white/95">
+          <span className="text-xs sm:text-sm font-bpg font-medium uppercase tracking-wider text-white/95">
             {monthName}
           </span>
         </div>
@@ -217,16 +217,16 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
         <div className="flex-1 flex flex-col justify-center min-w-0">
           {/* სათაური თეთრი ქვედა ხაზით */}
           <div className="pb-1.5 mb-2.5 border-b border-white/30 flex items-center justify-between">
-            <h3 className="text-xs sm:text-sm md:text-[15px] font-bold font-amindi1 uppercase tracking-wide text-white m-0">
+            <h3 className="text-xs sm:text-sm md:text-[15px] font-medium font-sanet uppercase tracking-wide text-white m-0">
               დღის ზოგადი ასტროლოგიური პროგნოზი ({activeZodiac.name})
             </h3>
-            <span className="text-[11px] text-sky-200 font-amindi1 hidden sm:inline">
+            <span className=" font-bpg font-medium text-[11px] text-sky-200 hidden sm:inline">
               ვრცლად →
             </span>
           </div>
 
           {/* პროგნოზის დეტალური ტექსტი */}
-          <p className="text-xs sm:text-[13px] md:text-[13.5px] font-amindi2 text-white/95 leading-relaxed m-0 text-justify">
+          <p className="text-xs sm:text-[13px] md:text-[13.5px] font-bpg font-medium text-white/95 leading-relaxed m-0 text-justify">
             {activeZodiac.prediction}
           </p>
         </div>

@@ -79,7 +79,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
   };
 
   return (
-    <div className="w-full max-w-[1240px] mx-auto px-2 sm:px-4 py-4 select-none">
+    <div className="w-full max-w-[1240px] mx-auto px-2 sm:px-4 py-4 select-none ">
       {/* 1. ზედა ნავიგაციის ზოლი */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <button
@@ -92,10 +92,10 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
           "
         >
           <span>←</span>
-          <span>მთავარ გვერდზე დაბრუნება</span>
+          <span className='font-bpg font-medium'>მთავარ გვერდზე დაბრუნება</span>
         </button>
 
-        <span className="text-white/80 font-amindi2 text-xs sm:text-sm">
+        <span className="text-white/80 font-sanet text-xs sm:text-sm">
           ჰოროსკოპი • {dayNumber} {monthName}
         </span>
       </div>
@@ -123,7 +123,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
                   signId={z.id}
                   className={`w-4 h-4 sm:w-5 sm:h-5 mb-0.5 ${isSelected ? 'text-white' : 'text-[#0e5aa7]'}`}
                 />
-                <span className="text-[10px] sm:text-[11px] font-amindi1 mt-0.5 whitespace-nowrap">{z.name}</span>
+                <span className="text-[10px] sm:text-[11px] mt-0.5 whitespace-nowrap font-sanet font-medium">{z.name}</span>
               </button>
             );
           })}
@@ -140,20 +140,20 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
 
           {/* სახელწოდება, თარიღი/რიცხვი, ტაბები და პარამეტრები */}
           <div className="flex-1 w-full text-center md:text-left">
-            <h1 className="text-2xl sm:text-4xl font-amindi1 font-black tracking-wide mb-1 text-white">
+            <h1 className="text-2xl sm:text-4xl font-sanet font-black tracking-wide mb-1 text-white">
               {zodiac.name}
             </h1>
 
             {/* რიცხვი/თარიღი და მის გვერდით პერიოდის ასარჩევი ტაბები: დღის | თვის | წლის | ზოგადი დახასიათება */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-4 mb-3 sm:mb-3.5 mt-1">
               {/* რიცხვი/თარიღის დიაპაზონი */}
-              <div className="inline-flex items-center gap-1.5 text-white/90 font-amindi2 text-xs sm:text-base font-semibold">
+              <div className="inline-flex items-center gap-1.5 text-white/90 font-sanet text-xs sm:text-base font-semibold">
                 <span>📅</span>
                 <span>{zodiac.dateRange}</span>
               </div>
 
               {/* გამყოფი ხაზი desktop-ზე */}
-              <span className="hidden md:inline-block text-white/30 text-sm">|</span>
+              <span className="hidden md:inline-block text-white/30 text-sm ">|</span>
 
               {/* ტაბები: დღის | თვის | წლის | ზოგადი დახასიათება */}
               <div className="inline-flex flex-wrap items-center justify-center gap-1 bg-black/25 p-1 rounded-[5px] backdrop-blur-xs">
@@ -165,7 +165,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
                       type="button"
                       onClick={() => setActiveTab(tab.id)}
                       className={`
-                        px-2 sm:px-3 py-1 text-[11px] sm:text-[13px] font-amindi1 font-bold rounded-[3px]
+                        px-2 sm:px-3 py-1 text-[11px] sm:text-[13px] font-bpg font-medium rounded-[3px]
                         transition-all cursor-pointer border-0 whitespace-nowrap
                         ${isActive
                           ? 'bg-[#15aadc] text-white shadow-xs'
@@ -182,13 +182,13 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
 
             {/* პარამეტრების ბეჯები */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2">
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-amindi1">
+              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
                 🔥 სტიქია: <strong className="text-amber-300">{zodiac.element}</strong>
               </span>
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-amindi1">
+              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
                 🪐 პლანეტა: <strong className="text-sky-300">{zodiac.rulingPlanet}</strong>
               </span>
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-amindi1">
+              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
                 ✨ იღბლიანი რიცხვები: <strong>{zodiac.luckyNumbers}</strong>
               </span>
             </div>
@@ -203,14 +203,14 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
           {/* არჩეული ტაბის პროგნოზის ბარათი */}
           <div className="bg-[#eeeeee] rounded-[4px] p-4 sm:p-6 shadow-md border border-black/10">
             <div className="flex items-center justify-between pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 border-b border-black/15">
-              <h2 className="font-amindi1 text-[#19375c] text-sm sm:text-lg font-bold uppercase tracking-wide">
+              <h2 className="font-sanet text-[#19375c] text-sm sm:text-lg font-bold uppercase tracking-wide">
                 {getForecastHeading()}
               </h2>
-              <span className="text-[11px] sm:text-xs bg-[#0e5aa7] text-white font-amindi1 px-2 sm:px-2.5 py-0.5 rounded">
+              <span className="text-[11px] sm:text-xs bg-[#0e5aa7] text-white font-sanet px-2 sm:px-2.5 py-0.5 rounded">
                 {getForecastBadge()}
               </span>
             </div>
-            <p className="font-amindi2 text-[#222222] text-xs sm:text-base leading-relaxed text-justify">
+            <p className="font-bpg text-[#222222] text-xs sm:text-base leading-relaxed text-justify">
               {zodiac.forecasts[activeTab]}
             </p>
           </div>
@@ -218,10 +218,10 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
           {/* ზოგადი მიმოხილვა (თუ აქტიური ტაბი არ არის 'general') */}
           {activeTab !== 'general' && (
             <div className="bg-[#eeeeee] rounded-[4px] p-4 sm:p-6 shadow-md border border-black/10">
-              <h2 className="font-amindi1 text-[#19375c] text-sm sm:text-lg font-bold uppercase tracking-wide pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 border-b border-black/15">
+              <h2 className="font-sanet text-[#19375c] text-sm sm:text-lg font-bold uppercase tracking-wide pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 border-b border-black/15">
                 ზოგადი მიმოხილვა და ხასიათი
               </h2>
-              <p className="font-amindi2 text-[#333333] text-xs sm:text-base leading-relaxed text-justify">
+              <p className="font-bpg text-[#333333] text-xs sm:text-base leading-relaxed text-justify">
                 {zodiac.overview}
               </p>
             </div>
@@ -232,20 +232,20 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
         <div className="space-y-3.5 sm:space-y-5">
           {/* დადებითი და უარყოფითი თვისებები */}
           <div className="bg-[#eeeeee] rounded-[4px] p-4 sm:p-5 shadow-md border border-black/10">
-            <h3 className="font-amindi1 text-[#19375c] text-xs sm:text-base font-bold uppercase tracking-wide pb-2 mb-2.5 sm:mb-3 border-b border-black/15">
+            <h3 className="font-sanet text-[#19375c] text-xs sm:text-base font-bold uppercase tracking-wide pb-2 mb-2.5 sm:mb-3 border-b border-black/15">
               ხასიათის თვისებები
             </h3>
 
             <div className="space-y-2.5 sm:space-y-3">
               <div>
-                <span className="text-xs font-amindi1 font-bold text-emerald-700 block mb-1">
+                <span className="text-xs font-sanet font-bold text-emerald-700 block mb-1">
                   ✓ დადებითი:
                 </span>
                 <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {zodiac.traits.positive.map((t, i) => (
                     <span
                       key={i}
-                      className="bg-emerald-100 text-emerald-800 text-[11px] sm:text-xs px-2 py-0.5 rounded font-amindi2"
+                      className="bg-emerald-100 text-emerald-800 text-[11px] sm:text-xs px-2 py-0.5 rounded font-bpg font-medium"
                     >
                       {t}
                     </span>
@@ -254,14 +254,14 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
               </div>
 
               <div>
-                <span className="text-xs font-amindi1 font-bold text-rose-700 block mb-1">
+                <span className="text-xs font-sanet font-bold text-rose-700 block mb-1">
                   ✗ უარყოფითი:
                 </span>
                 <div className="flex flex-wrap gap-1 sm:gap-1.5">
                   {zodiac.traits.negative.map((t, i) => (
                     <span
                       key={i}
-                      className="bg-rose-100 text-rose-800 text-[11px] sm:text-xs px-2 py-0.5 rounded font-amindi2"
+                      className="bg-rose-100 text-rose-800 text-[11px] sm:text-xs px-2 py-0.5 rounded font-bpg font-medium"
                     >
                       {t}
                     </span>
@@ -273,13 +273,13 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
 
           {/* თავსებადობა */}
           <div className="bg-[#eeeeee] rounded-[4px] p-4 sm:p-5 shadow-md border border-black/10">
-            <h3 className="font-amindi1 text-[#19375c] text-xs sm:text-base font-bold uppercase tracking-wide pb-2 mb-2 border-b border-black/15">
+            <h3 className="font-sanet text-[#19375c] text-xs sm:text-base font-bold uppercase tracking-wide pb-2 mb-2 border-b border-black/15">
               თავსებადი ნიშნები
             </h3>
-            <p className="font-amindi2 text-xs sm:text-sm text-[#444444]">
+            <p className="font-bpg text-xs sm:text-sm text-[#444444]">
               საუკეთესო ურთიერთგაგება და ჰარმონია:
             </p>
-            <div className="mt-1.5 sm:mt-2 font-amindi1 text-xs sm:text-sm font-bold text-[#0e5aa7]">
+            <div className="mt-1.5 sm:mt-2 font-bpg text-xs sm:text-sm font-bold text-[#0e5aa7]">
               {zodiac.compatibleSigns}
             </div>
           </div>
@@ -297,7 +297,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
             transition-colors cursor-pointer border-0 shadow-md
           "
         >
-          <span>← მთავარ გვერდზე დაბრუნება</span>
+          <span className='font-bpg font-medium'>← მთავარ გვერდზე დაბრუნება</span>
         </button>
       </div>
     </div>
