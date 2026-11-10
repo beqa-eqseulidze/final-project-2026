@@ -19,6 +19,9 @@ import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
 import { detectUserCity, UserCoordinates } from './services/weatherService';
+import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
+import { PalitraShortAd } from './components/ads/PalitraShortAd'; //რეკლამა
+import { PalitraNewsAd } from './components/ads/PalitraNewsAd'; //რეკლამა
 
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => {
   const hasBg = className.includes('bg-');
@@ -132,9 +135,9 @@ export default function App() {
 
             {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
             <div className="w-full mb-3">
-              <Box className="h-[65px] sm:h-[90px] w-full bg-[#3d4b3c] text-white text-xs sm:text-base">
-                Top Banner (რადიო პალიტრა FM 103.9)
-              </Box>
+              <div className="h-[70px] sm:h-[90px] w-full">
+                <PalitraNewsAd />
+              </div>
             </div>
 
             {/* 3-Column Grid Layout */}
@@ -200,9 +203,9 @@ export default function App() {
               {/* მარჯვენა სვეტი */}
               <aside className="space-y-3 sm:space-y-4 flex flex-col">
                 {/* ზედა რეკლამა (Palitra News) */}
-                <Box className="h-[180px] sm:h-[280px] w-full bg-[#c9252c] text-white text-xs sm:text-base">
-                  Palitra News Ad Banner
-                </Box>
+                <div className="w-full h-[230px] sm:h-[310px]">
+                  <PalitraShortAd />
+                </div>
 
                 {/* კონვერტორი (ზუსტად ბანერის ქვეშ) */}
                 <div className="w-full">
@@ -210,9 +213,9 @@ export default function App() {
                 </div>
 
                 {/* ქვედა რეკლამა */}
-                <Box className="h-[160px] sm:h-[260px] w-full bg-[#1e3d2f] text-white text-xs sm:text-base">
-                  Bottom Ad Banner
-                </Box>
+                <div className="w-full h-[260px] sm:h-[520px]">
+                  <PalitraLongAd />
+                </div>
               </aside>
 
             </div>
