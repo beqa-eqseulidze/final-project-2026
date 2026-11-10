@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
             <li>
               <a
                 href="/ka/"
-                className="text-[#000] hover:text-white transition-colors no-underline"
+                className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 ამინდის პროგნოზი
               </a>
@@ -67,7 +67,7 @@ export const Footer: React.FC = () => {
                 href="https://mkurnali.ge/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#000] hover:text-white transition-colors no-underline"
+                className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 ჯანმრთელობა
               </a>
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
                 href="http://radiopalitra.ge/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#000] hover:text-white transition-colors no-underline"
+                className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 რადიო
               </a>
@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
                 href="https://amindi.ge/ka/world-clock/"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#000] hover:text-white transition-colors no-underline"
+                className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 სასარგებლო ინფორმაცია
               </a>
@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
                 href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#000] hover:text-white transition-colors no-underline"
+                className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 რეკლამა
               </a>

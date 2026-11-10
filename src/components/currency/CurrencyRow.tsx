@@ -21,7 +21,7 @@ export function CurrencyRow({
 
   return(
     <div className="grid grid-cols-4 gap-1 py-2 border-t border-b border-white/20 text-[11px] text-center items-center">
-      <div className="font-sanet text-left font-bold text-white text-[12px] truncate">
+      <div className="font-sanet text-left font-medium text-white text-[12px] truncate">
         {quantity} {code}
       </div>
       <div className="font-sanet text-white/90 truncate">{prevRate}</div>

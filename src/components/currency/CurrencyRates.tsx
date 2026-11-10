@@ -73,7 +73,7 @@ export function CurrencyRates() {
 
   return(
     <div className="w-full bg-transparent text-white p-2 font-sanet">
-      <h3 className="text-[13px] font-bold mb-3 tracking-wide text-center">ოფიციალური კურსი</h3>
+      <h3 className="text-[13px] font-medium mb-3 tracking-wide text-center">ოფიციალური კურსი</h3>
 
       {loading ? (
         <div className="font-bold text-center text-xs py-2 text-white/70">იტვირთება..</div>

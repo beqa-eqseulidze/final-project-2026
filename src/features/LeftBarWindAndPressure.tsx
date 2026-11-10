@@ -82,7 +82,7 @@ export const WindAndPressure = ({ city }: Props) => {
     return (
         <div className="w-full bg-[#1a2c42]/60 backdrop-blur-md text-white font-sans shadow-xl border-t border-white/10 overflow-hidden">
             {isLoading ? (
-                <div className="text-center py-6 text-sm text-slate-300">
+                <div className="font-sanet text-center py-6 text-sm text-slate-300">
                     იტვირთება მონაცემები...
                 </div>
             ) : (
@@ -91,20 +91,20 @@ export const WindAndPressure = ({ city }: Props) => {
                         <WindTurbines windSpeed={windSpeed} />
 
                         <div className="flex flex-col justify-center space-y-1.5 text-left w-full pl-2">
-                            <h3 className="text-sm font-bold uppercase tracking-wide text-white">
+                            <h3 className="text-sm font-medium font-sanet uppercase tracking-wide text-white">
                                 ქარი და წნევა
                             </h3>
 
                             <div className="text-xs">
-                                <span className="text-slate-300 block text-[11px]">ქარის სიჩქარე:</span>
-                                <span className="text-xs font-semibold text-white">
+                                <span className="text-slate-300 font-sanet block text-[11px]">ქარის სიჩქარე:</span>
+                                <span className="text-xs font-normal font-sanet text-white">
                                     {windSpeed} {windUnit}, {windDirection}
                                 </span>
                             </div>
 
                             <div className="text-xs">
-                                <span className="text-slate-300 block text-[11px]">წნევა:</span>
-                                <span className="text-xs font-semibold text-white">
+                                <span className="text-slate-300 block font-sanet text-[11px]">წნევა:</span>
+                                <span className="text-xs font-sanet font-normal text-white">
                                     {typeof pressure === 'number' ? pressure.toFixed(2) : pressure} {pressureUnit}
                                 </span>
                             </div>
@@ -113,23 +113,23 @@ export const WindAndPressure = ({ city }: Props) => {
 
                     <div className="p-4 bg-black/20 space-y-2 text-xs">
                         <div className="flex justify-between items-center text-slate-200">
-                            <span className="text-slate-300">ტემპერატურის მგრძნობელობა:</span>
-                            <span className="font-semibold text-white">{feelsLikeTemp}</span>
+                            <span className="text-slate-300 font-sanet">ტემპერატურის მგრძნობელობა:</span>
+                            <span className="font-medium font-sanet text-white">{feelsLikeTemp}</span>
                         </div>
 
                         <div className="flex justify-between items-center text-slate-200">
-                            <span className="text-slate-300">ქარში მგრძნობელობა:</span>
-                            <span className="font-semibold text-white">{feelsLikeWind}</span>
+                            <span className="text-slate-300 font-sanet">ქარში მგრძნობელობა:</span>
+                            <span className="font-medium font-sanet text-white">{feelsLikeWind}</span>
                         </div>
 
                         <div className="flex justify-between items-center text-slate-200">
-                            <span className="text-slate-300">ტენიანობა:</span>
-                            <span className="font-semibold text-white">{humidity}</span>
+                            <span className="text-slate-300 font-sanet">ტენიანობა:</span>
+                            <span className="font-medium font-sanet text-white">{humidity}</span>
                         </div>
 
                         <div className="flex justify-between items-center text-slate-200">
-                            <span className="text-slate-300">ხილვადობა:</span>
-                            <span className="font-semibold text-white">{visibility}</span>
+                            <span className="text-slate-300 font-sanet">ხილვადობა:</span>
+                            <span className="font-medium font-sanet text-white">{visibility}</span>
                         </div>
                     </div>
                 </div>

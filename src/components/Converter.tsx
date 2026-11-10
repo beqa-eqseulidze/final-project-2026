@@ -81,7 +81,7 @@ export const Converter = () => {
         onClick={() => setOpen((p) => !p)}
         className="w-full h-[38px] px-3 text-[14px] bg-[#2da9e0] text-white font-bold rounded flex items-center justify-between cursor-pointer border-0"
       >
-        <span className="flex-1 text-center">კონვერტორი</span>
+        <span className="flex-1 text-center font-sanet font-medium">კონვერტორი</span>
         <svg
           width="14"
           height="14"
@@ -96,7 +96,7 @@ export const Converter = () => {
       </button>
 
       {open && (
-        <div className="pt-3 w-full">
+        <div className="pt-3 w-full font-sanet">
           <ConverterRow
             from="C°"
             to="F°"
