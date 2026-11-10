@@ -115,7 +115,7 @@ export default function App() {
 
   return (
     <BackgroundSky>
-      <div className="min-h-screen text-slate-700 flex flex-col justify-between">
+      <div className="min-h-screen text-slate-700 flex flex-col">
 
         {/* 1. Header (სრული სიგანით ზემოთ) */}
         <Header />
@@ -131,7 +131,7 @@ export default function App() {
             />
           </main>
         ) : (
-          <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 py-2 sm:py-3 flex-1">
+          <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
 
             {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
             <div className="w-full mb-3">
@@ -141,7 +141,7 @@ export default function App() {
             </div>
 
             {/* 3-Column Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-[235px_1fr_235px] xl:grid-cols-[260px_1fr_260px] gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[235px_1fr_235px] xl:grid-cols-[260px_1fr_260px] gap-3 sm:gap-4 flex-1">
 
               {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
               <aside className="w-full lg:w-[235px] xl:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full">
@@ -223,9 +223,7 @@ export default function App() {
         )}
 
         {/* 3. Footer */}
-        <footer className="w-full mt-8">
-          <Footer />
-        </footer>
+        <Footer />
 
       </div>
     </BackgroundSky>
