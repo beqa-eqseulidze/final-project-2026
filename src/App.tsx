@@ -3,7 +3,7 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
@@ -22,7 +22,78 @@ import { detectUserCity, UserCoordinates } from './services/weatherService';
 import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
 import { PalitraShortAd } from './components/ads/PalitraShortAd'; //რეკლამა
 import { PalitraNewsAd } from './components/ads/PalitraNewsAd'; //რეკლამა
+import { CityDropdown } from './components/choiceCity/city';
 
+interface CityOption {
+  id: number;
+  name: string;
+  temp: number;
+  query: string;
+}
+
+const CITY_OPTIONS: CityOption[] = [
+  { id: 1, name: 'თბილისი', temp: 9, query: 'Tbilisi' },
+  { id: 2, name: 'ბათუმი', temp: 12, query: 'Batumi' },
+  { id: 3, name: 'ქუთაისი', temp: 10, query: 'Kutaisi' },
+  { id: 4, name: 'რუსთავი', temp: 11, query: 'Rustavi' },
+  { id: 5, name: 'გორი', temp: 7, query: 'Gori' },
+  { id: 6, name: 'თელავი', temp: 9, query: 'Telavi' },
+  { id: 7, name: 'ზუგდიდი', temp: 10, query: 'Zugdidi' },
+  { id: 8, name: 'ფოთი', temp: 12, query: 'Poti' },
+  { id: 9, name: 'ბაკურიანი', temp: 3, query: 'Bakuriani' },
+  { id: 10, name: 'ახალციხე', temp: 4, query: 'Akhaltsikhe' },
+  { id: 11, name: 'ბორჯომი', temp: 3, query: 'Borjomi' },
+  { id: 12, name: 'გურჯაანი', temp: 11, query: 'Gurjaani' },
+  { id: 13, name: 'ლანჩხუთი', temp: 11, query: 'Lanchkhuti' },
+  { id: 14, name: 'მცხეთა', temp: 4, query: 'Mtskheta' },
+  { id: 15, name: 'სენაკი', temp: 11, query: 'Senaki' },
+  { id: 16, name: 'ქობულეთი', temp: 12, query: 'Kobuleti' },
+  { id: 17, name: 'ყვარელი', temp: 8, query: 'Kvareli' },
+  { id: 18, name: 'ჩხოროწყუ', temp: 9, query: 'Chkhorotsku' },
+  { id: 19, name: 'ჩოხატაური', temp: 8, query: 'Chokhatauri' },
+  { id: 20, name: 'ხაშური', temp: 7, query: 'Khashuri' },
+  { id: 21, name: 'ხობი', temp: 11, query: 'Khobi' },
+  { id: 22, name: 'აბასთუმანი', temp: 1, query: 'Abastumani' },
+  { id: 23, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
+  { id: 24, name: 'მესტია', temp: -6, query: 'Mestia' },
+  { id: 25, name: 'ოჩამჩირე', temp: 10, query: 'Ochamchire' },
+  { id: 26, name: 'დავით-გარეჯი', temp: 12, query: 'Davit Gareji' },
+  { id: 27, name: 'მანგლისი', temp: 3, query: 'Manglisi' },
+  { id: 28, name: 'ჟინვალი', temp: 5, query: 'Zhinvali' },
+  { id: 29, name: 'ჯვარი', temp: 2, query: 'Jvari' },
+  { id: 30, name: 'საჩხერე', temp: 5, query: 'Sachkhere' },
+  { id: 31, name: 'სოხუმი', temp: 10, query: 'Sokhumi' },
+  { id: 32, name: 'წალენჯიხა', temp: 5, query: 'Tsalenjikha' },
+  { id: 33, name: 'წნორი', temp: 9, query: 'Tsnori' },
+  { id: 34, name: 'სამტრედია', temp: 4, query: 'Samtredia' },
+  { id: 35, name: 'ამბროლაური', temp: 6, query: 'Ambrolauri' },
+  { id: 36, name: 'ონი', temp: 5, query: 'Oni' },
+  { id: 37, name: 'ცაგერი', temp: 8, query: 'Tsageri' },
+  { id: 38, name: 'ლენტეხი', temp: 4, query: 'Lentekhi' },
+  { id: 39, name: 'მარნეული', temp: 10, query: 'Marneuli' },
+  { id: 40, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
+  { id: 41, name: 'დმანისი', temp: 1, query: 'Dmanisi' },
+  { id: 42, name: 'წალკა', temp: 2, query: 'Tsalka' },
+  { id: 43, name: 'გარდაბანი', temp: 11, query: 'Gardabani' },
+  { id: 44, name: 'ბაღდათი', temp: 7, query: 'Baghdati' },
+  { id: 45, name: 'ვანი', temp: 8, query: 'Vani' },
+  { id: 46, name: 'თერჯოლა', temp: 9, query: 'Terjola' },
+  { id: 47, name: 'ზესტაფონი', temp: 5, query: 'Zestafoni' },
+  { id: 48, name: 'ტყიბული', temp: 5, query: 'Tkibuli' },
+  { id: 49, name: 'ჭიათურა', temp: 5, query: 'Chiatura' },
+  { id: 50, name: 'ხარაგაული', temp: 7, query: 'Kharagauli' },
+  { id: 51, name: 'ბედია', temp: 9, query: 'Bedia' },
+  { id: 52, name: 'გალი', temp: 11, query: 'Gali' },
+  { id: 53, name: 'გუდაუთა', temp: 8, query: 'Gudauta' },
+  { id: 54, name: 'გაგრა', temp: 10, query: 'Gagra' },
+  { id: 55, name: 'ახალი ათონი', temp: 10, query: 'New Athos' },
+  { id: 56, name: 'ყაზბეგი', temp: -2, query: 'Kazbegi' },
+  { id: 57, name: 'სიღნაღი', temp: 11, query: 'Sighnaghi' },
+  { id: 58, name: 'დედოფლისწყარო', temp: 10, query: 'Dedoplistskaro' },
+  { id: 59, name: 'ლაგოდეხი', temp: 9, query: 'Lagodekhi' },
+  { id: 60, name: 'საგარეჯო', temp: 7, query: 'Sagarejo' },
+  { id: 61, name: 'გლდანი', temp: 9, query: 'Gldani' },
+];
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => {
   const hasBg = className.includes('bg-');
   const hasText = className.includes('text-');
@@ -42,6 +113,8 @@ export default function App() {
   // მომხმარებლის მიმდინარე ქალაქი (საწყისად Tbilisi, შემდეგ დეტექტირდება ავტომატურად)
   const [city, setCity] = useState<string>('Tbilisi');
   const [coordinates, setCoordinates] = useState<UserCoordinates | null>(null);
+  const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
+  const citySelectedByUser = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
 
@@ -100,7 +173,7 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     detectUserCity().then((detected) => {
-      if (cancelled) return;
+      if (cancelled || citySelectedByUser.current) return;
       if (detected.kind === 'coordinates') {
         setCoordinates(detected.coordinates);
       } else {
@@ -175,6 +248,18 @@ export default function App() {
 
               {/* ცენტრალური სვეტი */}
               <main className="space-y-3 sm:space-y-4 min-w-0">
+                <div className="w-full flex justify-start mb-2">
+                  <CityDropdown
+                    cities={CITY_OPTIONS}
+                    selectedCity={selectedCity}
+                    onSelectCity={(chosenCity: CityOption) => {
+                      citySelectedByUser.current = true;
+                      setSelectedCity(chosenCity);
+                      setCity(chosenCity.query);
+                      setCoordinates(null);
+                    }}
+                  />
+                </div>
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                 <div className="w-full">
                   {centerView === 'hourly' ? (
