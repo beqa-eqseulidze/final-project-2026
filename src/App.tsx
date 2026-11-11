@@ -19,7 +19,7 @@ import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
 import { detectUserCity, UserCoordinates } from './services/weatherService';
-import { CityDropdown } from './components/choiceCity/CityDropdown';
+import {CityDropdown} from './components/choiceCity/city';
 
 // ქალაქების სია
 const CITIES_LIST = [
