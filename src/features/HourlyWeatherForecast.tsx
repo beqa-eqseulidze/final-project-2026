@@ -62,7 +62,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
   return (
     <div className="w-full text-white font-amindi1 select-none">
       {/* 1. სათაური */}
-      <h3 className="text-white text-[14px] sm:text-[15px] font-bold tracking-wide mb-2.5">
+      <h3 className="text-white text-[14px] sm:text-[15px] font-sanet font-medium tracking-wide mb-2.5">
         ამინდი საათების მიხედვით
       </h3>
 
@@ -74,7 +74,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
             className="flex items-center justify-between py-1 px-1 hover:bg-white/5 rounded transition-colors"
           >
             {/* მარცხნივ: საათის წარწერა */}
-            <span className="text-white text-[13px] sm:text-[14px] font-bold">
+            <span className="text-white font-sanet text-[13px] sm:text-[14px] font-medium">
               {item.hourLabel}
             </span>
 
@@ -90,7 +90,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
             />
 
             {/* მარჯვნივ: ტემპერატურა */}
-            <span className="text-white text-[14px] sm:text-[15px] font-bold text-right min-w-[32px]">
+            <span className="text-white font-sanet text-[14px] sm:text-[15px] font-medium text-right min-w-[32px]">
               {item.temp}°
             </span>
           </div>
@@ -109,9 +109,9 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
             }
           }}
           className="
-            font-amindi1 text-white text-[12px] sm:text-[13px] font-bold
+            font-sanet text-white text-[12px] sm:text-[11px] font-medium
             bg-[#15aadc] hover:bg-[#129ac6] active:bg-[#0f8cb6]
-            px-5 py-2 rounded-[4px] cursor-pointer border-0
+            py-1.5 px-4 rounded-[4px] cursor-pointer border-0
             transition-colors tracking-wide shadow-sm
           "
         >

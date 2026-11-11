@@ -89,12 +89,12 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
   return (
     <div className="w-full max-w-full sm:max-w-[320px] text-white font-amindi1 select-none mb-3 sm:mb-4">
       {/* 1. ქალაქის სახელი */}
-      <h1 className="text-[28px] sm:text-[38px] font-bold tracking-tight leading-none text-white m-0">
+      <h1 className="text-[28px] sm:text-[38px] font-sanet tracking-tight leading-none text-white m-0">
         {weather.cityName}
       </h1>
 
       {/* 2. თარიღი (e.g. ორშაბათი, 26 ოქტომბერი) */}
-      <div className="text-[12px] sm:text-[14px] text-white/90 mt-1.5 leading-tight font-medium">
+      <div className="text-[12px] font-sanet sm:text-[14px] text-white/90 mt-1.5 leading-tight font-medium">
         {dateStr}
       </div>
 
@@ -117,13 +117,13 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
                 `https://amindi.ge/static/img/weather_small_${weather.iconCode}.png`;
             }}
           />
-          <span className="text-[12px] sm:text-[14px] font-bold text-white tracking-wide mt-1 text-center">
+          <span className="text-[12px] font-sanet sm:text-[14px] font-bold text-white tracking-wide mt-1 text-center">
             {weather.description}
           </span>
         </div>
 
         {/* მარჯვენა მხარე: დიდი ტემპერატურა */}
-        <div className="text-[48px] sm:text-[68px] font-bold text-white leading-none pr-2 sm:pr-4">
+        <div className="text-[48px] sm:text-[68px] font-sanet font-bold text-white leading-none pr-2 sm:pr-4">
           {weather.temp}°
         </div>
       </div>
