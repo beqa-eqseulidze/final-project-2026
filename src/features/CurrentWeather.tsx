@@ -10,6 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import type { MapWeather } from './InteractiveWeatherMap';
 import {
   fetchCurrentWeather,
   CurrentWeather as ICurrentWeatherData,
@@ -21,6 +22,7 @@ import {
 interface CurrentWeatherProps {
   city?: string;
   coordinates?: UserCoordinates | null;
+  mapWeather?: MapWeather | null;
 }
 
 /**
@@ -46,7 +48,7 @@ const getGmt4DateTime = () => {
   return { dateStr, timeStr };
 };
 
-export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates }) => {
+export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates, mapWeather }) => {
   // საწყისი მნიშვნელობები ზუსტად სქრინშოტის იდენტურია
   const [weather, setWeather] = useState<ICurrentWeatherData>({
     cityName: 'თბილისი',
@@ -72,6 +74,18 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
 
   // OpenWeatherMap API-დან მიმდინარე მონაცემების მიღება
   useEffect(() => {
+    if (mapWeather) {
+      const code = mapWeather.code;
+      setWeather({
+        cityName: mapWeather.name,
+        temp: Math.round(mapWeather.temperature),
+        description: code === 0 ? 'მოწმენდილი' : code <= 3 ? 'ნაწილობრივ ღრუბლიანი' : code <= 48 ? 'ნისლი' : code <= 67 ? 'წვიმა' : code <= 77 ? 'თოვლი' : code <= 82 ? 'წვიმა' : code <= 86 ? 'თოვლი' : 'ჭექა-ქუხილი',
+        iconCode: code === 0 ? '01' : code <= 2 ? '02' : code === 3 ? '04' : code <= 48 ? '50' : code <= 67 ? '10' : code <= 77 ? '13' : '11',
+        windSpeed: mapWeather.wind, windDirectionText: '', pressure: 0,
+        humidity: mapWeather.humidity, visibility: '',
+      });
+      return;
+    }
     let isMounted = true;
     fetchCurrentWeather(city, coordinates)
       .then((data) => {
@@ -84,7 +98,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     return () => {
       isMounted = false;
     };
-  }, [city, coordinates]);
+  }, [city, coordinates, mapWeather]);
 
   return (
     <div className="w-full max-w-full sm:max-w-[320px] text-white font-amindi1 select-none mb-3 sm:mb-4">
