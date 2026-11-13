@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { InteractiveWeatherMap, type MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
 import { Converter } from './components/Converter';
@@ -113,6 +114,7 @@ export default function App() {
   // მომხმარებლის მიმდინარე ქალაქი (საწყისად Tbilisi, შემდეგ დეტექტირდება ავტომატურად)
   const [city, setCity] = useState<string>('Tbilisi');
   const [coordinates, setCoordinates] = useState<UserCoordinates | null>(null);
+  const [mapWeather, setMapWeather] = useState<MapWeather | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
   const citySelectedByUser = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
@@ -213,6 +215,7 @@ export default function App() {
               </div>
             </div>
 
+
             {/* 3-Column Grid Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-[235px_1fr_235px] xl:grid-cols-[260px_1fr_260px] gap-3 sm:gap-4 flex-1">
 
@@ -221,7 +224,7 @@ export default function App() {
 
                 {/* 1. მიმდინარე ამინდი */}
                 <div className="w-full pb-3 border-b border-white/20">
-                  <CurrentWeather city={city} coordinates={coordinates} />
+                  <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
@@ -257,6 +260,7 @@ export default function App() {
                       setSelectedCity(chosenCity);
                       setCity(chosenCity.query);
                       setCoordinates(null);
+                      setMapWeather(null);
                     }}
                   />
                 </div>
@@ -270,9 +274,14 @@ export default function App() {
                 </div>
 
                 {/* ვიდეო / ლაივ კამერა */}
-                <Box className="h-[220px] sm:h-[340px] w-full bg-slate-900 text-white text-xs sm:text-base">
-                  Live Video / კამერა
-                </Box>
+                <div className="w-full h-[260px] sm:h-[340px] overflow-hidden rounded-[4px] border border-slate-500 bg-[#1e2a3b]">
+                  <InteractiveWeatherMap onWeatherSelect={(data) => {
+                    citySelectedByUser.current = true;
+                    setMapWeather(data);
+                    setCity(data.name);
+                    setCoordinates({ latitude: data.latitude, longitude: data.longitude });
+                  }} />
+                </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
                 <div className="w-full">
