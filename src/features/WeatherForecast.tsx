@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { X } from 'lucide-react';
 import {
   fetchForecast,
   fetch5DayHourlyForecast,
@@ -97,11 +98,23 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
       {/* 1. ზედა ბლოკი: ღია ნაცრისფერი ფონი amindi.ge (#eee) */}
       <div className="bg-[#eeeeee] p-3 sm:p-5 pb-3">
         
-        {/* სათაური */}
-        <div className="mb-3 sm:mb-4">
+        {/* სათაური და ჩახურვის ღილაკი */}
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <h2 className="font-sanet text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
             {viewMode === 'daily' ? 'ამინდი დღეების მიხედვით' : 'ამინდი საათების მიხედვით'}
           </h2>
+
+          {viewMode === 'hourly' && (
+            <button
+              type="button"
+              onClick={() => setViewMode('daily')}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] sm:text-[12px] font-sanet font-medium text-slate-600 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-300 hover:border-red-200 rounded-[4px] shadow-sm transition-all cursor-pointer"
+              title="საათობრივი ხედის ჩახურვა"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>ჩახურვა</span>
+            </button>
+          )}
         </div>
 
         {/* --- რეჟიმი 1: 5 დღის დღიური პროგნოზი --- */}
@@ -311,7 +324,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
         <button
           role="tab"
           aria-selected={viewMode === 'hourly'}
-          onClick={() => setViewMode('hourly')}
+          onClick={() => setViewMode((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
           className={`
             py-1.5 sm:py-2 px-3 sm:px-5 text-center font-sanet text-[10px] sm:text-[12px] md:text-[13px] 
             transition-colors cursor-pointer border-0 shrink-0
