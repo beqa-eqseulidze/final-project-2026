@@ -1,9 +1,22 @@
-import { format } from 'date-fns';
-import { ka } from 'date-fns/locale';
 import type { NewsItem } from './types';
 
 interface NewsCardProps {
   item: NewsItem;
+}
+
+function formatNewsDate(dateString: string): string {
+  try {
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return dateString;
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${hours}:${minutes} / ${day}-${month}-${year}`;
+  } catch {
+    return dateString;
+  }
 }
 
 export function NewsCard({ item }: NewsCardProps) {
@@ -26,7 +39,7 @@ export function NewsCard({ item }: NewsCardProps) {
         
         {/* თარიღი */}
         <time className="text-[12px] text-gray-500 font-bpg mb-2 block">
-          {format(new Date(item.publishedAt), 'HH:mm / dd-MM-yyyy', { locale: ka })}
+          {formatNewsDate(item.publishedAt)}
         </time>
 
         {/* სათაური - დავაბრუნე font-bold */}
