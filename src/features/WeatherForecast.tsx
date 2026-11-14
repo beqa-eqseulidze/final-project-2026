@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file WeatherForecast.tsx
  * @description amindi.ge-ს სტილის ამინდის პროგნოზის ბლოკი:
  * - "5 დღის" (დღეების პროგნოზი)
@@ -14,6 +14,7 @@ import {
   DayHourlyForecast,
   UserCoordinates,
 } from '../services/weatherService';
+import { formatTemperature, useLanguage, useTemperatureUnit } from '../context/LanguageContext';
 
 interface WeatherForecastProps {
   /** არჩეული ქალაქი (ნაგულისხმევი: Tbilisi) */
@@ -28,6 +29,8 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
   coordinates,
   onSelectDay,
 }) => {
+  const language = useLanguage();
+  const temperatureUnit = useTemperatureUnit();
   // ხედვის რეჟიმი: 'daily' (5 დღის) ან 'hourly' (5 დღის საათობრივი)
   const [viewMode, setViewMode] = useState<'daily' | 'hourly'>('daily');
 
@@ -49,7 +52,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
     setLoadingDaily(true);
     setErrorDaily(null);
     try {
-      const data = await fetchForecast(targetCity, 5, targetCoordinates);
+      const data = await fetchForecast(targetCity, 5, targetCoordinates, language);
       setForecast(data);
       if (data.length > 0) {
         setSelectedDayIdx(0);
@@ -60,14 +63,14 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
     } finally {
       setLoadingDaily(false);
     }
-  }, [onSelectDay]);
+  }, [onSelectDay, language]);
 
   // საათობრივი პროგნოზის ჩატვირთვა
   const loadHourlyForecast = useCallback(async (targetCity: string, targetCoordinates?: UserCoordinates | null) => {
     setLoadingHourly(true);
     setErrorHourly(null);
     try {
-      const data = await fetch5DayHourlyForecast(targetCity, targetCoordinates);
+      const data = await fetch5DayHourlyForecast(targetCity, targetCoordinates, language);
       setHourlyDays(data);
       if (data.length > 0) {
         setSelectedHourlyDayIdx(0);
@@ -77,7 +80,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
     } finally {
       setLoadingHourly(false);
     }
-  }, []);
+  }, [language]);
 
   // ქალაქის ან კოორდინატების შეცვლისას მონაცემების მიღება
   useEffect(() => {
@@ -98,10 +101,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
       {/* 1. ზედა ბლოკი: ღია ნაცრისფერი ფონი amindi.ge (#eee) */}
       <div className="bg-[#eeeeee] p-3 sm:p-5 pb-3">
         
-        {/* სათაური და ჩახურვის ღილაკი */}
+        {/* სათაური და საათობრივი ხედის ჩახურვა */}
         <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="font-sanet text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
-            {viewMode === 'daily' ? 'ამინდი დღეების მიხედვით' : 'ამინდი საათების მიხედვით'}
+          <h2 className="font-amindi1 text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
+            {viewMode === 'daily'
+              ? (language === 'ka' ? 'ამინდი დღეების მიხედვით' : language === 'en' ? 'Daily forecast' : 'Прогноз по дням')
+              : (language === 'ka' ? 'ამინდი საათების მიხედვით' : language === 'en' ? 'Hourly forecast' : 'Почасовой прогноз')}
           </h2>
 
           {viewMode === 'hourly' && (
@@ -109,7 +114,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               type="button"
               onClick={() => setViewMode('daily')}
               className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] sm:text-[12px] font-sanet font-medium text-slate-600 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-300 hover:border-red-200 rounded-[4px] shadow-sm transition-all cursor-pointer"
-              title="საათობრივი ხედის ჩახურვა"
+              title={language === 'ka' ? 'საათობრივი ხედის ჩახურვა' : language === 'en' ? 'Close hourly view' : 'Закрыть почасовой прогноз'}
             >
               <X className="w-3.5 h-3.5" />
               <span>ჩახურვა</span>
@@ -128,12 +133,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               </div>
             ) : errorDaily ? (
               <div className="py-6 text-center">
-                <p className="font-sanet text-red-600 text-xs sm:text-sm mb-2">{errorDaily}</p>
+                <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{errorDaily}</p>
                 <button
                   onClick={() => loadDailyForecast(city, coordinates)}
-                  className="font-sanet text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
+                  className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
                 >
-                  ხელახლა ცდა
+                  {language === 'ka' ? 'ხელახლა ცდა' : language === 'en' ? 'Try again' : 'Повторить'}
                 </button>
               </div>
             ) : (
@@ -175,9 +180,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                       />
 
                       {/* ტემპერატურა: ღამე° დღე° */}
-                      <div className="font-sanet text-[10px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1 sm:gap-2.5 pb-1">
-                        <span>{day.tempMin}°</span>
-                        <span>{day.tempMax}°</span>
+                      <div className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1 sm:gap-2.5 pb-1">
+                        <span>{formatTemperature(day.tempMin, temperatureUnit)}°{temperatureUnit}</span>
+                        <span>{formatTemperature(day.tempMax, temperatureUnit)}°{temperatureUnit}</span>
                       </div>
                     </div>
                   );
@@ -223,9 +228,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                             'https://amindi.ge/static/img/weather_small_01.png';
                         }}
                       />
-                      <div className="font-sanet text-[10px] sm:text-[12px] text-[#333333] flex items-center justify-center gap-1 sm:gap-2">
-                        <span>{day.tempMin}°</span>
-                        <span>{day.tempMax}°</span>
+                      <div className="font-amindi1 text-[10px] sm:text-[12px] text-[#333333] flex items-center justify-center gap-1 sm:gap-2">
+                        <span>{formatTemperature(day.tempMin, temperatureUnit)}°{temperatureUnit}</span>
+                        <span>{formatTemperature(day.tempMax, temperatureUnit)}°{temperatureUnit}</span>
                       </div>
                     </div>
                   );
@@ -247,7 +252,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                   onClick={() => loadHourlyForecast(city, coordinates)}
                   className="font-sanet text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
                 >
-                  ხელახლა ცდა
+                  {language === 'ka' ? 'ხელახლა ცდა' : language === 'en' ? 'Try again' : 'Повторить'}
                 </button>
               </div>
             ) : (
@@ -285,8 +290,8 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         />
 
                         {/* ტემპერატურა */}
-                        <span className="font-sanet text-[13px] sm:text-[15px] font-bold text-[#333333]">
-                          {item.temp}°
+                        <span className="font-amindi1 text-[13px] sm:text-[15px] font-bold text-[#333333]">
+                          {formatTemperature(item.temp, temperatureUnit)}°{temperatureUnit}
                         </span>
                       </div>
                     );
@@ -317,7 +322,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
             }
           `}
         >
-          5 დღის
+          {language === 'ka' ? '5 დღის' : language === 'en' ? '5 days' : '5 дней'}
         </button>
 
         {/* 2. "5 დღის საათობრივი ამინდის პროგნოზი" ღილაკი */}
@@ -334,7 +339,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
             }
           `}
         >
-          5 დღის საათობრივი ამინდის პროგნოზი
+          {language === 'ka' ? '5 დღის საათობრივი ამინდის პროგნოზი' : language === 'en' ? '5-day hourly forecast' : 'Почасовой прогноз на 5 дней'}
         </button>
       </nav>
     </div>

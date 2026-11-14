@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import type { NewsItem } from './types';
 import { fetchLatestNews } from './newsService';
 import { NewsCard } from './NewsCard'; 
+import { tr, useLanguage } from '../../context/LanguageContext';
 
 export function NewsSection() {
+  const language = useLanguage();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export function NewsSection() {
   return(
     <div className="w-full flex flex-col">
       <div className="bg-[#00a8e8] text-white px-4 py-2.5 flex justify-between items-center">
-        <h2 className="font-sanet font-bold text-[17px] tracking-wide">სიახლეები</h2>
+        <h2 className="font-sanet font-bold text-[17px] tracking-wide">{tr(language, 'სიახლეები', 'News', 'Новости')}</h2>
       </div>
 
       <div className="bg-white p-4 shadow-sm">

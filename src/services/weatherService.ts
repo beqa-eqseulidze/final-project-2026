@@ -89,6 +89,50 @@ export const GEO_MONTHS = [
   'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი',
 ];
 
+const DATE_LOCALES: Record<string, string> = { ka: 'ka-GE', en: 'en-GB', ru: 'ru-RU' };
+
+export function localizeCityName(name: string, language: string): string {
+  const matched = CITIES.find((item) => item.value.toLowerCase() === name.toLowerCase() || item.label.toLowerCase() === name.toLowerCase());
+  if (!matched) return name;
+  if (language === 'ka') return matched.label;
+  if (language === 'en') return matched.value;
+  const ruNames: Record<string, string> = {
+    Tbilisi: 'Тбилиси', Batumi: 'Батуми', Kutaisi: 'Кутаиси', Rustavi: 'Рустави',
+    Gori: 'Гори', Zugdidi: 'Зугдиди', Poti: 'Поти', Telavi: 'Телави',
+    Akhaltsikhe: 'Ахалцихе', Ambrolauri: 'Амбролаури', Sokhumi: 'Сухуми', Tskhinvali: 'Цхинвали',
+  };
+  return ruNames[matched.value] ?? matched.value;
+}
+
+export function localizeWeatherDescription(code: number | undefined, fallback: string, language: string): string {
+  let key: string;
+  if (code === 800) key = 'clear';
+  else if (code === 801) key = 'fewClouds';
+  else if (code === 802) key = 'scattered';
+  else if (code === 803) key = 'broken';
+  else if (code === 804) key = 'overcast';
+  else if (code && code >= 200 && code < 300) key = 'thunder';
+  else if (code && code >= 300 && code < 400) key = 'drizzle';
+  else if (code && code >= 500 && code < 600) key = 'rain';
+  else if (code && code >= 600 && code < 700) key = 'snow';
+  else if (code && code >= 700 && code < 800) key = 'fog';
+  else return fallback;
+
+  const descriptions: Record<string, [string, string, string]> = {
+    clear: ['მოწმენდილი ცა', 'Clear sky', 'Ясно'],
+    fewClouds: ['ცოტა ღრუბლიანი', 'Few clouds', 'Небольшая облачность'],
+    scattered: ['გაფანტული ღრუბლები', 'Scattered clouds', 'Переменная облачность'],
+    broken: ['ნაწილობრივ ღრუბლიანი', 'Broken clouds', 'Облачно с прояснениями'],
+    overcast: ['მოღრუბლული', 'Overcast clouds', 'Пасмурно'],
+    thunder: ['ჭექა-ქუხილი', 'Thunderstorm', 'Гроза'],
+    drizzle: ['ჟინჟღლი', 'Drizzle', 'Морось'],
+    rain: ['წვიმა', 'Rain', 'Дождь'],
+    snow: ['თოვლი', 'Snow', 'Снег'],
+    fog: ['ნისლი', 'Fog', 'Туман'],
+  };
+  return descriptions[key][language === 'en' ? 1 : language === 'ru' ? 2 : 0];
+}
+
 // ქალაქების სია (საქართველო და მსოფლიოს მთავარი ქალაქები)
 export const CITIES = [
   // საქართველო
@@ -276,11 +320,13 @@ function buildWeatherUrl(
   city: string,
   coordinates?: UserCoordinates | null,
   options = '',
+  language: string = 'ka',
 ): string {
   const location = coordinates
     ? `lat=${coordinates.latitude}&lon=${coordinates.longitude}`
     : `q=${encodeURIComponent(city)}`;
-  return `https://api.openweathermap.org/data/2.5/${endpoint}?${location}&appid=${getApiKey()}&units=metric&lang=ka${options}`;
+  const weatherLanguage = language === 'ka' ? 'ka' : language === 'ru' ? 'ru' : 'en';
+  return `https://api.openweathermap.org/data/2.5/${endpoint}?${location}&appid=${getApiKey()}&units=metric&lang=${weatherLanguage}${options}`;
 }
 
 // -------------------------------------------------------
@@ -295,9 +341,10 @@ export async function fetchForecast(
   city: string,
   days: number = 5,
   coordinates?: UserCoordinates | null,
+  language: string = 'ka',
 ): Promise<DailyForecast[]> {
   const count = Math.min(days * 8, 40);
-  const url = buildWeatherUrl('forecast', city, coordinates, `&cnt=${count}`);
+  const url = buildWeatherUrl('forecast', city, coordinates, `&cnt=${count}`, language);
 
   const res = await fetch(url);
 
@@ -320,8 +367,11 @@ export async function fetchForecast(
 
   for (const [dateKey, items] of grouped.entries()) {
     const dateObj = new Date(dateKey + 'T12:00:00');
-    const dayName = GEO_DAYS[dateObj.getDay()];
-    const dateLabel = `${dateObj.getDate()} ${GEO_MONTHS[dateObj.getMonth()]}`;
+    const locale = DATE_LOCALES[language] ?? 'ka-GE';
+    const dayName = language === 'ka' ? GEO_DAYS[dateObj.getDay()] : new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(dateObj);
+    const dateLabel = language === 'ka'
+      ? `${dateObj.getDate()} ${GEO_MONTHS[dateObj.getMonth()]}`
+      : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(dateObj);
 
     const tempMax = Math.round(Math.max(...items.map(i => i.main.temp_max)));
     const tempMin = Math.round(Math.min(...items.map(i => i.main.temp_min)));
@@ -342,8 +392,9 @@ export async function fetchForecast(
 export async function fetchCurrentWeather(
   city: string,
   coordinates?: UserCoordinates | null,
+  language: string = 'ka',
 ): Promise<CurrentWeather> {
-  const url = buildWeatherUrl('weather', city, coordinates);
+  const url = buildWeatherUrl('weather', city, coordinates, '', language);
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -352,10 +403,7 @@ export async function fetchCurrentWeather(
   }
 
   const data = await res.json();
-  const matched = coordinates ? undefined : CITIES.find(
-    c => c.value.toLowerCase() === city.toLowerCase() || c.label.toLowerCase() === city.toLowerCase()
-  );
-  const cityName = matched ? matched.label : (data.name || city);
+  const cityName = localizeCityName(data.name || city, language);
 
   const windSpeedKmh = data.wind?.speed ? Math.round(data.wind.speed * 3.6) : 0;
   const windDeg = data.wind?.deg ?? 0;
@@ -364,7 +412,7 @@ export async function fetchCurrentWeather(
   return {
     cityName,
     temp: Math.round(data.main.temp),
-    description: data.weather[0]?.description ?? '',
+    description: localizeWeatherDescription(data.weather[0]?.id, data.weather[0]?.description ?? '', language),
     iconCode: amindiCode(data.weather[0]?.icon ?? '01d'),
     windSpeed: windSpeedKmh,
     windDirectionText: getWindDirection(windDeg),
@@ -381,8 +429,9 @@ export async function fetchCurrentWeather(
 export async function fetchHourlyForecast(
   city: string,
   coordinates?: UserCoordinates | null,
+  language: string = 'ka',
 ): Promise<HourlyForecastItem[]> {
-  const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=8');
+  const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=8', language);
 
   const res = await fetch(url);
   if (!res.ok) {
@@ -398,7 +447,7 @@ export async function fetchHourlyForecast(
     const slotGmt4Hour = (slotDate.getUTCHours() + 4) % 24;
 
     items.push({
-      hourLabel: `${slotGmt4Hour} საათი`,
+      hourLabel: language === 'ka' ? `${slotGmt4Hour} საათი` : `${slotGmt4Hour}:00`,
       temp: Math.round(slot.main.temp),
       iconCode: getAmindiHourlyIcon(slot.weather[0]?.icon ?? '04d', slotGmt4Hour),
       description: slot.weather[0]?.description ?? '',
@@ -414,11 +463,12 @@ export async function fetchHourlyForecast(
 export async function fetch24HourForecast(
   city: string,
   coordinates?: UserCoordinates | null,
+  language: string = 'ka',
 ): Promise<HourlyForecastItem[]> {
   const currentGmt4Hour = (new Date().getUTCHours() + 4) % 24;
 
   try {
-    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=16');
+    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=16', language);
     const res = await fetch(url);
 
     if (res.ok) {
@@ -431,7 +481,7 @@ export async function fetch24HourForecast(
         const slot = data.list[slotIdx];
 
         items.push({
-          hourLabel: `${hour} საათი`,
+          hourLabel: language === 'ka' ? `${hour} საათი` : `${hour}:00`,
           temp: Math.round(slot.main.temp),
           iconCode: getAmindiHourlyIcon(slot.weather[0]?.icon ?? '04d', hour),
           description: slot.weather[0]?.description ?? '',
@@ -455,7 +505,7 @@ export async function fetch24HourForecast(
     else if (hour === 7 || (hour >= 15 && hour <= 17) || (hour >= 8 && hour <= 11)) defaultOwm = '02d';
 
     items.push({
-      hourLabel: `${hour} საათი`,
+      hourLabel: language === 'ka' ? `${hour} საათი` : `${hour}:00`,
       temp: fallbackTemps[i % fallbackTemps.length],
       iconCode: getAmindiHourlyIcon(defaultOwm, hour),
       description: 'ღრუბლიანი',
@@ -472,9 +522,10 @@ export async function fetch24HourForecast(
 export async function fetch5DayHourlyForecast(
   city: string,
   coordinates?: UserCoordinates | null,
+  language: string = 'ka',
 ): Promise<DayHourlyForecast[]> {
   try {
-    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=40');
+    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=40', language);
     const res = await fetch(url);
 
     if (res.ok) {
@@ -489,8 +540,13 @@ export async function fetch5DayHourlyForecast(
         const dateKey = gmt4Time.toISOString().slice(0, 10);
 
         if (!daySlotsMap.has(dateKey)) {
-          const dayName = GEO_DAYS[gmt4Time.getUTCDay()];
-          const dateLabel = `${gmt4Time.getUTCDate()} ${GEO_MONTHS[gmt4Time.getUTCMonth()]}`;
+          const locale = DATE_LOCALES[language] ?? 'ka-GE';
+          const dayName = language === 'ka'
+            ? GEO_DAYS[gmt4Time.getUTCDay()]
+            : new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: 'UTC' }).format(gmt4Time);
+          const dateLabel = language === 'ka'
+            ? `${gmt4Time.getUTCDate()} ${GEO_MONTHS[gmt4Time.getUTCMonth()]}`
+            : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(gmt4Time);
           daySlotsMap.set(dateKey, { dayName, dateLabel, slots: [] });
         }
 
@@ -543,8 +599,13 @@ export async function fetch5DayHourlyForecast(
   for (let d = 0; d < 5; d++) {
     const targetDate = new Date(today.getTime() + d * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000);
     const dateKey = targetDate.toISOString().slice(0, 10);
-    const dayName = GEO_DAYS[targetDate.getUTCDay()];
-    const dateLabel = `${targetDate.getUTCDate()} ${GEO_MONTHS[targetDate.getUTCMonth()]}`;
+    const locale = DATE_LOCALES[language] ?? 'ka-GE';
+    const dayName = language === 'ka'
+      ? GEO_DAYS[targetDate.getUTCDay()]
+      : new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: 'UTC' }).format(targetDate);
+    const dateLabel = language === 'ka'
+      ? `${targetDate.getUTCDate()} ${GEO_MONTHS[targetDate.getUTCMonth()]}`
+      : new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(targetDate);
     const baseT = baseTemps[d % baseTemps.length];
 
     const hours: HourlyForecastItem[] = [];

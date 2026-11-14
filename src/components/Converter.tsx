@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { tr, useLanguage } from '../context/LanguageContext';
 
 /** ერთი კონვერტაციის წყვილის Props */
 interface ConverterRowProps {
@@ -72,6 +73,7 @@ const USD_GEL_RATE = 2.7;
 
 export const Converter = () => {
   const [open, setOpen] = useState(false);
+  const language = useLanguage();
 
   return (
     <div className="w-full font-amindi1 select-none">
@@ -81,7 +83,7 @@ export const Converter = () => {
         onClick={() => setOpen((p) => !p)}
         className="w-full h-[38px] px-3 text-[14px] bg-[#2da9e0] text-white font-bold rounded flex items-center justify-between cursor-pointer border-0"
       >
-        <span className="flex-1 text-center font-sanet font-medium">კონვერტორი</span>
+        <span className="flex-1 text-center font-sanet font-medium">{tr(language, 'კონვერტორი', 'Converter', 'Конвертер')}</span>
         <svg
           width="14"
           height="14"
@@ -104,8 +106,8 @@ export const Converter = () => {
             backward={(f) => ((f - 32) * 5) / 9}
           />
           <ConverterRow
-            from="კმ"
-            to="მილი"
+            from={tr(language, 'კმ', 'km', 'км')}
+            to={tr(language, 'მილი', 'miles', 'мили')}
             forward={(km) => km * 0.621371}
             backward={(mi) => mi / 0.621371}
           />
