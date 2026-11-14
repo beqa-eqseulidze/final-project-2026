@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { NewsItem } from './types';
-import { fetchGeorgianNews } from './newsService';
+import { fetchLatestNews } from './newsService';
 import { NewsCard } from './NewsCard'; 
 
 export function NewsSection() {
@@ -10,7 +10,7 @@ export function NewsSection() {
 
   useEffect(()=>{
     let cancelled = false;
-    fetchGeorgianNews(10)
+    fetchLatestNews(10)
       .then((data) => {
         if (!cancelled) {
           setNews(data);
@@ -26,12 +26,10 @@ export function NewsSection() {
     return()=>{ cancelled = true; };
   }, []);
 
-  if(loading) {
+  if(loading){
     return (
       <div className="w-full animate-pulse">
-        {/* ლურჯი ზოლი ზემოთ */}
         <div className="bg-[#00a8e8] h-10 mb-2"></div>
-        {/* თეთრი კონტეინერი ქვემოთ */}
         <div className="bg-white p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[...Array(10)].map((_, i) => (
@@ -50,7 +48,7 @@ export function NewsSection() {
     );
   }
 
-  if(error) {
+  if(error){
     return(
       <div className="bg-white shadow-sm p-4 text-center text-red-500 text-sm font-bpg">
         {error}
@@ -58,18 +56,16 @@ export function NewsSection() {
     );
   }
 
-  return (
+  return(
     <div className="w-full flex flex-col">
-      {/* 🆕 ლურჯი სათაურის ზოლი - ცალკე, კონტეინერის გარეთ */}
       <div className="bg-[#00a8e8] text-white px-4 py-2.5 flex justify-between items-center">
         <h2 className="font-sanet font-bold text-[17px] tracking-wide">სიახლეები</h2>
       </div>
 
-      {/* 🆕 თეთრი კონტეინერი ბარათებისთვის - ზოლის ქვემოთ */}
       <div className="bg-white p-4 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {news.map((item) => (
-            <NewsCard key={item.id} item={item} />
+          {news.map((item)=>(
+            <NewsCard key={item.id} item={item}/>
           ))}
         </div>
       </div>
