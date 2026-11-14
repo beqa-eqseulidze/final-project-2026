@@ -47,6 +47,14 @@ export interface HourlyForecastItem {
   description: string;
 }
 
+/** 5 დღის საათობრივი პროგნოზის ერთი დღის მონაცემი */
+export interface DayHourlyForecast {
+  date: string;
+  dayName: string;
+  dateLabel: string;
+  hours: HourlyForecastItem[];
+}
+
 export interface UserCoordinates {
   latitude: number;
   longitude: number;
@@ -141,6 +149,45 @@ export function amindiCode(icon: string): string {
     '50n': '06',
   };
   return map[icon] ?? '01';
+}
+
+/**
+ * საათის მიხედვით ზუსტად განსაზღვრავს amindi.ge-ს დღის ან ღამის იკონის კოდს:
+ * - დღის საათები (07:00 – 17:00): მზე ('01'), მზე ღრუბლით ('02'), წვიმა ('10')
+ * - საღამო / შებინდება (18:00 – 01:00): საღამოს მოღრუბლული ('04') ან მოწმენდილი ცა ('38')
+ * - ღრმა ღამე (02:00 – 06:00): მთვარე ღრუბლით ('39'), სავსე მთვარე ('38'), ღამის წვიმა ('40')
+ */
+export function getAmindiHourlyIcon(owmIcon: string, hour: number): string {
+  const isNight = hour >= 18 || hour < 7;
+  const isDeepNight = hour >= 2 && hour <= 6;
+
+  // დღის საათები (07:00 – 17:00)
+  if (!isNight) {
+    if (owmIcon.includes('01')) return '01'; // მზე
+    if (owmIcon.includes('02')) return '02'; // მზე ღრუბლით
+    if (owmIcon.includes('03') || owmIcon.includes('04')) return '04'; // მოღრუბლული
+    if (owmIcon.includes('09') || owmIcon.includes('10')) return '10'; // წვიმა
+    if (owmIcon.includes('11')) return '11';
+    if (owmIcon.includes('13')) return '13';
+    if (owmIcon.includes('50')) return '06';
+    return amindiCode(owmIcon.replace('n', 'd'));
+  }
+
+  // ღამის საათები
+  if (owmIcon.includes('09') || owmIcon.includes('10')) return '40'; // ღამის წვიმა
+  if (owmIcon.includes('11')) return '11';
+  if (owmIcon.includes('13')) return '13';
+  if (owmIcon.includes('50')) return '06';
+
+  // ღრმა ღამე (02:00 – 06:00) — მთვარის იკონები
+  if (isDeepNight) {
+    if (owmIcon.includes('01') || hour === 4) return '38'; // სავსე/მოწმენდილი მთვარე
+    return '39'; // მთვარე ღრუბლით
+  }
+
+  // საღამო / შებინდება (18:00 – 01:00)
+  if (owmIcon.includes('01')) return '38';
+  return '04'; // საღამოს მოღრუბლული
 }
 
 // ალიასები მოხერხებულობისთვის და უკუთავსებადობისთვის
@@ -345,7 +392,7 @@ export async function fetchHourlyForecast(
     items.push({
       hourLabel: `${slotGmt4Hour} საათი`,
       temp: Math.round(slot.main.temp),
-      iconCode: amindiCode(slot.weather[0]?.icon ?? '04d'),
+      iconCode: getAmindiHourlyIcon(slot.weather[0]?.icon ?? '04d', slotGmt4Hour),
       description: slot.weather[0]?.description ?? '',
     });
   }
@@ -378,7 +425,7 @@ export async function fetch24HourForecast(
         items.push({
           hourLabel: `${hour} საათი`,
           temp: Math.round(slot.main.temp),
-          iconCode: amindiCode(slot.weather[0]?.icon ?? '04d'),
+          iconCode: getAmindiHourlyIcon(slot.weather[0]?.icon ?? '04d', hour),
           description: slot.weather[0]?.description ?? '',
         });
       }
@@ -393,14 +440,144 @@ export async function fetch24HourForecast(
   const items: HourlyForecastItem[] = [];
   for (let i = 0; i < 24; i++) {
     const hour = (currentGmt4Hour + i) % 24;
+    let defaultOwm = '04';
+    if (hour === 4) defaultOwm = '01n';
+    else if (hour >= 2 && hour <= 6) defaultOwm = '02n';
+    else if (hour >= 12 && hour <= 14) defaultOwm = '01d';
+    else if (hour === 7 || (hour >= 15 && hour <= 17) || (hour >= 8 && hour <= 11)) defaultOwm = '02d';
+
     items.push({
       hourLabel: `${hour} საათი`,
       temp: fallbackTemps[i % fallbackTemps.length],
-      iconCode: '04',
+      iconCode: getAmindiHourlyIcon(defaultOwm, hour),
       description: 'ღრუბლიანი',
     });
   }
   return items;
+}
+
+/**
+ * 5 დღის საათობრივი პროგნოზის მიღება OpenWeatherMap API-დან
+ * აბრუნებს 5 დღის მონაცემებს, სადაც თითოეული დღისთვის გამოტანილია 24 საათი
+ * ზუსტად ისევე, როგორც 1 დღის საათობრივ პროგნოზში ({საათი} საათი).
+ */
+export async function fetch5DayHourlyForecast(
+  city: string,
+  coordinates?: UserCoordinates | null,
+): Promise<DayHourlyForecast[]> {
+  try {
+    const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=40');
+    const res = await fetch(url);
+
+    if (res.ok) {
+      const data: OWMForecastResponse = await res.json();
+      
+      // ჯერ დავაჯგუფოთ 3-საათიანი OWM სლოტები დღეების მიხედვით
+      const daySlotsMap = new Map<string, { dayName: string; dateLabel: string; slots: OWMListItem[] }>();
+
+      for (const slot of data.list) {
+        const slotDate = new Date(slot.dt_txt.replace(' ', 'T') + 'Z');
+        const gmt4Time = new Date(slotDate.getTime() + 4 * 60 * 60 * 1000);
+        const dateKey = gmt4Time.toISOString().slice(0, 10);
+
+        if (!daySlotsMap.has(dateKey)) {
+          const dayName = GEO_DAYS[gmt4Time.getUTCDay()];
+          const dateLabel = `${gmt4Time.getUTCDate()} ${GEO_MONTHS[gmt4Time.getUTCMonth()]}`;
+          daySlotsMap.set(dateKey, { dayName, dateLabel, slots: [] });
+        }
+
+        daySlotsMap.get(dateKey)!.slots.push(slot);
+      }
+
+      const resultDays: DayHourlyForecast[] = [];
+
+      for (const [dateKey, dayInfo] of daySlotsMap.entries()) {
+        const hours: HourlyForecastItem[] = [];
+        const slotsCount = dayInfo.slots.length;
+
+        // 24 საათი თითოეული დღისთვის: 01:00-დან 23:00-მდე და ბოლოს 23:00-ის გვერდით 00:00
+        const HOURS_ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0];
+
+        for (const hour of HOURS_ORDER) {
+          const slotIdx = Math.min(Math.floor((hour / 24) * slotsCount), slotsCount - 1);
+          const slot = dayInfo.slots[slotIdx];
+          const hourLabel = hour === 0 ? '00:00' : (hour < 10 ? `0${hour}:00` : `${hour}:00`);
+
+          hours.push({
+            hourLabel,
+            temp: Math.round(slot.main.temp),
+            iconCode: getAmindiHourlyIcon(slot.weather[0]?.icon ?? '04d', hour),
+            description: slot.weather[0]?.description ?? '',
+          });
+        }
+
+        resultDays.push({
+          date: dateKey,
+          dayName: dayInfo.dayName,
+          dateLabel: dayInfo.dateLabel,
+          hours,
+        });
+
+        if (resultDays.length === 5) break;
+      }
+
+      if (resultDays.length > 0) return resultDays;
+    }
+  } catch {
+    // fallback ქვემოთ
+  }
+
+  // fallback სარეზერვო 24-საათიანი მონაცემები 5 დღისთვის amindi.ge-ს სტილში
+  const today = new Date();
+  const fallbackDays: DayHourlyForecast[] = [];
+  const baseTemps = [14, 15, 13, 16, 14];
+
+  for (let d = 0; d < 5; d++) {
+    const targetDate = new Date(today.getTime() + d * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000);
+    const dateKey = targetDate.toISOString().slice(0, 10);
+    const dayName = GEO_DAYS[targetDate.getUTCDay()];
+    const dateLabel = `${targetDate.getUTCDate()} ${GEO_MONTHS[targetDate.getUTCMonth()]}`;
+    const baseT = baseTemps[d % baseTemps.length];
+
+    const hours: HourlyForecastItem[] = [];
+    const HOURS_ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0];
+    for (const h of HOURS_ORDER) {
+      const delta = h >= 10 && h <= 17 ? 3 : h >= 0 && h <= 6 ? -3 : 0;
+      const hourLabel = h === 0 ? '00:00' : (h < 10 ? `0${h}:00` : `${h}:00`);
+      
+      let defaultOwm = '04';
+      let desc = 'ღრუბლიანი';
+      if (h === 4) {
+        defaultOwm = '01n';
+        desc = 'მოწმენდილი ცა';
+      } else if (h >= 2 && h <= 6) {
+        defaultOwm = '02n';
+        desc = 'მთვარე და ღრუბელი';
+      } else if (h >= 12 && h <= 14) {
+        defaultOwm = '01d';
+        desc = 'მზიანი';
+      } else if (h === 7 || (h >= 15 && h <= 17) || (h >= 8 && h <= 11)) {
+        defaultOwm = '02d';
+        desc = 'ნაწილობრივ მოღრუბლული';
+      }
+
+      hours.push({
+        hourLabel,
+        temp: baseT + delta,
+        iconCode: getAmindiHourlyIcon(defaultOwm, h),
+        description: desc,
+      });
+    }
+
+    fallbackDays.push({
+      date: dateKey,
+      dayName,
+      dateLabel,
+      hours,
+    });
+  }
+
+  return fallbackDays;
 }
 
 export interface CurrentWeather {

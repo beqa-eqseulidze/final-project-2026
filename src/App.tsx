@@ -24,6 +24,7 @@ import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლ�
 import { PalitraShortAd } from './components/ads/PalitraShortAd'; //რეკლამა
 import { PalitraNewsAd } from './components/ads/PalitraNewsAd'; //რეკლამა
 import { CityDropdown } from './components/choiceCity/city';
+import { NewsSection } from './features/News/NewsSection';
 
 interface CityOption {
   id: number;
@@ -329,6 +330,9 @@ export default function App() {
                 <div className="w-full">
                   <Slider slides={sliderData} />
                 </div>
+
+                 {/* 🆕 სიახლეები */}
+                <NewsSection />
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
                 <div className="w-full">
