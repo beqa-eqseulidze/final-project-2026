@@ -19,7 +19,7 @@ import { ZodiacDetailPage } from './features/ZodiacDetailPage';
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
-import { detectUserCity, UserCoordinates } from './services/weatherService';
+import { detectUserCity, fetchCurrentWeather, UserCoordinates } from './services/weatherService';
 import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
 import { PalitraShortAd } from './components/ads/PalitraShortAd'; //რეკლამა
 import { PalitraNewsAd } from './components/ads/PalitraNewsAd'; //რეკლამა
@@ -117,6 +117,7 @@ export default function App() {
   const [coordinates, setCoordinates] = useState<UserCoordinates | null>(null);
   const [mapWeather, setMapWeather] = useState<MapWeather | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
+  const [cityOptions, setCityOptions] = useState<CityOption[]>(CITY_OPTIONS);
   const citySelectedByUser = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
@@ -130,6 +131,40 @@ export default function App() {
   });
   const [activeZodiacTab, setActiveZodiacTab] = useState<'daily' | 'monthly' | 'yearly' | 'general'>('daily');
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTemperatures = async () => {
+      for (const option of CITY_OPTIONS) {
+        if (cancelled) return;
+
+        try {
+          const weather = await fetchCurrentWeather(option.query);
+          if (cancelled) return;
+
+          setCityOptions((current) =>
+            current.map((cityOption) =>
+              cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
+            ),
+          );
+          setSelectedCity((current) =>
+            current?.id === option.id ? { ...current, temp: weather.temp } : current,
+          );
+        } catch {
+          // Keep the existing fallback temperature if the API request fails.
+        }
+
+        await new Promise<void>((resolve) => {
+          window.setTimeout(resolve, 1000);
+        });
+      }
+    };
+
+    void loadTemperatures();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   // URL hash-ის მოსმენა (ბრაუზერის Back/Forward ღილაკებისთვის)
   useEffect(() => {
     const handleUrlChange = () => {
@@ -254,13 +289,20 @@ export default function App() {
               <main className="space-y-3 sm:space-y-4 min-w-0">
                 <div className="w-full flex justify-start mb-2">
                   <CityDropdown
-                    cities={CITY_OPTIONS}
+                    cities={cityOptions}
                     selectedCity={selectedCity}
                     onSelectCity={(chosenCity: CityOption) => {
                       citySelectedByUser.current = true;
                       setSelectedCity(chosenCity);
                       setCity(chosenCity.query);
                       setCoordinates(null);
+                      void fetchCurrentWeather(chosenCity.query)
+                        .then(({ temp }) => {
+                          setSelectedCity((current) =>
+                            current?.id === chosenCity.id ? { ...current, temp } : current,
+                          );
+                        })
+                        .catch(() => {});
                       setMapWeather(null);
                     }}
                   />
