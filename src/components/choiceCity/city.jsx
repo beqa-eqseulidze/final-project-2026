@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const CityDropdown = ({ cities, selectedCity, onSelectCity }) => {
+export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'ka', unit = 'C' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (city) => {
@@ -27,7 +27,7 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity }) => {
           fontSize: '13px'
         }}
       >
-        <span>{selectedCity ? selectedCity.name : "აირჩიე ქალაქი"}</span>
+        <span>{selectedCity ? selectedCity.name : language === 'ka' ? 'აირჩიე ქალაქი' : language === 'en' ? 'Choose a city' : 'Выберите город'}</span>
         <span>▼</span>
       </button>
 
@@ -47,7 +47,7 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity }) => {
           color: 'white'
         }}>
           <div style={{ fontSize: '11px', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '4px', textTransform: 'uppercase' }}>
-            საქართველოს ქალაქები
+            {language === 'ka' ? 'საქართველოს ქალაქები' : language === 'en' ? 'Cities in Georgia' : 'Города Грузии'}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
             {cities.map((city) => (
@@ -73,7 +73,7 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity }) => {
                 }}
               >
                 <span>{city.name}</span>
-                <span>{city.temp}°</span>
+                <span>{city.temp}°{unit}</span>
               </div>
             ))}
           </div>

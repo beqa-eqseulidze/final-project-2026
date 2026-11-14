@@ -17,6 +17,8 @@ import {
   HourlyForecastItem,
   UserCoordinates,
 } from '../services/weatherService';
+import { useLanguage } from '../context/LanguageContext';
+import { formatTemperature, useTemperatureUnit } from '../context/LanguageContext';
 
 interface FullHourlyForecastProps {
   city?: string;
@@ -27,6 +29,8 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
   city = 'Tbilisi',
   coordinates,
 }) => {
+  const language = useLanguage();
+  const temperatureUnit = useTemperatureUnit();
   const [items, setItems] = useState<HourlyForecastItem[]>([]);
   const [selectedIdx, setSelectedIdx] = useState<number>(8); // სქრინშოტის მსგავსად (მაგ. მე-8 საათი)
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +39,7 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
     let isMounted = true;
     setLoading(true);
 
-    fetch24HourForecast(city, coordinates)
+    fetch24HourForecast(city, coordinates, language)
       .then((data) => {
         if (isMounted) {
           setItems(data);
@@ -49,14 +53,14 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [city, coordinates]);
+  }, [city, coordinates, language]);
 
   return (
     <div className="w-full bg-[#eeeeee] rounded-[4px] shadow-md border border-black/10 select-none p-3 sm:p-5">
       {/* 1. სათაური */}
       <div className="mb-3 sm:mb-6">
         <h2 className="font-amindi1 text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
-          ამინდი საათების მიხედვით
+          {language === 'ka' ? 'ამინდი საათების მიხედვით' : language === 'en' ? 'Hourly weather' : 'Погода по часам'}
         </h2>
       </div>
 
@@ -102,7 +106,7 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
 
                 {/* ტემპერატურა */}
                 <span className="font-amindi1 text-[13px] sm:text-[15px] font-bold text-[#333333]">
-                  {item.temp}°
+                  {formatTemperature(item.temp, temperatureUnit)}°{temperatureUnit}
                 </span>
               </div>
             );

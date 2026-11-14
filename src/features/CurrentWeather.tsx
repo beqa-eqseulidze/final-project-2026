@@ -11,11 +11,14 @@
 
 import React, { useState, useEffect } from 'react';
 import type { MapWeather } from './InteractiveWeatherMap';
+import { formatTemperature, useLanguage, useTemperatureUnit } from '../context/LanguageContext';
 import {
   fetchCurrentWeather,
-  CurrentWeather as ICurrentWeatherData,
   GEO_DAYS,
   GEO_MONTHS,
+  localizeCityName,
+  localizeWeatherDescription,
+  CurrentWeather as ICurrentWeatherData,
   UserCoordinates,
 } from '../services/weatherService';
 
@@ -23,18 +26,21 @@ interface CurrentWeatherProps {
   city?: string;
   coordinates?: UserCoordinates | null;
   mapWeather?: MapWeather | null;
+  cityNameOverride?: string;
 }
 
 /**
  * ითვლის მიმდინარე თარიღსა და დროს GMT+4 დროის სარტყელში
  */
-const getGmt4DateTime = () => {
+const getGmt4DateTime = (language: string) => {
   const now = new Date();
-
-  // თბილისის თარიღი (GMT+4)
   const tbilisiDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tbilisi' }));
-  const dayName = GEO_DAYS[tbilisiDate.getDay()];
-  const dateStr = `${dayName}, ${tbilisiDate.getDate()} ${GEO_MONTHS[tbilisiDate.getMonth()]}`;
+  const locale = language === 'en' ? 'en-GB' : 'ru-RU';
+  const dateStr = language === 'ka'
+    ? `${GEO_DAYS[tbilisiDate.getDay()]}, ${tbilisiDate.getDate()} ${GEO_MONTHS[tbilisiDate.getMonth()]}`
+    : new Intl.DateTimeFormat(locale, {
+      timeZone: 'Asia/Tbilisi', weekday: 'long', day: 'numeric', month: 'long',
+    }).format(now);
 
   // თბილისის ცოცხალი დრო (HH:MM:SS)
   const timeStr = new Intl.DateTimeFormat('en-GB', {
@@ -48,7 +54,9 @@ const getGmt4DateTime = () => {
   return { dateStr, timeStr };
 };
 
-export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates, mapWeather }) => {
+export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi', coordinates, mapWeather, cityNameOverride }) => {
+  const language = useLanguage();
+  const temperatureUnit = useTemperatureUnit();
   // საწყისი მნიშვნელობები ზუსტად სქრინშოტის იდენტურია
   const [weather, setWeather] = useState<ICurrentWeatherData>({
     cityName: 'თბილისი',
@@ -62,24 +70,32 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     visibility: '10 კმ',
   });
 
-  const [{ dateStr, timeStr }, setDateTime] = useState(getGmt4DateTime);
+  const [{ dateStr, timeStr }, setDateTime] = useState(() => getGmt4DateTime(language));
 
   // ცოცხალი საათის ტაიმერი (ყოველ წამში ახლდება)
   useEffect(() => {
     const timer = setInterval(() => {
-      setDateTime(getGmt4DateTime());
+      setDateTime(getGmt4DateTime(language));
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [language]);
 
   // OpenWeatherMap API-დან მიმდინარე მონაცემების მიღება
   useEffect(() => {
     if (mapWeather) {
       const code = mapWeather.code;
+      const description = code === 0
+        ? localizeWeatherDescription(800, '', language)
+        : code <= 3 ? localizeWeatherDescription(803, '', language)
+          : code <= 48 ? localizeWeatherDescription(741, '', language)
+            : code <= 67 ? localizeWeatherDescription(500, '', language)
+              : code <= 77 ? localizeWeatherDescription(600, '', language)
+                : code <= 82 ? localizeWeatherDescription(500, '', language)
+                  : localizeWeatherDescription(200, '', language);
       setWeather({
-        cityName: mapWeather.name,
+        cityName: cityNameOverride ?? localizeCityName(mapWeather.name, language),
         temp: Math.round(mapWeather.temperature),
-        description: code === 0 ? 'მოწმენდილი' : code <= 3 ? 'ნაწილობრივ ღრუბლიანი' : code <= 48 ? 'ნისლი' : code <= 67 ? 'წვიმა' : code <= 77 ? 'თოვლი' : code <= 82 ? 'წვიმა' : code <= 86 ? 'თოვლი' : 'ჭექა-ქუხილი',
+        description,
         iconCode: code === 0 ? '01' : code <= 2 ? '02' : code === 3 ? '04' : code <= 48 ? '50' : code <= 67 ? '10' : code <= 77 ? '13' : '11',
         windSpeed: mapWeather.wind, windDirectionText: '', pressure: 0,
         humidity: mapWeather.humidity, visibility: '',
@@ -87,9 +103,9 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
       return;
     }
     let isMounted = true;
-    fetchCurrentWeather(city, coordinates)
+    fetchCurrentWeather(city, coordinates, language)
       .then((data) => {
-        if (isMounted) setWeather(data);
+        if (isMounted) setWeather({ ...data, cityName: cityNameOverride ?? data.cityName });
       })
       .catch(() => {
         // შეცდომის შემთხვევაში უსაფრთხოდ რჩება საწყისი მონაცემი
@@ -98,7 +114,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
     return () => {
       isMounted = false;
     };
-  }, [city, coordinates, mapWeather]);
+  }, [city, coordinates, mapWeather, language, cityNameOverride]);
 
   return (
     <div className="w-full max-w-full sm:max-w-[320px] text-white font-amindi1 select-none mb-3 sm:mb-4">
@@ -138,7 +154,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
 
         {/* მარჯვენა მხარე: დიდი ტემპერატურა */}
         <div className="text-[48px] sm:text-[68px] font-sanet font-bold text-white leading-none pr-2 sm:pr-4">
-          {weather.temp}°
+          {formatTemperature(weather.temp, temperatureUnit)}°{temperatureUnit}
         </div>
       </div>
     </div>
