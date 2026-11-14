@@ -99,7 +99,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
         
         {/* სათაური */}
         <div className="mb-3 sm:mb-4">
-          <h2 className="font-amindi1 text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
+          <h2 className="font-sanet text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
             {viewMode === 'daily' ? 'ამინდი დღეების მიხედვით' : 'ამინდი საათების მიხედვით'}
           </h2>
         </div>
@@ -115,10 +115,10 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               </div>
             ) : errorDaily ? (
               <div className="py-6 text-center">
-                <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{errorDaily}</p>
+                <p className="font-sanet text-red-600 text-xs sm:text-sm mb-2">{errorDaily}</p>
                 <button
                   onClick={() => loadDailyForecast(city, coordinates)}
-                  className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
+                  className="font-sanet text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
                 >
                   ხელახლა ცდა
                 </button>
@@ -141,12 +141,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                       `}
                     >
                       {/* კვირის დღე */}
-                      <span className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
+                      <span className="font-sanet text-[10px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
                         {day.dayName}
                       </span>
 
                       {/* თარიღი */}
-                      <span className="font-amindi2 text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
+                      <span className="font-sanet text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
                         {day.dateLabel}
                       </span>
 
@@ -162,7 +162,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                       />
 
                       {/* ტემპერატურა: ღამე° დღე° */}
-                      <div className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1 sm:gap-2.5 pb-1">
+                      <div className="font-sanet text-[10px] sm:text-[13px] font-bold text-[#333333] flex items-center justify-center gap-1 sm:gap-2.5 pb-1">
                         <span>{day.tempMin}°</span>
                         <span>{day.tempMax}°</span>
                       </div>
@@ -195,10 +195,10 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         }
                       `}
                     >
-                      <span className="font-amindi1 text-[10px] sm:text-[13px] text-[#222222] text-center leading-tight">
+                      <span className="font-sanet text-[10px] sm:text-[13px] text-[#222222] text-center leading-tight">
                         {day.dayName}
                       </span>
-                      <span className="font-amindi2 text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
+                      <span className="font-sanet text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
                         {day.dateLabel}
                       </span>
                       <img
@@ -210,7 +210,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                             'https://amindi.ge/static/img/weather_small_01.png';
                         }}
                       />
-                      <div className="font-amindi1 text-[10px] sm:text-[12px] text-[#333333] flex items-center justify-center gap-1 sm:gap-2">
+                      <div className="font-sanet text-[10px] sm:text-[12px] text-[#333333] flex items-center justify-center gap-1 sm:gap-2">
                         <span>{day.tempMin}°</span>
                         <span>{day.tempMax}°</span>
                       </div>
@@ -229,10 +229,10 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               </div>
             ) : errorHourly ? (
               <div className="py-6 text-center">
-                <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{errorHourly}</p>
+                <p className="font-sanet text-red-600 text-xs sm:text-sm mb-2">{errorHourly}</p>
                 <button
                   onClick={() => loadHourlyForecast(city, coordinates)}
-                  className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
+                  className="font-sanet text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
                 >
                   ხელახლა ცდა
                 </button>
@@ -256,7 +256,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         `}
                       >
                         {/* საათი (მაგ: 22 საათი) */}
-                        <span className="font-amindi1 text-[11px] sm:text-[13px] font-bold text-[#222222] text-center">
+                        <span className="font-sanet text-[11px] sm:text-[13px] font-bold text-[#222222] text-center">
                           {item.hourLabel}
                         </span>
 
@@ -272,7 +272,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         />
 
                         {/* ტემპერატურა */}
-                        <span className="font-amindi1 text-[13px] sm:text-[15px] font-bold text-[#333333]">
+                        <span className="font-sanet text-[13px] sm:text-[15px] font-bold text-[#333333]">
                           {item.temp}°
                         </span>
                       </div>
@@ -296,7 +296,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
           aria-selected={viewMode === 'daily'}
           onClick={() => setViewMode('daily')}
           className={`
-            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-sanet text-[10px] sm:text-[12px] md:text-[13px] 
             transition-colors cursor-pointer border-0 shrink-0
             ${viewMode === 'daily'
               ? 'bg-[#0a8ab5] text-white font-bold'
@@ -313,7 +313,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
           aria-selected={viewMode === 'hourly'}
           onClick={() => setViewMode('hourly')}
           className={`
-            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-sanet text-[10px] sm:text-[12px] md:text-[13px] 
             transition-colors cursor-pointer border-0 shrink-0
             ${viewMode === 'hourly'
               ? 'bg-[#0a8ab5] text-white font-bold'
