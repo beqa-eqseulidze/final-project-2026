@@ -310,6 +310,11 @@ export default function App() {
                 <div className="w-full h-[260px] sm:h-[520px]">
                   <PalitraLongAd />
                 </div>
+
+                {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
+                <div className="w-full h-[260px] sm:h-[520px]">
+                  <PalitraLongAd />
+                </div>
               </aside>
 
             </div>
