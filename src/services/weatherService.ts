@@ -198,40 +198,48 @@ export function amindiCode(icon: string): string {
 /**
  * საათის მიხედვით ზუსტად განსაზღვრავს amindi.ge-ს დღის ან ღამის იკონის კოდს:
  * - დღის საათები (07:00 – 17:00): მზე ('01'), მზე ღრუბლით ('02'), წვიმა ('10')
- * - საღამო / შებინდება (18:00 – 01:00): საღამოს მოღრუბლული ('04') ან მოწმენდილი ცა ('38')
- * - ღრმა ღამე (02:00 – 06:00): მთვარე ღრუბლით ('39'), სავსე მთვარე ('38'), ღამის წვიმა ('40')
+ * - საღამო/შებინდება (17:00 – 21:00): ღრუბლიანი/ნახევრად ღრუბლიანი ('04'/'02')
+ * - ღამე (22:00 – 01:00): ბნელი ღრუბელი ('04'), წვიმა ('40')
+ * - ღრმა ღამე (02:00 – 06:00): მთვარე ('38'/'39'), ღამის წვიმა ('40')
  */
 export function getAmindiHourlyIcon(owmIcon: string, hour: number): string {
-  const isNight = hour >= 18 || hour < 7;
+  // ღრმა ღამე: 02:00 – 06:00 — მთვარის იკონები
   const isDeepNight = hour >= 2 && hour <= 6;
+  // დღე: 07:00 – 17:00 (17 ჩათვლით)
+  const isDay = hour >= 7 && hour <= 17;
 
-  // დღის საათები (07:00 – 17:00)
-  if (!isNight) {
+  // --- წვიმა, ჭექა-ქუხილი, თოვლი, ნისლი — ყველა საათში ერთნაირი ---
+  if (owmIcon.includes('09') || owmIcon.includes('10')) {
+    return isDay ? '10' : '40'; // დღის წვიმა vs ღამის წვიმა
+  }
+  if (owmIcon.includes('11')) return '11'; // ჭექა-ქუხილი
+  if (owmIcon.includes('13')) return '13'; // თოვლი
+  if (owmIcon.includes('50')) return '06'; // ნისლი
+
+  // --- დღის საათები (07:00 – 17:00) ---
+  if (isDay) {
     if (owmIcon.includes('01')) return '01'; // მზე
     if (owmIcon.includes('02')) return '02'; // მზე ღრუბლით
     if (owmIcon.includes('03') || owmIcon.includes('04')) return '04'; // მოღრუბლული
-    if (owmIcon.includes('09') || owmIcon.includes('10')) return '10'; // წვიმა
-    if (owmIcon.includes('11')) return '11';
-    if (owmIcon.includes('13')) return '13';
-    if (owmIcon.includes('50')) return '06';
-    return amindiCode(owmIcon.replace('n', 'd'));
+    return '01'; // default: მზე
   }
 
-  // ღამის საათები
-  if (owmIcon.includes('09') || owmIcon.includes('10')) return '40'; // ღამის წვიმა
-  if (owmIcon.includes('11')) return '11';
-  if (owmIcon.includes('13')) return '13';
-  if (owmIcon.includes('50')) return '06';
-
-  // ღრმა ღამე (02:00 – 06:00) — მთვარის იკონები
+  // --- ღრმა ღამე (02:00 – 06:00) — მთვარის იკონები ---
   if (isDeepNight) {
-    if (owmIcon.includes('01') || hour === 4) return '38'; // სავსე/მოწმენდილი მთვარე
+    if (owmIcon.includes('01')) return '38'; // სუფთა მთვარე
     return '39'; // მთვარე ღრუბლით
   }
 
-  // საღამო / შებინდება (18:00 – 01:00)
-  if (owmIcon.includes('01')) return '38';
-  return '04'; // საღამოს მოღრუბლული
+  // --- საღამო/შებინდება (18:00 – 21:00) ---
+  if (hour >= 18 && hour <= 21) {
+    if (owmIcon.includes('01')) return '38'; // მოწმენდილი ცა
+    if (owmIcon.includes('02')) return '04'; // ნახევრად ღრუბლიანი
+    return '04'; // ღრუბლიანი
+  }
+
+  // --- ღამე (22:00 – 01:00) ---
+  if (owmIcon.includes('01')) return '38'; // მოწმენდილი ღამე
+  return '04'; // ბნელი ღრუბელი
 }
 
 // ალიასები მოხერხებულობისთვის და უკუთავსებადობისთვის

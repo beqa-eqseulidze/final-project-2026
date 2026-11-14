@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { X } from 'lucide-react';
 import {
   fetchForecast,
   fetch5DayHourlyForecast,
@@ -100,13 +101,25 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
       {/* 1. ზედა ბლოკი: ღია ნაცრისფერი ფონი amindi.ge (#eee) */}
       <div className="bg-[#eeeeee] p-3 sm:p-5 pb-3">
         
-        {/* სათაური */}
-        <div className="mb-3 sm:mb-4">
+        {/* სათაური და საათობრივი ხედის ჩახურვა */}
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <h2 className="font-amindi1 text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
             {viewMode === 'daily'
               ? (language === 'ka' ? 'ამინდი დღეების მიხედვით' : language === 'en' ? 'Daily forecast' : 'Прогноз по дням')
               : (language === 'ka' ? 'ამინდი საათების მიხედვით' : language === 'en' ? 'Hourly forecast' : 'Почасовой прогноз')}
           </h2>
+
+          {viewMode === 'hourly' && (
+            <button
+              type="button"
+              onClick={() => setViewMode('daily')}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] sm:text-[12px] font-sanet font-medium text-slate-600 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-300 hover:border-red-200 rounded-[4px] shadow-sm transition-all cursor-pointer"
+              title={language === 'ka' ? 'საათობრივი ხედის ჩახურვა' : language === 'en' ? 'Close hourly view' : 'Закрыть почасовой прогноз'}
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>ჩახურვა</span>
+            </button>
+          )}
         </div>
 
         {/* --- რეჟიმი 1: 5 დღის დღიური პროგნოზი --- */}
@@ -146,12 +159,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                       `}
                     >
                       {/* კვირის დღე */}
-                      <span className="font-amindi1 text-[10px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
+                      <span className="font-sanet text-[10px] sm:text-[13px] font-bold text-[#222222] text-center leading-tight">
                         {day.dayName}
                       </span>
 
                       {/* თარიღი */}
-                      <span className="font-amindi2 text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
+                      <span className="font-sanet text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
                         {day.dateLabel}
                       </span>
 
@@ -200,10 +213,10 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         }
                       `}
                     >
-                      <span className="font-amindi1 text-[10px] sm:text-[13px] text-[#222222] text-center leading-tight">
+                      <span className="font-sanet text-[10px] sm:text-[13px] text-[#222222] text-center leading-tight">
                         {day.dayName}
                       </span>
-                      <span className="font-amindi2 text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
+                      <span className="font-sanet text-[9px] sm:text-[11px] text-[#666666] text-center mt-0.5 leading-tight">
                         {day.dateLabel}
                       </span>
                       <img
@@ -234,12 +247,12 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
               </div>
             ) : errorHourly ? (
               <div className="py-6 text-center">
-                <p className="font-amindi2 text-red-600 text-xs sm:text-sm mb-2">{errorHourly}</p>
+                <p className="font-sanet text-red-600 text-xs sm:text-sm mb-2">{errorHourly}</p>
                 <button
                   onClick={() => loadHourlyForecast(city, coordinates)}
-                  className="font-amindi1 text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
+                  className="font-sanet text-xs px-3 py-1 bg-[#15aadc] text-white rounded cursor-pointer"
                 >
-                  ხელახლა ცდა
+                  {language === 'ka' ? 'ხელახლა ცდა' : language === 'en' ? 'Try again' : 'Повторить'}
                 </button>
               </div>
             ) : (
@@ -261,7 +274,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         `}
                       >
                         {/* საათი (მაგ: 22 საათი) */}
-                        <span className="font-amindi1 text-[11px] sm:text-[13px] font-bold text-[#222222] text-center">
+                        <span className="font-sanet text-[11px] sm:text-[13px] font-bold text-[#222222] text-center">
                           {item.hourLabel}
                         </span>
 
@@ -301,7 +314,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
           aria-selected={viewMode === 'daily'}
           onClick={() => setViewMode('daily')}
           className={`
-            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-sanet text-[10px] sm:text-[12px] md:text-[13px] 
             transition-colors cursor-pointer border-0 shrink-0
             ${viewMode === 'daily'
               ? 'bg-[#0a8ab5] text-white font-bold'
@@ -316,9 +329,9 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
         <button
           role="tab"
           aria-selected={viewMode === 'hourly'}
-          onClick={() => setViewMode('hourly')}
+          onClick={() => setViewMode((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
           className={`
-            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-amindi1 text-[10px] sm:text-[12px] md:text-[13px] 
+            py-1.5 sm:py-2 px-3 sm:px-5 text-center font-sanet text-[10px] sm:text-[12px] md:text-[13px] 
             transition-colors cursor-pointer border-0 shrink-0
             ${viewMode === 'hourly'
               ? 'bg-[#0a8ab5] text-white font-bold'
