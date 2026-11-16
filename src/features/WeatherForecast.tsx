@@ -103,7 +103,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
         
         {/* სათაური და საათობრივი ხედის ჩახურვა */}
         <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="font-amindi1 text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
+          <h2 className="font-sanet text-[#19375c] text-[14px] sm:text-[18px] font-bold uppercase tracking-wide">
             {viewMode === 'daily'
               ? (language === 'ka' ? 'ამინდი დღეების მიხედვით' : language === 'en' ? 'Daily forecast' : 'Прогноз по дням')
               : (language === 'ka' ? 'ამინდი საათების მიხედვით' : language === 'en' ? 'Hourly forecast' : 'Почасовой прогноз')}

@@ -48,7 +48,7 @@ export default function LanguageSelector({ language, onChange }: LanguageSelecto
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex h-[37px] min-w-[112px] items-center justify-between gap-2 rounded-[4px] bg-[#00a2d8] px-2.5 text-[12px] font-bold text-white shadow-sm hover:bg-[#0094c5] focus:outline-none focus:ring-2 focus:ring-sky-300"
+        className="flex h-[37px] min-w-[112px] font-sanet items-center justify-between gap-2 rounded-[4px] bg-[#00a2d8] px-2.5 text-[12px] text-white shadow-sm hover:bg-[#0094c5] focus:outline-none focus:ring-2 focus:ring-sky-300"
       >
         <span className="flex items-center gap-1.5"><Flag country={selected.flag} />{selected.label}</span>
         <span aria-hidden="true" className="text-[10px]">▼</span>
@@ -68,7 +68,7 @@ export default function LanguageSelector({ language, onChange }: LanguageSelecto
                   onChange(item.code);
                   setIsOpen(false);
                 }}
-                className="flex w-full items-center gap-2 whitespace-nowrap px-2.5 py-1.5 text-left text-[11px] font-semibold hover:bg-black/15 focus:bg-black/15 focus:outline-none"
+                className="flex w-full items-center font-sanet gap-2 whitespace-nowrap px-2.5 py-1.5 text-left text-[11px] hover:bg-black/15 focus:bg-black/15 focus:outline-none"
               >
                 <Flag country={item.flag} />{item.label}
               </button>

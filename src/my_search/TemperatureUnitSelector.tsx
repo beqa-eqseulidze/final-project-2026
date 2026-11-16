@@ -15,7 +15,7 @@ export default function TemperatureUnitSelector({ unit, onChange }: TemperatureU
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex h-[37px] min-w-[52px] items-center justify-between gap-2 rounded-[4px] bg-[#00a2d8] px-2.5 text-[12px] font-bold text-white shadow-sm hover:bg-[#0094c5] focus:outline-none focus:ring-2 focus:ring-sky-300"
+        className="flex h-[37px] font-bpg min-w-[52px] items-center justify-between gap-2 rounded-[4px] bg-[#00a2d8] px-2.5 text-[12px] font-bold text-white shadow-sm hover:bg-[#0094c5] focus:outline-none focus:ring-2 focus:ring-sky-300"
       >
         <span>{unit}°</span><span aria-hidden="true" className="text-[10px]">▼</span>
       </button>
