@@ -129,7 +129,7 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
       </div>
 
       {/* 3. ცოცხალი საათი წამებით (e.g. 18:53:40) GMT+4 */}
-      <div className="text-[12px] sm:text-[14px] text-white font-bold tracking-wider mt-0.5">
+      <div className="text-[12px] sm:text-[13px] text-white font-bpg font-medium tracking-wider mt-0.5">
         {timeStr}
       </div>
 
