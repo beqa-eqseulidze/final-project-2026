@@ -24,8 +24,10 @@
  */
 
 import React from 'react';
+import { tr, useLanguage } from '../../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const language = useLanguage();
   return (
     <footer
       className="w-full mt-auto select-none font-amindi1"
@@ -57,7 +59,7 @@ export const Footer: React.FC = () => {
                 href="/ka/"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
-                ამინდის პროგნოზი
+                {tr(language, 'ამინდის პროგნოზი', 'Weather forecast', 'Прогноз погоды')}
               </a>
             </li>
 
@@ -69,7 +71,7 @@ export const Footer: React.FC = () => {
                 rel="noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
-                ჯანმრთელობა
+                {tr(language, 'ჯანმრთელობა', 'Health', 'Здоровье')}
               </a>
             </li>
 
@@ -81,7 +83,7 @@ export const Footer: React.FC = () => {
                 rel="noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
-                რადიო
+                {tr(language, 'რადიო', 'Radio', 'Радио')}
               </a>
             </li>
 
@@ -93,7 +95,7 @@ export const Footer: React.FC = () => {
                 rel="noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
-                სასარგებლო ინფორმაცია
+                {tr(language, 'სასარგებლო ინფორმაცია', 'Useful information', 'Полезная информация')}
               </a>
             </li>
 
@@ -105,7 +107,7 @@ export const Footer: React.FC = () => {
                 rel="noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
-                რეკლამა
+                {tr(language, 'რეკლამა', 'Advertise', 'Реклама')}
               </a>
             </li>
           </ul>

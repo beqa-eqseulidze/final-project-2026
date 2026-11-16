@@ -11,9 +11,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   fetchHourlyForecast,
+  fetch24HourForecast,
   HourlyForecastItem,
   UserCoordinates,
 } from '../services/weatherService';
+import { formatTemperature, useLanguage, useTemperatureUnit } from '../context/LanguageContext';
 
 interface HourlyWeatherForecastProps {
   city?: string;
@@ -36,12 +38,14 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
   onViewFullHourly,
   isFullHourlyOpen = false,
 }) => {
+  const language = useLanguage();
+  const temperatureUnit = useTemperatureUnit();
   const [hourlyData, setHourlyData] = useState<HourlyForecastItem[]>(DEFAULT_HOURLY);
   const [expanded, setExpanded] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
-    fetchHourlyForecast(city, coordinates)
+    fetchHourlyForecast(city, coordinates, language)
       .then((items) => {
         if (isMounted && items.length > 0) {
           setHourlyData(items);
@@ -54,16 +58,48 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [city, coordinates]);
+  }, [city, coordinates, language]);
+
+  // მობილურზე გაშლისას იქვე ვტვირთავთ სრულ 24-საათიან პროგნოზს
+  const [fullDayData, setFullDayData] = useState<HourlyForecastItem[]>([]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    let isMounted = true;
+    fetch24HourForecast(city, coordinates)
+      .then((items) => {
+        if (isMounted) setFullDayData(items);
+      })
+      .catch(() => {
+        // შეცდომისას რჩება მოკლე საათობრივი სია
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [expanded, city, coordinates]);
+
+  // დესკტოპზე (lg+) სრული ბადე ცენტრალურ სვეტში იხსნება, მობილურზე — იქვე
+  const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+
+  const handleToggle = () => {
+    if (onViewFullHourly && isDesktop()) {
+      onViewFullHourly();
+    } else {
+      setExpanded((prev) => !prev);
+    }
+  };
 
   // თუ გაშლილი არაა, ვაჩვენებთ პირველ 3 საათს (როგორც სქრინშოტზეა)
-  const visibleItems = expanded ? hourlyData : hourlyData.slice(0, 3);
+  const visibleItems = expanded
+    ? (fullDayData.length > 0 ? fullDayData : hourlyData)
+    : hourlyData.slice(0, 3);
+  const isOpen = expanded || isFullHourlyOpen;
 
   return (
     <div className="w-full text-white font-amindi1 select-none">
       {/* 1. სათაური */}
       <h3 className="text-white text-[14px] sm:text-[15px] font-sanet font-medium tracking-wide mb-2.5">
-        ამინდი საათების მიხედვით
+        {language === 'ka' ? 'ამინდი საათების მიხედვით' : language === 'en' ? 'Hourly weather' : 'Погода по часам'}
       </h3>
 
       {/* 2. საათების ჩამონათვალი */}
@@ -91,7 +127,7 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
 
             {/* მარჯვნივ: ტემპერატურა */}
             <span className="text-white font-sanet text-[14px] sm:text-[15px] font-medium text-right min-w-[32px]">
-              {item.temp}°
+              {formatTemperature(item.temp, temperatureUnit)}°{temperatureUnit}
             </span>
           </div>
         ))}
@@ -101,13 +137,8 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
       <div className="flex justify-center mt-3 pt-1">
         <button
           type="button"
-          onClick={() => {
-            if (onViewFullHourly) {
-              onViewFullHourly();
-            } else {
-              setExpanded((prev) => !prev);
-            }
-          }}
+          onClick={handleToggle}
+          aria-expanded={isOpen}
           className="
             font-sanet text-white text-[12px] sm:text-[11px] font-medium
             bg-[#15aadc] hover:bg-[#129ac6] active:bg-[#0f8cb6]
@@ -115,7 +146,9 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
             transition-colors tracking-wide shadow-sm
           "
         >
-          {onViewFullHourly ? (isFullHourlyOpen ? 'შეკეცვა' : 'იხილეთ სრულად') : (expanded ? 'შეკეცვა' : 'იხილეთ სრულად')}
+          {isOpen
+            ? (language === 'ka' ? 'შეკეცვა' : language === 'en' ? 'Collapse' : 'Свернуть')
+            : (language === 'ka' ? 'იხილეთ სრულად' : language === 'en' ? 'View all' : 'Показать все')}
         </button>
       </div>
     </div>

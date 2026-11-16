@@ -3,8 +3,9 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { InteractiveWeatherMap, type MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
 import { Converter } from './components/Converter';
@@ -18,11 +19,87 @@ import { ZodiacDetailPage } from './features/ZodiacDetailPage';
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
-import { detectUserCity, UserCoordinates } from './services/weatherService';
+import { detectUserCity, fetchCurrentWeather, UserCoordinates } from './services/weatherService';
 import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
 import { PalitraShortAd } from './components/ads/PalitraShortAd'; //რეკლამა
 import { PalitraNewsAd } from './components/ads/PalitraNewsAd'; //რეკლამა
+import { CityDropdown } from './components/choiceCity/city';
+import CitySearch from './my_search/CitySearch';
+import LanguageSelector from './my_search/LanguageSelector';
+import TemperatureUnitSelector from './my_search/TemperatureUnitSelector';
+import { LanguageProvider, formatTemperature, type SiteLanguage, type TemperatureUnit } from './context/LanguageContext';
+import { NewsSection } from './features/News/NewsSection';
 
+interface CityOption {
+  id: number;
+  name: string;
+  temp: number;
+  query: string;
+}
+
+const CITY_OPTIONS: CityOption[] = [
+  { id: 1, name: 'თბილისი', temp: 9, query: 'Tbilisi' },
+  { id: 2, name: 'ბათუმი', temp: 12, query: 'Batumi' },
+  { id: 3, name: 'ქუთაისი', temp: 10, query: 'Kutaisi' },
+  { id: 4, name: 'რუსთავი', temp: 11, query: 'Rustavi' },
+  { id: 5, name: 'გორი', temp: 7, query: 'Gori' },
+  { id: 6, name: 'თელავი', temp: 9, query: 'Telavi' },
+  { id: 7, name: 'ზუგდიდი', temp: 10, query: 'Zugdidi' },
+  { id: 8, name: 'ფოთი', temp: 12, query: 'Poti' },
+  { id: 9, name: 'ბაკურიანი', temp: 3, query: 'Bakuriani' },
+  { id: 10, name: 'ახალციხე', temp: 4, query: 'Akhaltsikhe' },
+  { id: 11, name: 'ბორჯომი', temp: 3, query: 'Borjomi' },
+  { id: 12, name: 'გურჯაანი', temp: 11, query: 'Gurjaani' },
+  { id: 13, name: 'ლანჩხუთი', temp: 11, query: 'Lanchkhuti' },
+  { id: 14, name: 'მცხეთა', temp: 4, query: 'Mtskheta' },
+  { id: 15, name: 'სენაკი', temp: 11, query: 'Senaki' },
+  { id: 16, name: 'ქობულეთი', temp: 12, query: 'Kobuleti' },
+  { id: 17, name: 'ყვარელი', temp: 8, query: 'Kvareli' },
+  { id: 18, name: 'ჩხოროწყუ', temp: 9, query: 'Chkhorotsku' },
+  { id: 19, name: 'ჩოხატაური', temp: 8, query: 'Chokhatauri' },
+  { id: 20, name: 'ხაშური', temp: 7, query: 'Khashuri' },
+  { id: 21, name: 'ხობი', temp: 11, query: 'Khobi' },
+  { id: 22, name: 'აბასთუმანი', temp: 1, query: 'Abastumani' },
+  { id: 23, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
+  { id: 24, name: 'მესტია', temp: -6, query: 'Mestia' },
+  { id: 25, name: 'ოჩამჩირე', temp: 10, query: 'Ochamchire' },
+  { id: 26, name: 'დავით-გარეჯი', temp: 12, query: 'Davit Gareji' },
+  { id: 27, name: 'მანგლისი', temp: 3, query: 'Manglisi' },
+  { id: 28, name: 'ჟინვალი', temp: 5, query: 'Zhinvali' },
+  { id: 29, name: 'ჯვარი', temp: 2, query: 'Jvari' },
+  { id: 30, name: 'საჩხერე', temp: 5, query: 'Sachkhere' },
+  { id: 31, name: 'სოხუმი', temp: 10, query: 'Sokhumi' },
+  { id: 32, name: 'წალენჯიხა', temp: 5, query: 'Tsalenjikha' },
+  { id: 33, name: 'წნორი', temp: 9, query: 'Tsnori' },
+  { id: 34, name: 'სამტრედია', temp: 4, query: 'Samtredia' },
+  { id: 35, name: 'ამბროლაური', temp: 6, query: 'Ambrolauri' },
+  { id: 36, name: 'ონი', temp: 5, query: 'Oni' },
+  { id: 37, name: 'ცაგერი', temp: 8, query: 'Tsageri' },
+  { id: 38, name: 'ლენტეხი', temp: 4, query: 'Lentekhi' },
+  { id: 39, name: 'მარნეული', temp: 10, query: 'Marneuli' },
+  { id: 40, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
+  { id: 41, name: 'დმანისი', temp: 1, query: 'Dmanisi' },
+  { id: 42, name: 'წალკა', temp: 2, query: 'Tsalka' },
+  { id: 43, name: 'გარდაბანი', temp: 11, query: 'Gardabani' },
+  { id: 44, name: 'ბაღდათი', temp: 7, query: 'Baghdati' },
+  { id: 45, name: 'ვანი', temp: 8, query: 'Vani' },
+  { id: 46, name: 'თერჯოლა', temp: 9, query: 'Terjola' },
+  { id: 47, name: 'ზესტაფონი', temp: 5, query: 'Zestafoni' },
+  { id: 48, name: 'ტყიბული', temp: 5, query: 'Tkibuli' },
+  { id: 49, name: 'ჭიათურა', temp: 5, query: 'Chiatura' },
+  { id: 50, name: 'ხარაგაული', temp: 7, query: 'Kharagauli' },
+  { id: 51, name: 'ბედია', temp: 9, query: 'Bedia' },
+  { id: 52, name: 'გალი', temp: 11, query: 'Gali' },
+  { id: 53, name: 'გუდაუთა', temp: 8, query: 'Gudauta' },
+  { id: 54, name: 'გაგრა', temp: 10, query: 'Gagra' },
+  { id: 55, name: 'ახალი ათონი', temp: 10, query: 'New Athos' },
+  { id: 56, name: 'ყაზბეგი', temp: -2, query: 'Kazbegi' },
+  { id: 57, name: 'სიღნაღი', temp: 11, query: 'Sighnaghi' },
+  { id: 58, name: 'დედოფლისწყარო', temp: 10, query: 'Dedoplistskaro' },
+  { id: 59, name: 'ლაგოდეხი', temp: 9, query: 'Lagodekhi' },
+  { id: 60, name: 'საგარეჯო', temp: 7, query: 'Sagarejo' },
+  { id: 61, name: 'გლდანი', temp: 9, query: 'Gldani' },
+];
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => {
   const hasBg = className.includes('bg-');
   const hasText = className.includes('text-');
@@ -38,9 +115,28 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
 };
 
 export default function App() {
+  const [language, setLanguage] = useState<SiteLanguage>(() => {
+    try {
+      const saved = localStorage.getItem('amindi_language');
+      return saved === 'en' || saved === 'ru' ? saved : 'ka';
+    } catch {
+      return 'ka';
+    }
+  });
+  const [temperatureUnit, setTemperatureUnit] = useState<TemperatureUnit>(() => {
+    try {
+      return localStorage.getItem('amindi_temperature_unit') === 'F' ? 'F' : 'C';
+    } catch {
+      return 'C';
+    }
+  });
   // მომხმარებლის მიმდინარე ქალაქი (საწყისად Tbilisi, შემდეგ დეტექტირდება ავტომატურად)
   const [city, setCity] = useState<string>('Tbilisi');
+  const [cityOptions, setCityOptions] = useState<CityOption[]>(CITY_OPTIONS);
   const [coordinates, setCoordinates] = useState<UserCoordinates | null>(null);
+  const [mapWeather, setMapWeather] = useState<MapWeather | null>(null);
+  const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
+  const citySelectedByUser = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
 
@@ -53,6 +149,67 @@ export default function App() {
   });
   const [activeZodiacTab, setActiveZodiacTab] = useState<'daily' | 'monthly' | 'yearly' | 'general'>('daily');
 
+  useEffect(() => {
+    document.documentElement.lang = language;
+    try {
+      localStorage.setItem('amindi_language', language);
+    } catch {
+      // Language selection remains active for this session when storage is unavailable.
+    }
+  }, [language]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('amindi_temperature_unit', temperatureUnit);
+    } catch {
+      // Unit selection remains active for this session when storage is unavailable.
+    }
+  }, [temperatureUnit]);
+
+  const localizedCityOptions = cityOptions.map((item) => ({
+    ...item,
+    temp: formatTemperature(item.temp, temperatureUnit),
+    name: language === 'ka' ? item.name : language === 'en' ? item.query : ({
+      Tbilisi: 'Тбилиси', Batumi: 'Батуми', Kutaisi: 'Кутаиси', Rustavi: 'Рустави',
+      Gori: 'Гори', Telavi: 'Телави', Zugdidi: 'Зугдиди', Poti: 'Поти',
+      Bakuriani: 'Бакуриани', Akhaltsikhe: 'Ахалцихе', Borjomi: 'Боржоми',
+    } as Record<string, string>)[item.query] ?? item.query,
+  }));
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadTemperatures = async () => {
+      for (const option of CITY_OPTIONS) {
+        if (cancelled) return;
+
+        try {
+          const weather = await fetchCurrentWeather(option.query);
+          if (cancelled) return;
+
+          setCityOptions((current) =>
+            current.map((cityOption) =>
+              cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
+            ),
+          );
+          setSelectedCity((current) =>
+            current?.id === option.id ? { ...current, temp: weather.temp } : current,
+          );
+        } catch {
+          // Keep the existing fallback temperature if the API request fails.
+        }
+
+        await new Promise<void>((resolve) => {
+          window.setTimeout(resolve, 1000);
+        });
+      }
+    };
+
+    void loadTemperatures();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   // URL hash-ის მოსმენა (ბრაუზერის Back/Forward ღილაკებისთვის)
   useEffect(() => {
     const handleUrlChange = () => {
@@ -95,11 +252,44 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectCity = (chosenCity: CityOption) => {
+    citySelectedByUser.current = true;
+    setSelectedCity(chosenCity);
+    setCity(chosenCity.query);
+    setCoordinates(null);
+    setMapWeather(null);
+  };
+
+  const cityToolbar = (
+    <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:gap-3">
+      <div className="[&>div>button]:!h-[37px] [&>div>button]:!box-border">
+        <CityDropdown
+          cities={localizedCityOptions}
+          selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
+          language={language}
+          unit={temperatureUnit}
+          onSelectCity={handleSelectCity}
+        />
+      </div>
+      <div className="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
+        <CitySearch
+          cities={localizedCityOptions}
+          selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
+          language={language}
+          unit={temperatureUnit}
+          onSelectCity={handleSelectCity}
+        />
+        <LanguageSelector language={language} onChange={setLanguage} />
+        <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+      </div>
+    </div>
+  );
+
   // აპლიკაციის ჩატვირთვისას ავტომატურად ვადგენთ მომხმარებლის ქვეყანას/ქალაქს
   useEffect(() => {
     let cancelled = false;
     detectUserCity().then((detected) => {
-      if (cancelled) return;
+      if (cancelled || citySelectedByUser.current) return;
       if (detected.kind === 'coordinates') {
         setCoordinates(detected.coordinates);
       } else {
@@ -113,8 +303,9 @@ export default function App() {
   }, []);
 
   return (
+    <LanguageProvider language={language} unit={temperatureUnit}>
     <BackgroundSky>
-      <div className="min-h-screen text-slate-700 flex flex-col justify-between">
+      <div className="min-h-screen text-slate-700 flex flex-col">
 
         {/* 1. Header (სრული სიგანით ზემოთ) */}
         <Header />
@@ -130,7 +321,7 @@ export default function App() {
             />
           </main>
         ) : (
-          <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 py-2 sm:py-3 flex-1">
+          <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
 
             {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
             <div className="w-full mb-3">
@@ -139,15 +330,20 @@ export default function App() {
               </div>
             </div>
 
+
             {/* 3-Column Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-[235px_1fr_235px] xl:grid-cols-[260px_1fr_260px] gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)_260px] xl:grid-cols-[310px_minmax(0,1fr)_260px] gap-3 sm:gap-4 flex-1">
+
+              <div className="rounded-[4px] bg-[rgba(25,55,92,0.88)] px-2 py-1.5 sm:px-4 lg:col-start-2 lg:col-end-4 lg:row-start-1">
+                {cityToolbar}
+              </div>
 
               {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
-              <aside className="w-full lg:w-[235px] xl:w-[260px] shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm self-start">
+              <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                 {/* 1. მიმდინარე ამინდი */}
                 <div className="w-full pb-3 border-b border-white/20">
-                  <CurrentWeather city={city} coordinates={coordinates} />
+                  <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
@@ -173,7 +369,7 @@ export default function App() {
               </aside>
 
               {/* ცენტრალური სვეტი */}
-              <main className="space-y-3 sm:space-y-4 min-w-0">
+              <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                 <div className="w-full">
                   {centerView === 'hourly' ? (
@@ -184,14 +380,22 @@ export default function App() {
                 </div>
 
                 {/* ვიდეო / ლაივ კამერა */}
-                <Box className="h-[220px] sm:h-[340px] w-full bg-slate-900 text-white text-xs sm:text-base">
-                  Live Video / კამერა
-                </Box>
+                <div className="w-full h-[260px] sm:h-[340px] overflow-hidden rounded-[4px] border border-slate-500 bg-[#1e2a3b]">
+                  <InteractiveWeatherMap onWeatherSelect={(data) => {
+                    citySelectedByUser.current = true;
+                    setMapWeather(data);
+                    setCity(data.name);
+                    setCoordinates({ latitude: data.latitude, longitude: data.longitude });
+                  }} />
+                </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
                 <div className="w-full">
                   <Slider slides={sliderData} />
                 </div>
+
+                 {/* 🆕 სიახლეები */}
+                <NewsSection />
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
                 <div className="w-full">
@@ -200,7 +404,7 @@ export default function App() {
               </main>
 
               {/* მარჯვენა სვეტი */}
-              <aside className="space-y-3 sm:space-y-4 flex flex-col">
+              <aside className="space-y-3 sm:space-y-4 flex flex-col lg:col-start-3 lg:row-start-2">
                 {/* ზედა რეკლამა (Palitra News) */}
                 <div className="w-full h-[230px] sm:h-[310px]">
                   <PalitraShortAd />
@@ -215,6 +419,11 @@ export default function App() {
                 <div className="w-full h-[260px] sm:h-[520px]">
                   <PalitraLongAd />
                 </div>
+
+                {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
+                <div className="w-full h-[260px] sm:h-[520px]">
+                  <PalitraLongAd />
+                </div>
               </aside>
 
             </div>
@@ -222,11 +431,10 @@ export default function App() {
         )}
 
         {/* 3. Footer */}
-        <footer className="w-full mt-8">
-          <Footer />
-        </footer>
+        <Footer />
 
       </div>
     </BackgroundSky>
+    </LanguageProvider>
   );
 }

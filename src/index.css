@@ -25,9 +25,8 @@
 @theme {
   --font-sanet: "ALK Sanet", sans-serif;
   /* Tailwind-ს ვეუბნებით, რომ font-bpg კლასი გამოიყენოს 'BPG' ფონტს */
-  --font-bpg: "BPG", sans-serif; 
+  --font-bpg: "BPG", sans-serif;
 }
-
 
 /* 2. Tailwind v4-ის კონფიგურაცია - font-sanet კლასის შექმნა */
 @theme {
@@ -173,3 +172,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(21, 170, 220, 0.8);
 }
+.weather-map .leaflet-tile { max-width: none !important; max-height: none !important; }
+.weather-map .leaflet-container { width: 100%; height: 100%; font: inherit; }
+.weather-map .leaflet-control-container { font-size: 12px; }
+
+/* MapLibre map fills the existing live camera panel. */
+.weather-map .maplibregl-canvas { outline: none; }

@@ -12,6 +12,7 @@ import React, { useState, useRef } from 'react';
 import { ZODIAC_ARRAY, ZODIAC_SIGNS } from './zodiacData';
 import { ZodiacIcon } from './ZodiacIcon';
 import { GEO_MONTHS } from '../services/weatherService';
+import { tr, useLanguage } from '../context/LanguageContext';
 
 interface AstrologyHoroscopeProps {
   onNavigateToZodiac?: (signId: string, tab?: string) => void;
@@ -70,6 +71,7 @@ const HoroscopeEyeIcon = () => (
 export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
   onNavigateToZodiac,
 }) => {
+  const language = useLanguage();
   // მაუსის მიტანისას (Hover) ნიშნის ID
   const [hoveredZodiacId, setHoveredZodiacId] = useState<string | null>(null);
 
@@ -158,7 +160,7 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
           <button
             type="button"
             className="text-[#0e5aa7] hover:text-[#083b6f] text-base sm:text-xl px-1 cursor-pointer border-0 bg-transparent leading-none transition-colors"
-            aria-label="მენიუ"
+            aria-label={tr(language, 'მენიუ', 'Menu', 'Меню')}
             aria-expanded={menuOpen}
           >
             ☰
@@ -168,10 +170,10 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
           {menuOpen && (
             <div className="absolute right-0 top-full z-50 w-52 sm:w-56 bg-[#083b6f] shadow-2xl rounded-b-[4px] overflow-hidden border border-[#0e5aa7]">
               {[
-                { Icon: YinYangIcon, label: 'ასტრო-შეთავსება', signId: selectedZodiacId, tab: 'general' },
-                { Icon: NumerologyIcon, label: 'ნუმეროლოგია',     signId: selectedZodiacId, tab: 'general' },
-                { Icon: ZodiacRamIcon, label: 'ზოდიაქო',          signId: selectedZodiacId, tab: 'general' },
-                { Icon: HoroscopeEyeIcon, label: 'ჰოროსკოპი',        signId: selectedZodiacId, tab: 'daily' },
+                { Icon: YinYangIcon, label: tr(language, 'ასტრო-შეთავსება', 'Astro compatibility', 'Совместимость'), signId: selectedZodiacId, tab: 'general' },
+                { Icon: NumerologyIcon, label: tr(language, 'ნუმეროლოგია', 'Numerology', 'Нумерология'), signId: selectedZodiacId, tab: 'general' },
+                { Icon: ZodiacRamIcon, label: tr(language, 'ზოდიაქო', 'Zodiac', 'Зодиак'), signId: selectedZodiacId, tab: 'general' },
+                { Icon: HoroscopeEyeIcon, label: tr(language, 'ჰოროსკოპი', 'Horoscope', 'Гороскоп'), signId: selectedZodiacId, tab: 'daily' },
               ].map((item) => (
                 <button
                   key={item.label}
@@ -218,10 +220,10 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
           {/* სათაური თეთრი ქვედა ხაზით */}
           <div className="pb-1.5 mb-2.5 border-b border-white/30 flex items-center justify-between">
             <h3 className="text-xs sm:text-sm md:text-[15px] font-medium font-sanet uppercase tracking-wide text-white m-0">
-              დღის ზოგადი ასტროლოგიური პროგნოზი ({activeZodiac.name})
+              {tr(language, 'დღის ზოგადი ასტროლოგიური პროგნოზი', 'Daily horoscope', 'Гороскоп на день')} ({activeZodiac.name})
             </h3>
             <span className=" font-bpg font-medium text-[11px] text-sky-200 hidden sm:inline">
-              ვრცლად →
+              {tr(language, 'ვრცლად', 'Read more', 'Подробнее')} →
             </span>
           </div>
 
