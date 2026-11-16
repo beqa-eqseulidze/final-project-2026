@@ -29,9 +29,8 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
   const hasBorder = className.includes('border-');
   return (
     <div
-      className={`flex items-center justify-center text-center text-[11px] font-bold rounded-[4px] ${
-        hasBorder ? '' : 'border-2 border-dashed border-slate-400'
-      } ${hasBg ? '' : 'bg-white/90'} ${hasText ? '' : 'text-slate-600'} ${className}`}
+      className={`flex items-center justify-center text-center text-[11px] font-bold rounded-[4px] ${hasBorder ? '' : 'border-2 border-dashed border-slate-400'
+        } ${hasBg ? '' : 'bg-white/90'} ${hasText ? '' : 'text-slate-600'} ${className}`}
     >
       {children}
     </div>
