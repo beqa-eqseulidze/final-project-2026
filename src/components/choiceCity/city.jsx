@@ -9,7 +9,7 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'k
   };
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block', fontFamily: 'sans-serif' }}>
+    <div style={{ position: 'relative', display: 'inline-block', fontFamily: "'ALK Sanet', sans-serif" }}>
       {/* მთავარი ღილაკი */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
