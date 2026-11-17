@@ -530,7 +530,7 @@ export async function fetch5DayHourlyForecast(
 
     if (res.ok) {
       const data: OWMForecastResponse = await res.json();
-      
+
       // ჯერ დავაჯგუფოთ 3-საათიანი OWM სლოტები დღეების მიხედვით
       const daySlotsMap = new Map<string, { dayName: string; dateLabel: string; slots: OWMListItem[] }>();
 
@@ -613,7 +613,7 @@ export async function fetch5DayHourlyForecast(
     for (const h of HOURS_ORDER) {
       const delta = h >= 10 && h <= 17 ? 3 : h >= 0 && h <= 6 ? -3 : 0;
       const hourLabel = h === 0 ? '00:00' : (h < 10 ? `0${h}:00` : `${h}:00`);
-      
+
       let defaultOwm = '04';
       let desc = 'ღრუბლიანი';
       if (h === 4) {
