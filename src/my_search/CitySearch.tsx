@@ -37,7 +37,7 @@ export default function CitySearch({ cities, selectedCity, onSelectCity, languag
   };
 
   return (
-    <div className="relative z-20 w-[200px] shrink-0">
+    <div className="relative z-20 w-[170px] shrink-0 font-sanet">
       <div className="relative">
         <input
           id="city-search"
@@ -73,7 +73,10 @@ export default function CitySearch({ cities, selectedCity, onSelectCity, languag
         )}
         {!query && (
           <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base text-white">
-            ⌕
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="11" cy="11" r="7" />
+  <path d="M16 16l5 5" />
+</svg>
           </span>
         )}
       </div>

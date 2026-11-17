@@ -29,6 +29,7 @@ import LanguageSelector from './my_search/LanguageSelector';
 import TemperatureUnitSelector from './my_search/TemperatureUnitSelector';
 import { LanguageProvider, formatTemperature, type SiteLanguage, type TemperatureUnit } from './context/LanguageContext';
 import { NewsSection } from './features/News/NewsSection';
+import { CircleAd } from './components/CircleAd/CircleAd';
 
 interface CityOption {
   id: number;
@@ -432,6 +433,10 @@ export default function App() {
 
           {/* 3. Footer */}
           <Footer />
+
+
+          {/* Circle AD  */}
+          <CircleAd href="https://radiopalitra.ge/" size={75} />
 
         </div>
       </BackgroundSky>
