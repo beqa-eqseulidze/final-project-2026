@@ -186,31 +186,38 @@ export default function App() {
 
   const loadCityTemperatures = () => {
     if (cityTemperaturesStarted.current) return;
+    cancelled.current = false;
     cityTemperaturesStarted.current = true;
+
     const loadTemperatures = async () => {
-      const temperatureCache = new Map<string, number>();
-      for (const option of CITY_OPTIONS) {
-        if (cancelled) return;
+      let nextIndex = 0;
+      const temperatureCache = new Map<string, Promise<number>>();
 
-        try {
-          let temperature = temperatureCache.get(option.query);
-          if (temperature === undefined) {
-            const weather = await fetchCurrentWeather(option.query);
-            temperature = weather.temp;
-            temperatureCache.set(option.query, temperature);
+      const loadNextTemperature = async () => {
+        while (!cancelled.current) {
+          const option = CITY_OPTIONS[nextIndex++];
+          if (!option) return;
+
+          try {
+            let temperatureRequest = temperatureCache.get(option.query);
+            if (!temperatureRequest) {
+              temperatureRequest = fetchCurrentWeather(option.query).then((weather) => weather.temp);
+              temperatureCache.set(option.query, temperatureRequest);
+            }
+            const temperature = await temperatureRequest;
+            if (cancelled.current) return;
+
+            setCityOptions((current) =>
+              current.map((cityOption) =>
+                cityOption.id === option.id ? { ...cityOption, temp: temperature } : cityOption,
+              ),
+            );
+            setSelectedCity((current) =>
+              current?.id === option.id ? { ...current, temp: temperature } : current,
+            );
+          } catch {
+            // Keep the placeholder if the API request fails.
           }
-          if (cancelled) return;
-
-          setCityOptions((current) =>
-            current.map((cityOption) =>
-              cityOption.id === option.id ? { ...cityOption, temp: temperature } : cityOption,
-            ),
-          );
-          setSelectedCity((current) =>
-            current?.id === option.id ? { ...current, temp: temperature } : current,
-          );
-        } catch {
-          // Keep the existing fallback temperature if the API request fails.
         }
       };
 
