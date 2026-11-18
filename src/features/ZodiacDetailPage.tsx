@@ -123,6 +123,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
               >
                 <ZodiacIcon
                   signId={z.id}
+                  alt={z.name}
                   className={`w-4 h-4 sm:w-5 sm:h-5 mb-0.5 ${isSelected ? 'text-white' : 'text-[#0e5aa7]'}`}
                 />
                 <span className="text-[10px] sm:text-[11px] mt-0.5 whitespace-nowrap font-sanet font-medium">{z.name}</span>
@@ -137,7 +138,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
         <div className="flex flex-col md:flex-row items-center md:items-start gap-4 sm:gap-5">
           {/* დიდი სიმბოლო */}
           <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-            <ZodiacIcon signId={zodiac.id} className="w-10 h-10 sm:w-14 sm:h-14 text-white" />
+            <ZodiacIcon signId={zodiac.id} alt={zodiac.name} className="w-10 h-10 sm:w-14 sm:h-14 text-white" />
           </div>
 
           {/* სახელწოდება, თარიღი/რიცხვი, ტაბები და პარამეტრები */}
