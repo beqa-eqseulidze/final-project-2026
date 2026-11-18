@@ -38,29 +38,53 @@ export function LazyWeatherMap({ onWeatherSelect }: { onWeatherSelect: (weather:
     const container = containerRef.current;
     if (!container) return;
     let cancelled = false;
+    let idleId: number | undefined;
+    let timerId: ReturnType<typeof setTimeout> | undefined;
 
     const startLoading = () => {
+      if (idleId !== undefined && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId);
+        idleId = undefined;
+      }
+      if (timerId !== undefined) {
+        clearTimeout(timerId);
+        timerId = undefined;
+      }
       void loadMapLibre().then(
         () => { if (!cancelled) setReady(true); },
         () => { if (!cancelled) setFailed(true); },
       );
     };
 
+    const scheduleLoading = () => {
+      if ('requestIdleCallback' in window) {
+        idleId = window.requestIdleCallback(() => startLoading(), { timeout: 1200 });
+      } else {
+        timerId = setTimeout(startLoading, 1000);
+      }
+    };
+
     if (!('IntersectionObserver' in window)) {
-      startLoading();
-      return () => { cancelled = true; };
+      scheduleLoading();
+      return () => {
+        cancelled = true;
+        if (idleId !== undefined && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+        if (timerId !== undefined) clearTimeout(timerId);
+      };
     }
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         observer.disconnect();
-        startLoading();
+        scheduleLoading();
       }
     }, { rootMargin: '0px' });
     observer.observe(container);
     return () => {
       cancelled = true;
       observer.disconnect();
+      if (idleId !== undefined && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      if (timerId !== undefined) clearTimeout(timerId);
     };
   }, []);
 

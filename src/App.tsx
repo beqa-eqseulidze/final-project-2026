@@ -5,6 +5,7 @@
 
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { LazySection } from './components/LazySection';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
@@ -415,14 +416,14 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <Suspense fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
+                <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
                   <Slider slides={sliderData} />
-                </Suspense>
+                </LazySection>
 
                  {/* 🆕 სიახლეები */}
-                <Suspense fallback={<div className="min-h-[650px] w-full" />}>
+                <LazySection fallback={<div className="min-h-[650px] w-full" />}>
                   <NewsSection />
-                </Suspense>
+                </LazySection>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
               </main>
@@ -451,9 +452,9 @@ export default function App() {
               </aside>
 
               <div className="w-full lg:col-start-2 lg:row-start-3">
-                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
+                <LazySection fallback={<div className="min-h-[500px] w-full" />}>
                   <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </Suspense>
+                </LazySection>
               </div>
 
             </div>
