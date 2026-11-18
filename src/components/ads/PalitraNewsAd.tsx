@@ -19,6 +19,7 @@ export function PalitraNewsAd() {
           src={newsAdVideo}
           autoPlay
           loop
+          preload="metadata"
           muted
           playsInline
           aria-label="რეკლამა: პალიტრა ნიუსი - ახალი ამბების ტელევიზია"

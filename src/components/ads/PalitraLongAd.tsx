@@ -35,6 +35,7 @@ export function PalitraLongAd() {
           src={longAdVideo}
           autoPlay
           loop
+          preload="metadata"
           muted
           playsInline
           aria-label="რეკლამა: რადიო პალიტრა"
