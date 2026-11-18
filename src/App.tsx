@@ -4,10 +4,7 @@
  */
 
 import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
-<<<<<<< HEAD
 import { DeferredSection } from './components/DeferredSection';
-=======
->>>>>>> master
 import { Header } from './components/layout/Header';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
@@ -407,7 +404,6 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-<<<<<<< HEAD
                 <DeferredSection minHeight={400} className="w-full">
                   <Suspense fallback={<div className="h-[400px]" />}>
                     <Slider slides={sliderData} />
@@ -427,21 +423,6 @@ export default function App() {
                     <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
                   </Suspense>
                 </DeferredSection>
-=======
-                <Suspense fallback={<div className="h-[400px] w-full" />}>
-                  <Slider slides={sliderData} />
-                </Suspense>
-
-                 {/* 🆕 სიახლეები */}
-                <Suspense fallback={<div className="min-h-[650px] w-full" />}>
-                  <NewsSection />
-                </Suspense>
-
-                {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
-                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </Suspense>
->>>>>>> master
               </main>
 
               {/* მარჯვენა სვეტი */}

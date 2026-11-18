@@ -11,31 +11,14 @@ export function Slider({ slides }: SliderProps) {
       {/* სათაური */}
       <div className="bg-[#00a8e8] text-white px-3 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center shrink-0">
         <h3 className="font-sanet font-bold text-[14px] sm:text-[16px]">შეიძინე დანაზოგით</h3>
-<<<<<<< HEAD
         {/* 🆕 alt-ს დავამატეთ აღწერა */}
         <img src={hotsaleLogo} alt="Hotsale - ფასდაკლებები" className="h-6 sm:h-8 object-contain" />
-=======
-        
-        {/* 🆕 ლოგო ჩავსვით <a> თეგში, დავამატეთ ლინკი, target და aria-label */}
-        <a 
-          href="https://hotsale.ge/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          aria-label="გადადით Hotsale.ge-ზე"
-          className="hover:opacity-80 transition-opacity"
-        >
-          <img src={hotsaleLogo} alt="Hotsale - ფასდაკლებები" className="h-6 sm:h-8 object-contain" />
-        </a>
->>>>>>> master
       </div>
 
       {/* სლაიდერი */}
       <div className="relative flex-1 p-2.5 sm:p-4 bg-white/40">
         <div className="absolute top-[12px] sm:top-[16px] right-[12px] sm:right-[16px] z-20 flex gap-1">
-<<<<<<< HEAD
           {/* 🆕 დავამატეთ aria-label-ები წინა და შემდეგ ღილაკებს */}
-=======
->>>>>>> master
           <button 
             className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
             aria-label="წინა სლაიდი"
@@ -64,10 +47,7 @@ export function Slider({ slides }: SliderProps) {
                   {/* 🆕 სურათის alt უკვე კარგია (slide.title) */}
                   <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
                   <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
-<<<<<<< HEAD
                     {/* 🆕 ლოგოს ცარიელი alt შევცვალეთ აღწერით */}
-=======
->>>>>>> master
                     <img src={slide.logo} alt={`${slide.title} - ლოგო`} className="w-full h-full object-cover" />
                   </div>
                 </div>
