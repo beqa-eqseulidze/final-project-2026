@@ -1,6 +1,18 @@
 import shortAdVideo from '../../assets/ads/Palitra-SHORT.mp4';
-import { ViewportVideo } from './ViewportVideo';
 
 export function PalitraShortAd(){
-  return <ViewportVideo src={shortAdVideo} className="w-full h-full object-cover scale-[1]" />;
+  return(
+    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+      <video 
+        src={shortAdVideo} 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+        preload="none" // 🆕 SEO/Accessibility
+        aria-label="რეკლამა: პალიტრა" // 🆕 SEO/Accessibility
+        className="w-full h-full object-cover scale-[1]" 
+      />
+    </div>
+  );
 }
