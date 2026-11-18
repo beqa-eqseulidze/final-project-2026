@@ -15,8 +15,6 @@ export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
     });
 
     if (!res.ok) {
-      const errorBody = await res.text();
-      console.error('Currents API Error:', res.status, errorBody);
       throw new Error(`სიახლეები ვერ ჩაიტვირთა (კოდი: ${res.status})`);
     }
 
