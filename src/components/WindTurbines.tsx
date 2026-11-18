@@ -12,14 +12,20 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
             {/* სადგამების ფოტო */}
             <img
                 src={standsImage}
-                alt="Windmill Stands"
+                alt="ქარის ტურბინის სადგამი"
+                width={80}
+                height={96}
+                decoding="async"
                 className="absolute bottom-0 h-24 w-full object-contain z-10 opacity-90"
             />
 
             {/* დიდი ტურბინა */}
             <img
                 src={rotorbig}
-                alt="Large Rotor"
+                alt="დიდი ქარის ტურბინა"
+                width={48}
+                height={48}
+                decoding="async"
                 className="absolute top-[15px] left-[-1px] h-12 w-12 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
                     animationDuration: `${Math.min(6, Math.max(0.2, 6 * 0.15))}s`,
@@ -29,7 +35,10 @@ export const WindTurbines = ({ windSpeed }: WindTurbinesProps) => {
             {/* პატარა ტურბინა */}
             <img
                 src={rotorsmall}
-                alt="Small Rotor"
+                alt="პატარა ქარის ტურბინა"
+                width={28}
+                height={28}
+                decoding="async"
                 className="absolute top-[38px] right-[25px] h-7 w-7 object-contain animate-spin z-20 mix-blend-screen"
                 style={{
                     animationDuration: `${Math.min(6, Math.max(0.2, 5 * 0.15))}s`,

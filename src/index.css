@@ -36,22 +36,21 @@
 /* font1: გამოიყენება ჰედერში, ნავიგაციის მენიუში და ფუტერში */
 @font-face {
   font-family: "font1";
-  src: url("https://amindi.ge/static/fonts/font1.woff");
+  src: url('./fonts/alk-sanet.ttf') format('truetype');
   font-display: swap;
 }
 
 /* font2: გამოიყენება როგორც ძირითადი ტექსტური შრიფტი მთელ საიტზე */
 @font-face {
   font-family: "font2";
-  src: url("https://amindi.ge/static/fonts/bbe.woff");
+  src: url('./fonts/bpg-web-002-23de2b8e.ttf') format('truetype');
   font-display: swap;
 }
 
 /* BPG Arial: გამოიყენება ალტერნატიულ სექციებსა და სტატიების სათაურებში */
 @font-face {
   font-family: "BPG Arial";
-  src: url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff2") format("woff2"),
-    url("https://amindi.ge/static/fonts/bpg-arial-webfont.woff") format("woff");
+  src: url('./fonts/bpg-web-002-23de2b8e.ttf') format('truetype');
   font-display: swap;
 }
 
