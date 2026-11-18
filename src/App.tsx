@@ -3,7 +3,7 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
 import { InteractiveWeatherMap, type MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
@@ -13,9 +13,9 @@ import { WindAndPressure } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
-import { FullHourlyForecast } from './features/FullHourlyForecast';
+const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
 import { AstrologyHoroscope } from './features/AstrologyHoroscope';
-import { ZodiacDetailPage } from './features/ZodiacDetailPage';
+const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 import { Slider } from './features/Slider';
 import { sliderData } from './services/data';
@@ -135,20 +135,26 @@ export default function App() {
     let cancelled = false;
 
     const loadTemperatures = async () => {
+      const temperatureCache = new Map<string, number>();
       for (const option of CITY_OPTIONS) {
         if (cancelled) return;
 
         try {
-          const weather = await fetchCurrentWeather(option.query);
+          let temperature = temperatureCache.get(option.query);
+          if (temperature === undefined) {
+            const weather = await fetchCurrentWeather(option.query);
+            temperature = weather.temp;
+            temperatureCache.set(option.query, temperature);
+          }
           if (cancelled) return;
 
           setCityOptions((current) =>
             current.map((cityOption) =>
-              cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
+              cityOption.id === option.id ? { ...cityOption, temp: temperature } : cityOption,
             ),
           );
           setSelectedCity((current) =>
-            current?.id === option.id ? { ...current, temp: weather.temp } : current,
+            current?.id === option.id ? { ...current, temp: temperature } : current,
           );
         } catch {
           // Keep the existing fallback temperature if the API request fails.
@@ -234,12 +240,12 @@ export default function App() {
         {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
         {activeZodiacPage ? (
           <main role="main" className="flex-1 w-full">
-            <ZodiacDetailPage
+            <Suspense fallback={<div className="p-4" role="status">Loading...</div>}><ZodiacDetailPage
               signId={activeZodiacPage}
               initialTab={activeZodiacTab}
               onBack={handleBackToMain}
               onSelectSign={handleNavigateToZodiac}
-            />
+            /></Suspense>
           </main>
         ) : (
           <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
@@ -310,7 +316,7 @@ export default function App() {
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                 <div className="w-full">
                   {centerView === 'hourly' ? (
-                    <FullHourlyForecast city={city} coordinates={coordinates} />
+                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}

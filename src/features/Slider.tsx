@@ -11,7 +11,7 @@ export function Slider({ slides }: SliderProps) {
       {/* სათაური */}
       <div className="bg-[#00a8e8] text-white px-3 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center shrink-0">
         <h3 className="font-sanet font-bold text-[14px] sm:text-[16px]">შეიძინე დანაზოგით</h3>
-        <img src={hotsaleLogo} alt="Hotsale" className="h-6 sm:h-8 object-contain" />
+        <img src={hotsaleLogo} alt="Hotsale" decoding="async" className="h-6 sm:h-8 object-contain" />
       </div>
 
       {/* სლაიდერი */}
@@ -36,9 +36,9 @@ export function Slider({ slides }: SliderProps) {
             <SwiperSlide key={slide.id} className="h-full pb-2">
               <div className="bg-white rounded-xl overflow-hidden flex flex-col h-full shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                 <div className="relative h-[160px] sm:h-[200px] w-full shrink-0">
-                  <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+                  <img src={slide.image} alt={slide.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
-                    <img src={slide.logo} alt="" className="w-full h-full object-cover" />
+                    <img src={slide.logo} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white">
