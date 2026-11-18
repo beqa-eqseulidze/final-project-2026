@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- 🌫 Mist / Haze (50) -->
-  <g stroke="#90A4B8" stroke-width="2.5" stroke-linecap="round">
-    <line x1="12" y1="20" x2="52" y2="20"/>
-    <line x1="18" y1="28" x2="46" y2="28"/>
-    <line x1="14" y1="36" x2="50" y2="36"/>
-    <line x1="20" y1="44" x2="44" y2="44"/>
-  </g>
-</svg>

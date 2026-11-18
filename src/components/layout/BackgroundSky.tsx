@@ -37,16 +37,20 @@ export const BackgroundSky: React.FC<BackgroundSkyProps> = ({ children }) => {
     return () => clearInterval(timer);
   }, []);
 
-  // ცის ფონი დღის და ღამის მიხედვით (CSS Gradient - მყისიერი ჩატვირთვა, 0 შეცდომა)
-  const bgGradient = isDay
-    ? 'linear-gradient(180deg, #1b6da3 0%, #368bc4 30%, #5baedf 65%, #8ecbf1 100%)'
-    : 'linear-gradient(180deg, #0b1726 0%, #12243d 35%, #19375c 70%, #224670 100%)';
+  // amindi.ge-ს ოფიციალური ფონის სურათები
+  const bgImage = isDay
+    ? 'https://amindi.ge/static/img/sun2.jpg'
+    : 'https://amindi.ge/static/img/bg/clouds_night2.jpg';
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-x-hidden flex flex-col justify-between transition-all duration-700 ease-in-out"
+      className="relative min-h-screen w-full overflow-x-hidden flex flex-col justify-between transition-[background-image] duration-700 ease-in-out"
       style={{
-        background: bgGradient,
+        backgroundImage: `url('${bgImage}')`,
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
         backgroundColor: '#19375c',
       }}
     >

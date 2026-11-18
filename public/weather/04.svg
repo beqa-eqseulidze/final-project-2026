@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- ☁️ Overcast / Cloudy -->
-  <rect x="8" y="38" width="48" height="16" rx="8" fill="#B8C8D8" stroke="#8AAAC0" stroke-width="1.5"/>
-  <rect x="16" y="28" width="34" height="16" rx="8" fill="#C8D8E8" stroke="#A0B8D0" stroke-width="1.5"/>
-  <rect x="10" y="32" width="30" height="14" rx="7" fill="#D8E4EE" stroke="#B0C8DC" stroke-width="1.5"/>
-</svg>

@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
         <div className="shrink-0">
           <a href="/ka/" className="flex items-center" title="Amindi.ge">
             <img
-              src="/header-logo.svg"
+              src="https://amindi.ge/static/img/header-logo.png"
               alt="amindi.ge"
               width={140}
               height={40}

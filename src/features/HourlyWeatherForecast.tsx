@@ -114,9 +114,9 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
               {item.hourLabel}
             </span>
 
-            {/* ცენტრში: ამინდის იკონი */}
+            {/* ცენტრში: amindi.ge-ს იკონი */}
             <img
-              src={`/weather/${item.iconCode}.svg`}
+              src={`https://amindi.ge/static/img/weather_small_${item.iconCode}.png`}
               alt={item.description}
               width={36}
               height={36}
@@ -124,7 +124,8 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
               decoding="async"
               className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/weather/04.svg';
+                (e.currentTarget as HTMLImageElement).src =
+                  'https://amindi.ge/static/img/weather_small_04.png';
               }}
             />
 
