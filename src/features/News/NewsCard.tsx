@@ -30,14 +30,8 @@ export function NewsCard({ item }: NewsCardProps) {
       
       <div className="w-full h-[190px] overflow-hidden relative">
         {item.imageUrl ? (
-          <img 
-            src={item.imageUrl} 
-            alt={`სიახლის სურათი: ${item.title}`} // 🆕 უფრო აღწერითი alt
-            width={400}  // 🆕 ზომები CLS-ის შესამცირებლად (დააყენე რეალური პროპორციით)
-            height={190} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
-            loading="lazy" 
-          />
+          <img src={item.imageUrl} alt={item.title} loading="lazy" decoding="async"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
         ) : (
           <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-bpg">
             სურათი არ არის
