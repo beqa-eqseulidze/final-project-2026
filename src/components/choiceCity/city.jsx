@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'ka', unit = 'C' }) => {
+export const CityDropdown = ({ cities, selectedCity, onSelectCity, onOpen, language = 'ka', unit = 'C' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (city) => {
@@ -12,7 +12,11 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'k
     <div style={{ position: 'relative', display: 'inline-block', fontFamily: "'ALK Sanet', sans-serif" }}>
       {/* მთავარი ღილაკი */}
       <button 
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          const opening = !isOpen;
+          setIsOpen(opening);
+          if (opening) onOpen?.();
+        }}
         style={{
           backgroundColor: '#00a2d8',
           color: 'white',

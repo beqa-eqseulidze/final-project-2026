@@ -3,9 +3,10 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
-import { InteractiveWeatherMap, type MapWeather } from './features/InteractiveWeatherMap';
+import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
+import type { MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
 import { Converter } from './components/Converter';
@@ -14,10 +15,10 @@ import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 import { FullHourlyForecast } from './features/FullHourlyForecast';
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
-import { ZodiacDetailPage } from './features/ZodiacDetailPage';
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
+const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then((module) => ({ default: module.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
-import { Slider } from './features/Slider';
+const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
 import { sliderData } from './services/data';
 import { detectUserCity, fetchCurrentWeather, UserCoordinates } from './services/weatherService';
 import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
@@ -28,7 +29,7 @@ import CitySearch from './my_search/CitySearch';
 import LanguageSelector from './my_search/LanguageSelector';
 import TemperatureUnitSelector from './my_search/TemperatureUnitSelector';
 import { LanguageProvider, formatTemperature, type SiteLanguage, type TemperatureUnit } from './context/LanguageContext';
-import { NewsSection } from './features/News/NewsSection';
+const NewsSection = lazy(() => import('./features/News/NewsSection').then((module) => ({ default: module.NewsSection })));
 import { CircleAd } from './components/CircleAd/CircleAd';
 
 interface CityOption {
@@ -135,6 +136,8 @@ export default function App() {
   const [mapWeather, setMapWeather] = useState<MapWeather | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
   const citySelectedByUser = useRef(false);
+  const cityTemperaturesStarted = useRef(false);
+  const cancelled = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
 
@@ -179,20 +182,22 @@ export default function App() {
     temp: typeof item.temp === 'number' ? item.temp : 0,
   }));
 
-  useEffect(() => {
-    let cancelled = false;
+  useEffect(() => () => { cancelled.current = true; }, []);
 
+  const loadCityTemperatures = () => {
+    if (cityTemperaturesStarted.current) return;
+    cityTemperaturesStarted.current = true;
     const loadTemperatures = async () => {
       let nextIndex = 0;
 
       const loadNextTemperature = async () => {
-        while (!cancelled) {
+        while (!cancelled.current) {
           const option = CITY_OPTIONS[nextIndex++];
           if (!option) return;
 
           try {
             const weather = await fetchCurrentWeather(option.query);
-            if (cancelled) return;
+            if (cancelled.current) return;
 
             setCityOptions((current) =>
               current.map((cityOption) =>
@@ -214,10 +219,7 @@ export default function App() {
     };
 
     void loadTemperatures();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  };
   // URL hash-ის მოსმენა (ბრაუზერის Back/Forward ღილაკებისთვის)
   useEffect(() => {
     const handleUrlChange = () => {
@@ -276,6 +278,7 @@ export default function App() {
           selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
           language={language}
           unit={temperatureUnit}
+          onOpen={loadCityTemperatures}
           onSelectCity={handleSelectCity}
         />
       </div>
@@ -321,12 +324,14 @@ export default function App() {
         {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
         {activeZodiacPage ? (
           <main role="main" className="flex-1 w-full">
-            <ZodiacDetailPage
-              signId={activeZodiacPage}
-              initialTab={activeZodiacTab}
-              onBack={handleBackToMain}
-              onSelectSign={handleNavigateToZodiac}
-            />
+            <Suspense fallback={<div className="min-h-[60vh]" />}>
+              <ZodiacDetailPage
+                signId={activeZodiacPage}
+                initialTab={activeZodiacTab}
+                onBack={handleBackToMain}
+                onSelectSign={handleNavigateToZodiac}
+              />
+            </Suspense>
           </main>
         ) : (
           <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
@@ -398,17 +403,19 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <div className="w-full">
+                <Suspense fallback={<div className="h-[400px] w-full" />}>
                   <Slider slides={sliderData} />
-                </div>
+                </Suspense>
 
                  {/* 🆕 სიახლეები */}
-                <NewsSection />
+                <Suspense fallback={<div className="min-h-[650px] w-full" />}>
+                  <NewsSection />
+                </Suspense>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-                <div className="w-full">
+                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
                   <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </div>
+                </Suspense>
               </main>
 
               {/* მარჯვენა სვეტი */}
