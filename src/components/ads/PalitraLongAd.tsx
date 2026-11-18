@@ -9,23 +9,31 @@ export function PalitraLongAd() {
     const el = containerRef.current;
     if (!el) return;
 
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleLoad = () => {
+      timer = setTimeout(() => setIsInView(true), 1500);
+    };
+
     if (!('IntersectionObserver' in window)) {
-      setIsInView(true);
-      return;
+      scheduleLoad();
+      return () => { if (timer) clearTimeout(timer); };
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsInView(true);
+          scheduleLoad();
           observer.disconnect();
         }
       },
-      { rootMargin: '250px' }
+      { rootMargin: '150px' }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   return (
