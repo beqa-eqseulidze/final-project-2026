@@ -10,7 +10,7 @@ export function NewsSection() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useEffect(()=>{
     let cancelled = false;
     fetchLatestNews(10)
       .then((data) => {
@@ -19,18 +19,18 @@ export function NewsSection() {
           setLoading(false);
         }
       })
-      .catch((err) => {
+      .catch((err)=>{
         if (!cancelled) {
           setError(err.message);
           setLoading(false);
         }
       });
-    return () => { cancelled = true; };
+    return()=>{ cancelled = true; };
   }, []);
 
-  if (loading) {
+  if(loading){
     return (
-      <div className="w-full animate-pulse" aria-busy="true" role="status"> {/* 🆕 aria-busy */}
+      <div className="w-full animate-pulse">
         <div className="bg-[#00a8e8] h-10 mb-2"></div>
         <div className="bg-white p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -50,29 +50,27 @@ export function NewsSection() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-white shadow-sm p-4 text-center text-red-500 text-sm font-bpg" role="alert"> {/* 🆕 role="alert" */}
+  if(error){
+    return(
+      <div className="bg-white shadow-sm p-4 text-center text-red-500 text-sm font-bpg">
         {error}
       </div>
     );
   }
 
-  return (
-    <section className="w-full flex flex-col" aria-labelledby="news-heading"> {/* 🆕 section + aria-labelledby */}
+  return(
+    <div className="w-full flex flex-col">
       <div className="bg-[#00a8e8] text-white px-4 py-2.5 flex justify-between items-center">
-        <h2 id="news-heading" className="font-sanet font-bold text-[17px] tracking-wide"> {/* 🆕 id */}
-          {tr(language, 'სიახლეები', 'News', 'Новости')}
-        </h2>
+        <h2 className="font-sanet font-bold text-[17px] tracking-wide">{tr(language, 'სიახლეები', 'News', 'Новости')}</h2>
       </div>
 
       <div className="bg-white p-4 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {news.map((item) => (
-            <NewsCard key={item.id} item={item} />
+          {news.map((item)=>(
+            <NewsCard key={item.id} item={item}/>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

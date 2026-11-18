@@ -3,8 +3,7 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
-import { DeferredSection } from './components/DeferredSection';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
@@ -15,9 +14,9 @@ import { WindAndPressure } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
-import { FullHourlyForecast } from './features/FullHourlyForecast';
-const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
-const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then((module) => ({ default: module.ZodiacDetailPage })));
+const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
+import { AstrologyHoroscope } from './features/AstrologyHoroscope';
+const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
 import { sliderData } from './services/data';
@@ -187,9 +186,12 @@ export default function App() {
 
   const loadCityTemperatures = () => {
     if (cityTemperaturesStarted.current) return;
+    cancelled.current = false;
     cityTemperaturesStarted.current = true;
+
     const loadTemperatures = async () => {
       let nextIndex = 0;
+      const temperatureCache = new Map<string, Promise<number>>();
 
       const loadNextTemperature = async () => {
         while (!cancelled.current) {
@@ -197,16 +199,21 @@ export default function App() {
           if (!option) return;
 
           try {
-            const weather = await fetchCurrentWeather(option.query);
+            let temperatureRequest = temperatureCache.get(option.query);
+            if (!temperatureRequest) {
+              temperatureRequest = fetchCurrentWeather(option.query).then((weather) => weather.temp);
+              temperatureCache.set(option.query, temperatureRequest);
+            }
+            const temperature = await temperatureRequest;
             if (cancelled.current) return;
 
             setCityOptions((current) =>
               current.map((cityOption) =>
-                cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
+                cityOption.id === option.id ? { ...cityOption, temp: temperature } : cityOption,
               ),
             );
             setSelectedCity((current) =>
-              current?.id === option.id ? { ...current, temp: weather.temp } : current,
+              current?.id === option.id ? { ...current, temp: temperature } : current,
             );
           } catch {
             // Keep the placeholder if the API request fails.
@@ -272,8 +279,8 @@ export default function App() {
   };
 
   const cityToolbar = (
-    <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:gap-3">
-      <div className="[&>div>button]:!h-[37px] [&>div>button]:!box-border">
+    <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap sm:justify-between sm:gap-3">
+      <div className="flex w-full justify-center sm:w-auto sm:justify-start [&>div]:!w-full [&>div>button]:!h-[37px] [&>div>button]:!w-full [&>div>button]:!max-w-full [&>div>button]:!justify-center [&>div>button]:!box-border [&>div>button]:!gap-1 [&>div>button]:!px-2 [&>div>button]:!text-[11px] sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto sm:[&>div>button]:!justify-between sm:[&>div>button]:!gap-[6px] sm:[&>div>button]:!px-[14px] sm:[&>div>button]:!text-[13px]">
         <CityDropdown
           cities={localizedCityOptions}
           selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
@@ -283,16 +290,22 @@ export default function App() {
           onSelectCity={handleSelectCity}
         />
       </div>
-      <div className="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
-        <CitySearch
-          cities={citySearchOptions}
-          selectedCity={citySearchOptions.find((item) => item.id === selectedCity?.id) ?? null}
-          language={language}
-          unit={temperatureUnit}
-          onSelectCity={handleSelectCity}
-        />
-        <LanguageSelector language={language} onChange={setLanguage} />
-        <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+      <div className="contents sm:ml-auto sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+        <div className="w-full min-w-0 [&>div]:!w-full sm:w-[170px] sm:flex-none">
+          <CitySearch
+            cities={citySearchOptions}
+            selectedCity={citySearchOptions.find((item) => item.id === selectedCity?.id) ?? null}
+            language={language}
+            unit={temperatureUnit}
+            onSelectCity={handleSelectCity}
+          />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <LanguageSelector language={language} onChange={setLanguage} />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+        </div>
       </div>
     </div>
   );
@@ -325,14 +338,12 @@ export default function App() {
         {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
         {activeZodiacPage ? (
           <main role="main" className="flex-1 w-full">
-            <Suspense fallback={<div className="min-h-[60vh]" />}>
-              <ZodiacDetailPage
-                signId={activeZodiacPage}
-                initialTab={activeZodiacTab}
-                onBack={handleBackToMain}
-                onSelectSign={handleNavigateToZodiac}
-              />
-            </Suspense>
+            <Suspense fallback={<div className="p-4" role="status">Loading...</div>}><ZodiacDetailPage
+              signId={activeZodiacPage}
+              initialTab={activeZodiacTab}
+              onBack={handleBackToMain}
+              onSelectSign={handleNavigateToZodiac}
+            /></Suspense>
           </main>
         ) : (
           <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
@@ -387,7 +398,7 @@ export default function App() {
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                 <div className="w-full">
                   {centerView === 'hourly' ? (
-                    <FullHourlyForecast city={city} coordinates={coordinates} />
+                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}
@@ -404,25 +415,16 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <DeferredSection minHeight={400} className="w-full">
-                  <Suspense fallback={<div className="h-[400px]" />}>
-                    <Slider slides={sliderData} />
-                  </Suspense>
-                </DeferredSection>
+                <Suspense fallback={<div className="h-[400px] w-full" />}>
+                  <Slider slides={sliderData} />
+                </Suspense>
 
                  {/* 🆕 სიახლეები */}
-                <DeferredSection minHeight={650} className="w-full">
-                  <Suspense fallback={<div className="min-h-[650px]" />}>
-                    <NewsSection />
-                  </Suspense>
-                </DeferredSection>
+                <Suspense fallback={<div className="min-h-[650px] w-full" />}>
+                  <NewsSection />
+                </Suspense>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-                <DeferredSection minHeight={500} className="w-full">
-                  <Suspense fallback={<div className="min-h-[500px]" />}>
-                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                  </Suspense>
-                </DeferredSection>
               </main>
 
               {/* მარჯვენა სვეტი */}
@@ -438,15 +440,21 @@ export default function App() {
                 </div>
 
                 {/* ქვედა რეკლამა */}
-                <div className="w-full h-[260px] sm:h-[520px]">
+                <div className="hidden w-full sm:block sm:h-[520px]">
                   <PalitraLongAd />
                 </div>
 
                 {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
-                <div className="w-full h-[260px] sm:h-[520px]">
+                <div className="hidden w-full lg:block lg:h-[520px]">
                   <PalitraLongAd />
                 </div>
               </aside>
+
+              <div className="w-full lg:col-start-2 lg:row-start-3">
+                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
+                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                </Suspense>
+              </div>
 
             </div>
           </div>
