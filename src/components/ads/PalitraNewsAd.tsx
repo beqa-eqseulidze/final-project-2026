@@ -1,6 +1,18 @@
 import newsAdVideo from '../../assets/ads/PALITRA-NEWS.mp4';
-import { ViewportVideo } from './ViewportVideo';
 
 export function PalitraNewsAd(){
-  return <ViewportVideo src={newsAdVideo} className="w-full h-full object-contain scale-[1.02]" />;
+  return(
+    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+      <video 
+        src={newsAdVideo} 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+        preload="none" // 🆕 SEO/Accessibility
+        aria-label="რეკლამა: პალიტრა ნიუსი - ახალი ამბების ტელევიზია" // 🆕 SEO/Accessibility
+        className="w-full h-full object-contain scale-[1.02]"
+      />
+    </div>
+  );
 }
