@@ -1,6 +1,6 @@
 import type { NewsItem } from './types';
 
-const API_KEY = 'aeYu-errqXHintjDRqhs5zGCNfhg3zF6-icInDnPa2eAjqxu';
+const API_KEY = '55Ty2tklXvzsNZgjqxZjLjh5cQ3uBPaMIyfhKVh5u08i33KA';
 const BASE_URL = 'https://api.currentsapi.services/v1/latest-news?language=en&page_size=20';
 
 export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
@@ -15,8 +15,6 @@ export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
     });
 
     if (!res.ok) {
-      const errorBody = await res.text();
-      console.error('Currents API Error:', res.status, errorBody);
       throw new Error(`სიახლეები ვერ ჩაიტვირთა (კოდი: ${res.status})`);
     }
 

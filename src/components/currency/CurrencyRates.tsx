@@ -47,8 +47,7 @@ export const CurrencyRates: React.FC = () => {
 
         setDates({ yesterday: formatDate(yesterdayDate), today: formatDate(apiDate) });
         setLoading(false);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError('Failed to fetch data');
         setLoading(false);
       }

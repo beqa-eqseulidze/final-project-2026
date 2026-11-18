@@ -56,7 +56,7 @@ export function LazyWeatherMap({ onWeatherSelect }: { onWeatherSelect: (weather:
         observer.disconnect();
         startLoading();
       }
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '0px' });
     observer.observe(container);
     return () => {
       cancelled = true;

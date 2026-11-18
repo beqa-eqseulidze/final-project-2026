@@ -25,7 +25,7 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
 
   return (
     <div className="mb-3 w-full">
-      <div className="flex justify-between items-center text-[12px] font-bold text-[#19375c] mb-1 px-1">
+      <div className="flex justify-between items-center text-[12px] font-bold text-white mb-1 px-1">
         <span className="flex items-center gap-1 min-w-0 truncate">{leftLabel}</span>
         <span className="flex items-center gap-1 min-w-0 truncate">{rightLabel}</span>
       </div>
@@ -35,7 +35,8 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] bg-white border border-[#2da9e0] rounded outline-none"
+          placeholder="0"
+          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] font-medium text-[#19375c] bg-white border border-[#2da9e0] rounded outline-none"
         />
 
         {/* swap ღილაკი */}
@@ -53,7 +54,8 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
         <input
           readOnly
           value={result}
-          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] bg-[#cde9f6] border border-[#2da9e0] rounded outline-none"
+          placeholder="0"
+          className="flex-1 min-w-0 w-full h-[36px] px-2 text-[13px] font-medium text-[#19375c] bg-[#cde9f6] border border-[#2da9e0] rounded outline-none"
         />
       </div>
     </div>
@@ -63,7 +65,15 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
 /** Flag + კოდი (USD / GEL) */
 const Currency = ({ flag, code }: { flag: string; code: string }) => (
   <span className="inline-flex items-center gap-1">
-    <img src={`https://flagcdn.com/w40/${flag}.png`} alt={code} className="h-[12px]" />
+    <img
+      src={`https://flagcdn.com/w40/${flag}.png`}
+      alt={code}
+      width={16}
+      height={12}
+      loading="lazy"
+      decoding="async"
+      className="h-[12px] w-[16px] object-contain"
+    />
     {code}
   </span>
 );
@@ -98,7 +108,7 @@ export const Converter = () => {
       </button>
 
       {open && (
-        <div className="pt-3 w-full font-sanet">
+        <div className="pt-3 px-3 pb-1 w-full font-sanet bg-[#2f4058]/90 backdrop-blur-sm rounded-b shadow-lg">
           <ConverterRow
             from="C°"
             to="F°"

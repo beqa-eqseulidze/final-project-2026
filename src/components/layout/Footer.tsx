@@ -45,7 +45,11 @@ export const Footer: React.FC = () => {
             <img
               src="https://amindi.ge/static/img/header-logo.png"
               alt="amindi.ge"
-              style={{ height: '40px' }}
+              width={140}
+              height={40}
+              loading="lazy"
+              decoding="async"
+              style={{ height: '40px', width: 'auto' }}
             />
           </a>
         </div>
@@ -125,6 +129,10 @@ export const Footer: React.FC = () => {
             <img
               src="https://counter.top.ge/cgi-bin/count?ID:24228+JS:true"
               alt="TOP.GE"
+              width={88}
+              height={31}
+              loading="lazy"
+              decoding="async"
               className="border-0"
               onError={(e) => {
                 // სარეზერვო ვიზუალი, თუ რეალური სურათი დროებით ვერ ჩაიტვირთება

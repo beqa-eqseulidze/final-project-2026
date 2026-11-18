@@ -15,7 +15,7 @@ import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
 const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
@@ -216,7 +216,7 @@ export default function App() {
               current?.id === option.id ? { ...current, temp: temperature } : current,
             );
           } catch {
-            // Keep the placeholder if the API request fails.
+            // Keep the existing fallback temperature if the API request fails.
           }
         }
       };
@@ -279,8 +279,8 @@ export default function App() {
   };
 
   const cityToolbar = (
-    <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:gap-3">
-      <div className="[&>div>button]:!h-[37px] [&>div>button]:!box-border">
+    <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap sm:justify-between sm:gap-3">
+      <div className="flex w-full justify-center sm:w-auto sm:justify-start [&>div]:!w-full [&>div>button]:!h-[37px] [&>div>button]:!w-full [&>div>button]:!max-w-full [&>div>button]:!justify-center [&>div>button]:!box-border [&>div>button]:!gap-1 [&>div>button]:!px-2 [&>div>button]:!text-[11px] sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto sm:[&>div>button]:!justify-between sm:[&>div>button]:!gap-[6px] sm:[&>div>button]:!px-[14px] sm:[&>div>button]:!text-[13px]">
         <CityDropdown
           cities={localizedCityOptions}
           selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
@@ -290,16 +290,22 @@ export default function App() {
           onSelectCity={handleSelectCity}
         />
       </div>
-      <div className="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
-        <CitySearch
-          cities={citySearchOptions}
-          selectedCity={citySearchOptions.find((item) => item.id === selectedCity?.id) ?? null}
-          language={language}
-          unit={temperatureUnit}
-          onSelectCity={handleSelectCity}
-        />
-        <LanguageSelector language={language} onChange={setLanguage} />
-        <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+      <div className="contents sm:ml-auto sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+        <div className="w-full min-w-0 [&>div]:!w-full sm:w-[170px] sm:flex-none">
+          <CitySearch
+            cities={citySearchOptions}
+            selectedCity={citySearchOptions.find((item) => item.id === selectedCity?.id) ?? null}
+            language={language}
+            unit={temperatureUnit}
+            onSelectCity={handleSelectCity}
+          />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <LanguageSelector language={language} onChange={setLanguage} />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+        </div>
       </div>
     </div>
   );
@@ -361,12 +367,12 @@ export default function App() {
               <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                 {/* 1. მიმდინარე ამინდი */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
                   <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
                   <HourlyWeatherForecast
                     city={city}
                     coordinates={coordinates}
@@ -381,7 +387,7 @@ export default function App() {
                 </div>
 
                 {/* 4. ვალუტის კურსები */}
-                <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
                   <CurrencyRates />
                 </div>
 
@@ -390,9 +396,9 @@ export default function App() {
               {/* ცენტრალური სვეტი */}
               <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
-                <div className="w-full">
+                <div className="w-full min-h-[360px]">
                   {centerView === 'hourly' ? (
-                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
+                    <Suspense fallback={<div className="min-h-[360px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}
@@ -409,7 +415,7 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <Suspense fallback={<div className="h-[400px] w-full" />}>
+                <Suspense fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
                   <Slider slides={sliderData} />
                 </Suspense>
 
@@ -419,9 +425,6 @@ export default function App() {
                 </Suspense>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
-                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </Suspense>
               </main>
 
               {/* მარჯვენა სვეტი */}
@@ -437,15 +440,21 @@ export default function App() {
                 </div>
 
                 {/* ქვედა რეკლამა */}
-                <div className="w-full h-[260px] sm:h-[520px]">
+                <div className="hidden w-full sm:block sm:h-[520px]">
                   <PalitraLongAd />
                 </div>
 
                 {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
-                <div className="w-full h-[260px] sm:h-[520px]">
+                <div className="hidden w-full lg:block lg:h-[520px]">
                   <PalitraLongAd />
                 </div>
               </aside>
+
+              <div className="w-full lg:col-start-2 lg:row-start-3">
+                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
+                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                </Suspense>
+              </div>
 
             </div>
           </div>
