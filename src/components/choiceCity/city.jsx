@@ -39,17 +39,21 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'k
           left: 0,
           marginTop: '5px',
           backgroundColor: '#00a2d8',
-          width: '420px',
+          width: 'min(calc(100vw - 32px), 798px)',
+          maxWidth: 'min(calc(100vw - 32px), 798px)',
+          boxSizing: 'border-box',
+          maxHeight: 'calc(100vh - 70px)',
+          overflowY: 'auto',
           padding: '12px',
           borderRadius: '4px',
           boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
           zIndex: 9999,
           color: 'white'
         }}>
-          <div style={{ fontSize: '11px', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '4px', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '6px', textTransform: 'uppercase' }}>
             {language === 'ka' ? 'საქართველოს ქალაქები' : language === 'en' ? 'Cities in Georgia' : 'Города Грузии'}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '2px 18px' }}>
             {cities.map((city) => (
               <div
                 key={city.id}
@@ -60,7 +64,9 @@ export const CityDropdown = ({ cities, selectedCity, onSelectCity, language = 'k
                   padding: '5px 8px',
                   borderRadius: '3px',
                   cursor: 'pointer',
-                  fontSize: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  gap: '12px',
                   transition: 'background 0.15s, color 0.15s'
                 }}
                 onMouseEnter={(e) => {
