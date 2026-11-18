@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { tr, useLanguage } from '../context/LanguageContext';
 
 export type MapWeather = { name: string; country: string; latitude: number; longitude: number; temperature: number; apparent: number; humidity: number; wind: number; code: number };
 declare global { interface Window { maplibregl?: any } }
 
 export function InteractiveWeatherMap({ onWeatherSelect }: { onWeatherSelect: (weather: MapWeather) => void }) {
+  const language = useLanguage();
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const marker = useRef<any>(null);
@@ -25,13 +27,14 @@ export function InteractiveWeatherMap({ onWeatherSelect }: { onWeatherSelect: (w
     }
     try {
       const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto`);
-      if (!weatherResponse.ok) throw new Error('Weather service is unavailable.');
+      if (!weatherResponse.ok) throw new Error(tr(language, 'ამინდის სერვისი მიუწვდომელია.', 'Weather service is unavailable.', 'Сервис погоды недоступен.'));
       const forecast = await weatherResponse.json();
       if (id !== request.current) return;
       // Reverse geocoding is optional: weather must still work when it is rate-limited.
       let address: Record<string, string> = {};
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`, { headers: { 'Accept-Language': 'en' } });
+        const reverseGeocodeLanguage = language === 'ka' ? 'ka' : language;
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`, { headers: { 'Accept-Language': reverseGeocodeLanguage } });
         if (response.ok) address = (await response.json()).address ?? {};
       } catch { /* Coordinates remain a valid fallback. */ }
       if (id !== request.current) return;
@@ -45,7 +48,7 @@ export function InteractiveWeatherMap({ onWeatherSelect }: { onWeatherSelect: (w
         code: forecast.current.weather_code,
       });
     } catch (err) {
-      if (id === request.current) setError(err instanceof Error ? err.message : 'Could not load weather.');
+      if (id === request.current) setError(err instanceof Error ? err.message : tr(language, 'ამინდის ჩატვირთვა ვერ მოხერხდა.', 'Could not load weather.', 'Не удалось загрузить погоду.'));
     } finally {
       if (id === request.current) setLoading(false);
     }
@@ -54,7 +57,7 @@ export function InteractiveWeatherMap({ onWeatherSelect }: { onWeatherSelect: (w
   useEffect(() => {
     const lib = window.maplibregl;
     if (!container.current || !lib) {
-      setError('Map could not load. Check your connection and refresh.');
+      setError(tr(language, 'რუკა ვერ ჩაიტვირთა. შეამოწმეთ კავშირი და განაახლეთ გვერდი.', 'Map could not load. Check your connection and refresh.', 'Не удалось загрузить карту. Проверьте подключение и обновите страницу.'));
       return;
     }
     const instance = new lib.Map({
@@ -87,9 +90,9 @@ export function InteractiveWeatherMap({ onWeatherSelect }: { onWeatherSelect: (w
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#d8e4ed]">
-      <div ref={container} aria-label="Interactive weather map: zoom and click to place a pin" className="weather-map h-full w-full" />
-      <div className="pointer-events-none absolute top-2 right-2 z-10 max-w-[175px] rounded bg-[#2f4058]/90 px-2 py-1 text-[10px] text-white">Pinned to Rustavi · click to move the pin</div>
-      {(loading || error) && <div className="pointer-events-none absolute bottom-6 left-2 z-10 rounded bg-white/95 px-2 py-1 text-xs text-slate-800">{error || 'Loading city weather…'}</div>}
+      <div ref={container} aria-label={tr(language, 'ამინდის რუკა: გაადიდეთ და მონიშნეთ ადგილი', 'Interactive weather map: zoom and click to place a pin', 'Карта погоды: увеличьте и нажмите, чтобы отметить место')} className="weather-map h-full w-full" />
+      <div className="pointer-events-none absolute top-2 right-2 z-10 max-w-[175px] rounded bg-[#2f4058]/90 px-2 py-1 text-[10px] text-white">{tr(language, 'რუკა მონიშნულია რუსთავზე · დასაწკაპუნებლად შეცვალეთ მდებარეობა', 'Pinned to Rustavi · click to move the pin', 'Метка установлена в Рустави · нажмите, чтобы переместить')}</div>
+      {(loading || error) && <div className="pointer-events-none absolute bottom-6 left-2 z-10 rounded bg-white/95 px-2 py-1 text-xs text-slate-800">{error || tr(language, 'ქალაქის ამინდი იტვირთება…', 'Loading city weather…', 'Загружается погода…')}</div>}
     </div>
   );
 }

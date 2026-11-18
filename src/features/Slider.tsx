@@ -17,10 +17,17 @@ export function Slider({ slides }: SliderProps) {
       {/* სლაიდერი */}
       <div className="relative flex-1 p-2.5 sm:p-4 bg-white/40">
         <div className="absolute top-[12px] sm:top-[16px] right-[12px] sm:right-[16px] z-20 flex gap-1">
-          <button className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm">
+          {/* 🆕 დავამატეთ aria-label-ები წინა და შემდეგ ღილაკებს */}
+          <button 
+            className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
+            aria-label="წინა სლაიდი"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <button className="custom-next w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm">
+          <button 
+            className="custom-next w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
+            aria-label="შემდეგი სლაიდი"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
           </button>
         </div>

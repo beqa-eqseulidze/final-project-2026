@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CurrencyRow } from './CurrencyRow';
+import { tr, useLanguage } from '../../context/LanguageContext';
 
 interface CurrencyData {
   code: string;
@@ -15,6 +16,7 @@ interface ApiResponse {
 }
 
 export function CurrencyRates() {
+  const language = useLanguage();
   const [currencies, setCurrencies] = useState<CurrencyData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,10 +75,10 @@ export function CurrencyRates() {
 
   return(
     <div className="w-full bg-transparent text-white p-2 font-sanet">
-      <h3 className="text-[13px] font-medium mb-3 tracking-wide text-center">ოფიციალური კურსი</h3>
+      <h3 className="text-[13px] font-medium mb-3 tracking-wide text-center">{tr(language, 'ოფიციალური კურსი', 'Official exchange rate', 'Официальный курс')}</h3>
 
       {loading ? (
-        <div className="font-bold text-center text-xs py-2 text-white/70">იტვირთება..</div>
+        <div className="font-bold text-center text-xs py-2 text-white/70">{tr(language, 'იტვირთება..', 'Loading…', 'Загрузка…')}</div>
       ) : error ? (
         <div className="text-center text-xs py-2 text-red-400">{error}</div>
       ) : (
@@ -105,7 +107,7 @@ export function CurrencyRates() {
       <div className="mt-3 flex justify-center">
         <a href="https://www.bpn.ge/currency/" target="_blank" rel="noopener noreferrer"
           className="font-medium bg-[#00a8e8] hover:bg-[#0086b8] text-white text-[11px] py-1.5 px-4 rounded transition-colors duration-200">
-          ყველა ვალუტა
+          {tr(language, 'ყველა ვალუტა', 'All currencies', 'Все валюты')}
         </a>
       </div>
     </div>
