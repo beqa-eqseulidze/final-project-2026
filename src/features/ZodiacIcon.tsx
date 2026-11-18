@@ -9,10 +9,27 @@ import React from 'react';
 interface ZodiacIconProps {
   signId: string;
   className?: string;
+  alt?: string;
 }
 
-export const ZodiacIcon: React.FC<ZodiacIconProps> = ({ signId, className = 'w-5 h-5' }) => {
+const ZODIAC_NAMES: Record<string, string> = {
+  aries: 'ვერძი',
+  taurus: 'კურო',
+  gemini: 'ტყუპები',
+  cancer: 'კირჩხიბი',
+  leo: 'ლომი',
+  virgo: 'ქალწული',
+  libra: 'სასწორი',
+  scorpio: 'მორიელი',
+  sagittarius: 'მშვილდოსანი',
+  capricorn: 'თხის რქა',
+  aquarius: 'მერწყული',
+  pisces: 'თევზები',
+};
+
+export const ZodiacIcon: React.FC<ZodiacIconProps> = ({ signId, className = 'w-5 h-5', alt }) => {
   const normalizedId = signId.toLowerCase();
+  const label = alt || ZODIAC_NAMES[normalizedId] || normalizedId;
 
   const renderPath = () => {
     switch (normalizedId) {
@@ -170,8 +187,11 @@ export const ZodiacIcon: React.FC<ZodiacIconProps> = ({ signId, className = 'w-5
     <svg
       viewBox="0 0 24 24"
       className={`inline-block shrink-0 ${className}`}
-      aria-hidden="true"
+      role="img"
+      aria-label={label}
+      {...({ alt: label } as Record<string, unknown>)}
     >
+      <title>{label}</title>
       {renderPath()}
     </svg>
   );
