@@ -99,7 +99,7 @@ export function CircleAd({ href, size = 60 }: CircleAdProps) {
         left: deleteTargetBounds.left + deleteTargetBounds.width / 2 - size / 2,
         top: deleteTargetBounds.top + deleteTargetBounds.height / 2 - size / 2,
         marginTop: 0,
-        transform: 'scale(0.62)',
+        transform: 'scale(0.85)',
       }
     : {
         left: 20,
@@ -116,25 +116,22 @@ export function CircleAd({ href, size = 60 }: CircleAdProps) {
         <div
           ref={deleteTargetRef}
           aria-label="Drop here to close ad"
-          className={`pointer-events-none fixed left-1/2 z-[10000] flex h-[92px] w-[92px] -translate-x-1/2 items-center justify-center rounded-full border-[3px] transition-all duration-150 ${
+          className={`pointer-events-none fixed left-1/2 z-[10000] flex h-[92px] w-[92px] -translate-x-1/2 items-center justify-center rounded-full transition-all duration-150 ${
             isOverDeleteTarget
-              ? 'scale-110 border-red-200 bg-red-500/25 text-white shadow-[0_0_0_10px_rgba(239,68,68,0.24),0_8px_30px_rgba(0,0,0,0.35)]'
-              : 'border-white bg-slate-900/90 text-white shadow-[0_8px_30px_rgba(0,0,0,0.4)]'
+              ? 'scale-110 border-white bg-transparent text-white'
+              : 'border-white bg-transparent text-white'
           }`}
           style={{ bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))' }}
         >
-          <span aria-hidden="true" className="pointer-events-none absolute -inset-3 rounded-full border-2 border-white/80" />
-          <span aria-hidden="true" className="pointer-events-none absolute -inset-[10px] rounded-full border border-white/45" />
           <span
             aria-hidden="true"
             style={{
               position: 'absolute',
-              width: 64,
-              height: 64,
-              border: '3px solid #fff',
+              width: 78,
+              height: 78,
+              border: '2px solid #fff',
               borderRadius: '50%',
               background: 'transparent',
-              boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 16px rgba(255, 255, 255, 0.65)',
               pointerEvents: 'none',
             }}
           />
@@ -165,7 +162,15 @@ export function CircleAd({ href, size = 60 }: CircleAdProps) {
         onPointerCancel={handlePointerUp}
         onClick={handleClick}
       >
-        <img src={adImage} alt="Radio Palitra" className="pointer-events-none h-full w-full object-cover" />
+        <img
+          src={adImage}
+          alt="Radio Palitra"
+          width={size}
+          height={size}
+          loading="lazy"
+          decoding="async"
+          className="pointer-events-none h-full w-full object-cover"
+        />
       </div>
     </>
   );
