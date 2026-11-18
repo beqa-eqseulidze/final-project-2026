@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import shortAdVideo from '../../assets/ads/Palitra-SHORT.mp4';
 
-<<<<<<< HEAD
-export function PalitraShortAd(){
-  return(
-    <div className="w-full h-full flex items-center justify-center overflow-hidden">
-      <video src={shortAdVideo} autoPlay loop preload="metadata" muted  playsInline
-        className="w-full h-full object-cover scale-[1]" />
-=======
 export function PalitraShortAd() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -57,7 +50,6 @@ export function PalitraShortAd() {
           className="w-full h-full object-cover scale-[1]"
         />
       ) : null}
->>>>>>> master
     </div>
   );
 }

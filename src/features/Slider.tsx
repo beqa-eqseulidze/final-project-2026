@@ -11,9 +11,6 @@ export function Slider({ slides }: SliderProps) {
       {/* სათაური */}
       <div className="bg-[#00a8e8] text-white px-3 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center shrink-0">
         <h3 className="font-sanet font-bold text-[14px] sm:text-[16px]">შეიძინე დანაზოგით</h3>
-<<<<<<< HEAD
-        <img src={hotsaleLogo} alt="Hotsale" decoding="async" className="h-6 sm:h-8 object-contain" />
-=======
         {/* 🆕 alt-ს დავამატეთ აღწერა, width/height layout shift-ის თავიდან ასაცილებლად */}
         <img
           src={hotsaleLogo}
@@ -23,7 +20,6 @@ export function Slider({ slides }: SliderProps) {
           decoding="async"
           className="h-6 sm:h-8 w-auto object-contain"
         />
->>>>>>> master
       </div>
 
       {/* სლაიდერი */}
@@ -66,9 +62,6 @@ export function Slider({ slides }: SliderProps) {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
-<<<<<<< HEAD
-                    <img src={slide.logo} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-=======
                     {/* 🆕 ლოგო: lazy loading და ზომები */}
                     <img
                       src={slide.logo}
@@ -79,7 +72,6 @@ export function Slider({ slides }: SliderProps) {
                       decoding="async"
                       className="w-full h-full object-cover"
                     />
->>>>>>> master
                   </div>
                 </div>
                 <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white">
