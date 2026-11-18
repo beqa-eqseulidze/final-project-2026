@@ -11,16 +11,24 @@ export function Slider({ slides }: SliderProps) {
       {/* სათაური */}
       <div className="bg-[#00a8e8] text-white px-3 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center shrink-0">
         <h3 className="font-sanet font-bold text-[14px] sm:text-[16px]">შეიძინე დანაზოგით</h3>
-        <img src={hotsaleLogo} alt="Hotsale" className="h-6 sm:h-8 object-contain" />
+        {/* 🆕 alt-ს დავამატეთ აღწერა */}
+        <img src={hotsaleLogo} alt="Hotsale - ფასდაკლებები" className="h-6 sm:h-8 object-contain" />
       </div>
 
       {/* სლაიდერი */}
       <div className="relative flex-1 p-2.5 sm:p-4 bg-white/40">
         <div className="absolute top-[12px] sm:top-[16px] right-[12px] sm:right-[16px] z-20 flex gap-1">
-          <button className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm">
+          {/* 🆕 დავამატეთ aria-label-ები წინა და შემდეგ ღილაკებს */}
+          <button 
+            className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
+            aria-label="წინა სლაიდი"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <button className="custom-next w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm">
+          <button 
+            className="custom-next w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
+            aria-label="შემდეგი სლაიდი"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
           </button>
         </div>
@@ -36,9 +44,11 @@ export function Slider({ slides }: SliderProps) {
             <SwiperSlide key={slide.id} className="h-full pb-2">
               <div className="bg-white rounded-xl overflow-hidden flex flex-col h-full shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                 <div className="relative h-[160px] sm:h-[200px] w-full shrink-0">
+                  {/* 🆕 სურათის alt უკვე კარგია (slide.title) */}
                   <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
                   <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
-                    <img src={slide.logo} alt="" className="w-full h-full object-cover" />
+                    {/* 🆕 ლოგოს ცარიელი alt შევცვალეთ აღწერით */}
+                    <img src={slide.logo} alt={`${slide.title} - ლოგო`} className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between bg-white">

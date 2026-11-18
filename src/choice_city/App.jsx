@@ -18,7 +18,7 @@ function App() {
   const [selectedCity, setSelectedCity] = useState(CITIES_DATA[0]);
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#eef2f5', minHeight: '100vh' }}>
+    <div style={{ padding: '20px', fontFamily: 'font-sanet', backgroundColor: '#eef2f5', minHeight: '100vh' }}>
       
       {/* ჩამოშლილი ქალაქების კომპონენტი */}
       <CityDropdown 
