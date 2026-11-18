@@ -174,7 +174,6 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         alt={day.description}
                         width={48}
                         height={48}
-                        loading="lazy"
                         decoding="async"
                         className="w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain my-1 sm:my-1.5"
                         onError={(e) => {
@@ -228,7 +227,6 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         alt={day.description}
                         width={36}
                         height={36}
-                        loading="lazy"
                         decoding="async"
                         className="w-7 h-7 sm:w-9 sm:h-9 object-contain my-1"
                         onError={(e) => {
@@ -292,7 +290,6 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                           alt={item.description}
                           width={44}
                           height={44}
-                          loading="lazy"
                           decoding="async"
                           className="w-9 h-9 sm:w-11 sm:h-11 object-contain my-0.5 sm:my-1"
                           onError={(e) => {

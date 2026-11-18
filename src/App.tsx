@@ -15,7 +15,7 @@ import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
 const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
@@ -367,12 +367,12 @@ export default function App() {
               <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                 {/* 1. მიმდინარე ამინდი */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
                   <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
                   <HourlyWeatherForecast
                     city={city}
                     coordinates={coordinates}
@@ -387,7 +387,7 @@ export default function App() {
                 </div>
 
                 {/* 4. ვალუტის კურსები */}
-                <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
                   <CurrencyRates />
                 </div>
 
@@ -396,9 +396,9 @@ export default function App() {
               {/* ცენტრალური სვეტი */}
               <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
-                <div className="w-full">
+                <div className="w-full min-h-[360px]">
                   {centerView === 'hourly' ? (
-                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
+                    <Suspense fallback={<div className="min-h-[360px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}
@@ -415,7 +415,7 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <Suspense fallback={<div className="h-[400px] w-full" />}>
+                <Suspense fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
                   <Slider slides={sliderData} />
                 </Suspense>
 

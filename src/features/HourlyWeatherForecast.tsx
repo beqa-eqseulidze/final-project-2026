@@ -120,7 +120,6 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
               alt={item.description}
               width={36}
               height={36}
-              loading="lazy"
               decoding="async"
               className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
               onError={(e) => {

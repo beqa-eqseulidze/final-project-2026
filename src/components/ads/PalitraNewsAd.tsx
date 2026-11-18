@@ -8,7 +8,7 @@ export function PalitraNewsAd() {
     // ჩატვირთვის გადადება პირველი რენდერის (FCP/LCP) შემდეგ
     const timer = setTimeout(() => {
       setShouldLoad(true);
-    }, 400);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
