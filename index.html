@@ -12,10 +12,21 @@
     <meta property="og:description" content="ამინდის მიმდინარე მონაცემები, საათობრივი პროგნოზი და ინტერაქტიული რუკა საქართველოში." />
     <meta property="og:locale" content="ka_GE" />
     <meta name="twitter:card" content="summary" />
-    <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
+    <link rel="preconnect" href="https://amindi.ge" crossorigin />
     <link rel="preconnect" href="https://api.open-meteo.com" crossorigin />
-    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
-    <script defer src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <link rel="preload" href="https://amindi.ge/static/fonts/bbe.woff" as="font" type="font/woff" crossorigin />
+    <script>
+      const georgiaHour = (new Date().getUTCHours() + 4) % 24;
+      const skyImage = georgiaHour >= 7 && georgiaHour < 19
+        ? 'https://amindi.ge/static/img/sun2.jpg'
+        : 'https://amindi.ge/static/img/bg/clouds_night2.jpg';
+      const skyPreload = document.createElement('link');
+      skyPreload.rel = 'preload';
+      skyPreload.as = 'image';
+      skyPreload.href = skyImage;
+      skyPreload.fetchPriority = 'high';
+      document.head.append(skyPreload);
+    </script>
     <title>ამინდის პროგნოზი საქართველოში | Amindi</title>
   </head>
   <body>

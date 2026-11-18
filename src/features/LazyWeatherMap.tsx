@@ -8,6 +8,13 @@ let mapLibrePromise: Promise<void> | undefined;
 function loadMapLibre() {
   if (window.maplibregl) return Promise.resolve();
   if (!mapLibrePromise) {
+    if (!document.querySelector('link[rel="preconnect"][href="https://tile.openstreetmap.org"]')) {
+      const preconnect = document.createElement('link');
+      preconnect.rel = 'preconnect';
+      preconnect.href = 'https://tile.openstreetmap.org';
+      preconnect.crossOrigin = 'anonymous';
+      document.head.append(preconnect);
+    }
     mapLibrePromise = Promise.all([
       new Promise<void>((resolve, reject) => {
         const link = document.createElement('link');

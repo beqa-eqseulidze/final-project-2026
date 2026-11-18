@@ -1,10 +1,10 @@
 import { SlideData } from './types';
 
 // სურათების იმპორტი
-import img1 from '../assets/images/slider1.png';
-import img2 from '../assets/images/slider2.png';
-import img3 from '../assets/images/slider3.png';
-import img4 from '../assets/images/slider4.png';
+import img1 from '../assets/images/slider1.jpg';
+import img2 from '../assets/images/slider2.jpg';
+import img3 from '../assets/images/slider3.jpg';
+import img4 from '../assets/images/slider4.jpg';
 
 import logo1 from '../assets/logo/logo1.png';
 import logo2 from '../assets/logo/logo2.png';

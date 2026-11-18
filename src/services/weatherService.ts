@@ -78,6 +78,28 @@ interface OWMForecastResponse {
   message?: string;
 }
 
+const pendingWeatherRequests = new Map<string, Promise<unknown>>();
+
+function fetchWeatherJson<T>(url: string): Promise<T> {
+  const pending = pendingWeatherRequests.get(url);
+  if (pending) return pending as Promise<T>;
+
+  const request = fetch(url).then(async (response) => {
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(`OpenWeatherMap \u10e8\u10d4\u10ea\u10d3\u10dd\u10db\u10d0: ${error.message ?? response.statusText}`);
+    }
+    return response.json() as Promise<T>;
+  });
+
+  pendingWeatherRequests.set(url, request);
+  request.then(
+    () => { if (pendingWeatherRequests.get(url) === request) pendingWeatherRequests.delete(url); },
+    () => { if (pendingWeatherRequests.get(url) === request) pendingWeatherRequests.delete(url); },
+  );
+  return request as Promise<T>;
+}
+
 // -------------------------------------------------------
 // კვირის დღეები და თვეები ქართულად
 // -------------------------------------------------------
@@ -346,14 +368,7 @@ export async function fetchForecast(
   const count = Math.min(days * 8, 40);
   const url = buildWeatherUrl('forecast', city, coordinates, `&cnt=${count}`, language);
 
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(`OpenWeatherMap შეცდომა: ${err.message ?? res.statusText}`);
-  }
-
-  const data: OWMForecastResponse = await res.json();
+  const data = await fetchWeatherJson<OWMForecastResponse>(url);
 
   // დღეების მიხედვით დაჯგუფება
   const grouped = new Map<string, OWMListItem[]>();
@@ -395,14 +410,7 @@ export async function fetchCurrentWeather(
   language: string = 'ka',
 ): Promise<CurrentWeather> {
   const url = buildWeatherUrl('weather', city, coordinates, '', language);
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(`OpenWeatherMap შეცდომა: ${err.message ?? res.statusText}`);
-  }
-
-  const data = await res.json();
+  const data = await fetchWeatherJson<any>(url);
   const cityName = localizeCityName(data.name || city, language);
 
   const windSpeedKmh = data.wind?.speed ? Math.round(data.wind.speed * 3.6) : 0;
@@ -433,13 +441,7 @@ export async function fetchHourlyForecast(
 ): Promise<HourlyForecastItem[]> {
   const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=8', language);
 
-  const res = await fetch(url);
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(`OpenWeatherMap შეცდომა: ${err.message ?? res.statusText}`);
-  }
-
-  const data: OWMForecastResponse = await res.json();
+  const data = await fetchWeatherJson<OWMForecastResponse>(url);
   const items: HourlyForecastItem[] = [];
 
   for (const slot of data.list) {
@@ -526,10 +528,7 @@ export async function fetch5DayHourlyForecast(
 ): Promise<DayHourlyForecast[]> {
   try {
     const url = buildWeatherUrl('forecast', city, coordinates, '&cnt=40', language);
-    const res = await fetch(url);
-
-    if (res.ok) {
-      const data: OWMForecastResponse = await res.json();
+    const data = await fetchWeatherJson<OWMForecastResponse>(url);
       
       // ჯერ დავაჯგუფოთ 3-საათიანი OWM სლოტები დღეების მიხედვით
       const daySlotsMap = new Map<string, { dayName: string; dateLabel: string; slots: OWMListItem[] }>();
@@ -586,7 +585,6 @@ export async function fetch5DayHourlyForecast(
       }
 
       if (resultDays.length > 0) return resultDays;
-    }
   } catch {
     // fallback ქვემოთ
   }

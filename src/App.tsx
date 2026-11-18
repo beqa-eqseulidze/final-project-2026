@@ -15,7 +15,7 @@ import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
 const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
@@ -112,6 +112,30 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
     </div>
   );
 };
+
+function DeferredMount({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (!('IntersectionObserver' in window)) {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setIsNearViewport(true);
+      observer.disconnect();
+    }, { rootMargin: '250px' });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={containerRef}>{isNearViewport ? children : fallback}</div>;
+}
 
 export default function App() {
   const [language, setLanguage] = useState<SiteLanguage>(() => {
@@ -383,7 +407,7 @@ export default function App() {
 
                 {/* 3. ქარი და წნევა (დინამიური მონაცემებით) */}
                 <div className="w-full">
-                  <WindAndPressure city={city} />
+                  <WindAndPressure city={city} coordinates={coordinates} />
                 </div>
 
                 {/* 4. ვალუტის კურსები */}
@@ -415,14 +439,18 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <Suspense fallback={<div className="h-[400px] w-full" />}>
-                  <Slider slides={sliderData} />
-                </Suspense>
+                <DeferredMount fallback={<div className="h-[400px] w-full" />}>
+                  <Suspense fallback={<div className="h-[400px] w-full" />}>
+                    <Slider slides={sliderData} />
+                  </Suspense>
+                </DeferredMount>
 
                  {/* 🆕 სიახლეები */}
-                <Suspense fallback={<div className="min-h-[650px] w-full" />}>
-                  <NewsSection />
-                </Suspense>
+                <DeferredMount fallback={<div className="min-h-[650px] w-full" />}>
+                  <Suspense fallback={<div className="min-h-[650px] w-full" />}>
+                    <NewsSection />
+                  </Suspense>
+                </DeferredMount>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
               </main>
@@ -451,9 +479,11 @@ export default function App() {
               </aside>
 
               <div className="w-full lg:col-start-2 lg:row-start-3">
-                <Suspense fallback={<div className="min-h-[500px] w-full" />}>
-                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </Suspense>
+                <DeferredMount fallback={<div className="min-h-[500px] w-full" />}>
+                  <Suspense fallback={<div className="min-h-[500px] w-full" />}>
+                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                  </Suspense>
+                </DeferredMount>
               </div>
 
             </div>

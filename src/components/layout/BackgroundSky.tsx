@@ -48,7 +48,7 @@ export const BackgroundSky: React.FC<BackgroundSkyProps> = ({ children }) => {
       style={{
         backgroundImage: `url('${bgImage}')`,
         backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
+        backgroundAttachment: 'scroll',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
         backgroundColor: '#19375c',

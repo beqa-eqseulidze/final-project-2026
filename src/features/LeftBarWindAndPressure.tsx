@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { WindTurbines } from '../components/WindTurbines';
-import { fetchCurrentWeather } from '../services/weatherService';
+import { fetchCurrentWeather, type UserCoordinates } from '../services/weatherService';
 import { formatTemperature, tr, useLanguage, useTemperatureUnit } from '../context/LanguageContext';
 
 export interface IWindAndPressureProps {
@@ -18,9 +18,10 @@ export interface IWindAndPressureProps {
 
 interface Props {
     city: string;
+    coordinates?: UserCoordinates | null;
 }
 
-export const WindAndPressure = ({ city }: Props) => {
+export const WindAndPressure = ({ city, coordinates }: Props) => {
     const language = useLanguage();
     const temperatureUnit = useTemperatureUnit();
     const [data, setData] = useState<IWindAndPressureProps>({
@@ -41,7 +42,7 @@ export const WindAndPressure = ({ city }: Props) => {
         let isMounted = true;
         setData(prev => ({ ...prev, isLoading: true }));
 
-        fetchCurrentWeather(city)
+        fetchCurrentWeather(city, coordinates, language)
             .then((weatherData) => {
                 if (isMounted) {
                     setData({
@@ -67,7 +68,7 @@ export const WindAndPressure = ({ city }: Props) => {
         return () => {
             isMounted = false;
         };
-    }, [city]);
+    }, [city, coordinates, language]);
 
     const {
         windSpeed,
