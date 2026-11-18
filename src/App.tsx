@@ -64,7 +64,6 @@ const CITY_OPTIONS: CityOption[] = [
   { id: 23, name: 'ბოლნისი', temp: null, query: 'Bolnisi' },
   { id: 24, name: 'მესტია', temp: null, query: 'Mestia' },
   { id: 25, name: 'ოჩამჩირე', temp: null, query: 'Ochamchire' },
-  { id: 26, name: 'დავით-გარეჯი', temp: null, query: 'Davit Gareji' },
   { id: 27, name: 'მანგლისი', temp: null, query: 'Manglisi' },
   { id: 28, name: 'ჟინვალი', temp: null, query: 'Zhinvali' },
   { id: 29, name: 'ჯვარი', temp: null, query: 'Jvari' },
@@ -85,7 +84,6 @@ const CITY_OPTIONS: CityOption[] = [
   { id: 44, name: 'ბაღდათი', temp: null, query: 'Baghdati' },
   { id: 45, name: 'ვანი', temp: null, query: 'Vani' },
   { id: 46, name: 'თერჯოლა', temp: null, query: 'Terjola' },
-  { id: 47, name: 'ზესტაფონი', temp: null, query: 'Zestafoni' },
   { id: 48, name: 'ტყიბული', temp: null, query: 'Tkibuli' },
   { id: 49, name: 'ჭიათურა', temp: null, query: 'Chiatura' },
   { id: 50, name: 'ხარაგაული', temp: null, query: 'Kharagauli' },
@@ -94,12 +92,10 @@ const CITY_OPTIONS: CityOption[] = [
   { id: 53, name: 'გუდაუთა', temp: null, query: 'Gudauta' },
   { id: 54, name: 'გაგრა', temp: null, query: 'Gagra' },
   { id: 55, name: 'ახალი ათონი', temp: null, query: 'New Athos' },
-  { id: 56, name: 'ყაზბეგი', temp: null, query: 'Kazbegi' },
   { id: 57, name: 'სიღნაღი', temp: null, query: 'Sighnaghi' },
   { id: 58, name: 'დედოფლისწყარო', temp: null, query: 'Dedoplistskaro' },
   { id: 59, name: 'ლაგოდეხი', temp: null, query: 'Lagodekhi' },
   { id: 60, name: 'საგარეჯო', temp: null, query: 'Sagarejo' },
-  { id: 61, name: 'გლდანი', temp: null, query: 'Gldani' },
 ];
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => {
   const hasBg = className.includes('bg-');
@@ -187,29 +183,34 @@ export default function App() {
     let cancelled = false;
 
     const loadTemperatures = async () => {
-      for (const option of CITY_OPTIONS) {
-        if (cancelled) return;
+      let nextIndex = 0;
 
-        try {
-          const weather = await fetchCurrentWeather(option.query);
-          if (cancelled) return;
+      const loadNextTemperature = async () => {
+        while (!cancelled) {
+          const option = CITY_OPTIONS[nextIndex++];
+          if (!option) return;
 
-          setCityOptions((current) =>
-            current.map((cityOption) =>
-              cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
-            ),
-          );
-          setSelectedCity((current) =>
-            current?.id === option.id ? { ...current, temp: weather.temp } : current,
-          );
-        } catch {
-          // Keep the existing fallback temperature if the API request fails.
+          try {
+            const weather = await fetchCurrentWeather(option.query);
+            if (cancelled) return;
+
+            setCityOptions((current) =>
+              current.map((cityOption) =>
+                cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
+              ),
+            );
+            setSelectedCity((current) =>
+              current?.id === option.id ? { ...current, temp: weather.temp } : current,
+            );
+          } catch {
+            // Keep the placeholder if the API request fails.
+          }
         }
+      };
 
-        await new Promise<void>((resolve) => {
-          window.setTimeout(resolve, 1000);
-        });
-      }
+      await Promise.all(
+        Array.from({ length: Math.min(8, CITY_OPTIONS.length) }, () => loadNextTemperature()),
+      );
     };
 
     void loadTemperatures();
