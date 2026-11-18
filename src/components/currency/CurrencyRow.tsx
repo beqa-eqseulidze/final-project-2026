@@ -1,4 +1,6 @@
-interface CurrencyRowProps{
+import React from 'react';
+
+interface CurrencyRowProps {
   code: string;
   quantity: number;
   rateFormated: string;
@@ -6,29 +8,24 @@ interface CurrencyRowProps{
   prevRate: string;
 }
 
-export function CurrencyRow({ 
-  code, 
-  quantity, 
-  rateFormated, 
-  diff,
-  prevRate
-}: CurrencyRowProps) {
-  
-  const percentChange = (diff * 100).toFixed(2);
-  
+export const CurrencyRow: React.FC<CurrencyRowProps> = ({ 
+  code, quantity, rateFormated, diff, prevRate
+}) => {
+  const percentChange = (diff * 100).toFixed(2); 
   const isNegative = diff < 0;
-  const diffColor = isNegative ? 'text-white' : diff > 0 ? 'text-green-500' : 'text-white';
+  const diffColor = isNegative ? 'text-white' : diff > 0 ? 'text-green-400' : 'text-white';
 
-  return(
-    <div className="grid grid-cols-4 gap-1 py-2 border-t border-b border-white/20 text-[11px] text-center items-center">
-      <div className="font-sanet text-left font-medium text-white text-[12px] truncate">
+  return (
+    // 🆕 tr და td თეგები (ცხრილის სემანტიკა)
+    <tr className="border-t border-b border-white/20 text-[15px] text-center">
+      <td className="font-sanet text-left font-bold text-white py-3.5">
         {quantity} {code}
-      </div>
-      <div className="font-sanet text-white/90 truncate">{prevRate}</div>
-      <div className="font-sanet text-white/90 truncate">{rateFormated}</div>
-      <div className={`font-sanet font-medium ${diffColor} truncate`}>
+      </td>
+      <td className="font-sanet text-white/90 py-3.5">{prevRate}</td>
+      <td className="font-sanet text-white/90 py-3.5">{rateFormated}</td>
+      <td className={`font-sanet font-medium py-3.5 ${diffColor}`}>
         {percentChange}%
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 };
