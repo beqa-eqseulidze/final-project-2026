@@ -95,8 +95,15 @@ export function CircleAd({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       onClick={handleClick}>
-      <img src={adImage} alt="" 
-      className="w-full h-full object-cover pointer-events-none" />
+      <img
+        src={adImage}
+        alt="რეკლამა"
+        width={size}
+        height={size}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover pointer-events-none"
+      />
     </div>
   );
 }

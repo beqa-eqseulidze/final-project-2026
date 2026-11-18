@@ -63,7 +63,15 @@ const ConverterRow = ({ from, to, forward, backward }: ConverterRowProps) => {
 /** Flag + კოდი (USD / GEL) */
 const Currency = ({ flag, code }: { flag: string; code: string }) => (
   <span className="inline-flex items-center gap-1">
-    <img src={`https://flagcdn.com/w40/${flag}.png`} alt={code} className="h-[12px]" />
+    <img
+      src={`https://flagcdn.com/w40/${flag}.png`}
+      alt={code}
+      width={16}
+      height={12}
+      loading="lazy"
+      decoding="async"
+      className="h-[12px] w-[16px] object-contain"
+    />
     {code}
   </span>
 );

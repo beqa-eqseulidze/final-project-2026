@@ -118,6 +118,10 @@ export const HourlyWeatherForecast: React.FC<HourlyWeatherForecastProps> = ({
             <img
               src={`https://amindi.ge/static/img/weather_small_${item.iconCode}.png`}
               alt={item.description}
+              width={36}
+              height={36}
+              loading="lazy"
+              decoding="async"
               className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src =
