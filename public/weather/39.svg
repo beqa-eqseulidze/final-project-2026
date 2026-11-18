@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- ☁️🌙 Night with Clouds (39) -->
+  <path d="M36 12 C26 15 22 25 25 34 C27 28 34 22 42 22 C43 18 40 14 36 12Z"
+    fill="#B8C8E8" stroke="#8090C0" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="12" y="34" width="40" height="16" rx="8" fill="#5A7088" stroke="#405060" stroke-width="1.5"/>
+  <rect x="20" y="24" width="26" height="16" rx="8" fill="#6A8098" stroke="#4A6078" stroke-width="1.5"/>
+</svg>

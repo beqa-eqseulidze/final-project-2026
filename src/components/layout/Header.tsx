@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
               title="Amindi.ge - მთავარი"
             >
               <img
-                src="https://amindi.ge/static/img/header-logo.png"
+                src="/header-logo.svg"
                 alt="amindi.ge"
                 width={140}
                 height={40}

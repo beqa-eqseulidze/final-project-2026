@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- ⛈ Thunderstorm -->
+  <rect x="8" y="14" width="48" height="18" rx="9" fill="#708898" stroke="#506070" stroke-width="1.5"/>
+  <rect x="14" y="8" width="34" height="14" rx="7" fill="#809AB0" stroke="#607080" stroke-width="1.5"/>
+  <polyline points="30,34 22,46 30,46 24,58" stroke="#FFD93D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <g stroke="#4080C0" stroke-width="1.5" stroke-linecap="round" opacity="0.7">
+    <line x1="44" y1="36" x2="42" y2="44"/>
+    <line x1="50" y1="36" x2="48" y2="44"/>
+  </g>
+</svg>

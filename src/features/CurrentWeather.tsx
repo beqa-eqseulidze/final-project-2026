@@ -138,15 +138,14 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
         {/* მარცხენა მხარე: იკონი და მის ქვემოთ აღწერა */}
         <div className="flex flex-col items-center">
           <img
-            src={`https://amindi.ge/static/img/weather_big_${weather.iconCode}.png`}
+            src={`/weather/${weather.iconCode}.svg`}
             alt={weather.description}
             width={130}
             height={130}
             className="w-[95px] sm:w-[130px] h-[95px] sm:h-[130px] object-contain drop-shadow"
             onError={(e) => {
-              // fallback: თუ weather_big ვერ ჩაიტვირთა
-              (e.currentTarget as HTMLImageElement).src =
-                `https://amindi.ge/static/img/weather_small_${weather.iconCode}.png`;
+              // fallback: თუ ხატულა ვერ ჩაიტვირთა
+              (e.currentTarget as HTMLImageElement).src = '/weather/04.svg';
             }}
           />
           <span className="text-[12px] font-sanet sm:text-[14px] font-bold text-white tracking-wide mt-1 text-center">

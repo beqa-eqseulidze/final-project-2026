@@ -170,7 +170,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
 
                       {/* amindi.ge-ს იკონი */}
                       <img
-                        src={`https://amindi.ge/static/img/weather_small_${day.iconCode}.png`}
+                        src={`/weather/${day.iconCode}.svg`}
                         alt={day.description}
                         width={48}
                         height={48}
@@ -178,8 +178,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         decoding="async"
                         className="w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12 object-contain my-1 sm:my-1.5"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src =
-                            'https://amindi.ge/static/img/weather_small_01.png';
+                          (e.currentTarget as HTMLImageElement).src = '/weather/01.svg';
                         }}
                       />
 
@@ -224,7 +223,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         {day.dateLabel}
                       </span>
                       <img
-                        src={`https://amindi.ge/static/img/weather_small_${day.iconCode}.png`}
+                        src={`/weather/${day.iconCode}.svg`}
                         alt={day.description}
                         width={36}
                         height={36}
@@ -232,8 +231,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                         decoding="async"
                         className="w-7 h-7 sm:w-9 sm:h-9 object-contain my-1"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src =
-                            'https://amindi.ge/static/img/weather_small_01.png';
+                          (e.currentTarget as HTMLImageElement).src = '/weather/01.svg';
                         }}
                       />
                       <div className="font-amindi1 text-[10px] sm:text-[12px] text-[#333333] flex items-center justify-center gap-1 sm:gap-2">
@@ -288,7 +286,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
 
                         {/* ამინდის იკონი */}
                         <img
-                          src={`https://amindi.ge/static/img/weather_small_${item.iconCode}.png`}
+                          src={`/weather/${item.iconCode}.svg`}
                           alt={item.description}
                           width={44}
                           height={44}
@@ -296,8 +294,7 @@ export const WeatherForecast: React.FC<WeatherForecastProps> = ({
                           decoding="async"
                           className="w-9 h-9 sm:w-11 sm:h-11 object-contain my-0.5 sm:my-1"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src =
-                              'https://amindi.ge/static/img/weather_small_04.png';
+                            (e.currentTarget as HTMLImageElement).src = '/weather/04.svg';
                           }}
                         />
 
