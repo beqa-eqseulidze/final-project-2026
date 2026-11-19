@@ -5,6 +5,7 @@
 
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { LazySection } from './components/LazySection';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
@@ -113,30 +114,6 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
   );
 };
 
-function DeferredMount({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isNearViewport, setIsNearViewport] = useState(false);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    if (!('IntersectionObserver' in window)) {
-      setIsNearViewport(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      setIsNearViewport(true);
-      observer.disconnect();
-    }, { rootMargin: '250px' });
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
-
-  return <div ref={containerRef}>{isNearViewport ? children : fallback}</div>;
-}
-
 export default function App() {
   const [language, setLanguage] = useState<SiteLanguage>(() => {
     try {
@@ -240,7 +217,7 @@ export default function App() {
               current?.id === option.id ? { ...current, temp: temperature } : current,
             );
           } catch {
-            // Keep the placeholder if the API request fails.
+            // Keep the existing fallback temperature if the API request fails.
           }
         }
       };
@@ -391,12 +368,12 @@ export default function App() {
               <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                 {/* 1. მიმდინარე ამინდი */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
                   <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                 </div>
 
                 {/* 2. ამინდი საათების მიხედვით */}
-                <div className="w-full pb-3 border-b border-white/20">
+                <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
                   <HourlyWeatherForecast
                     city={city}
                     coordinates={coordinates}
@@ -411,7 +388,7 @@ export default function App() {
                 </div>
 
                 {/* 4. ვალუტის კურსები */}
-                <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
                   <CurrencyRates />
                 </div>
 
@@ -420,9 +397,9 @@ export default function App() {
               {/* ცენტრალური სვეტი */}
               <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
-                <div className="w-full">
+                <div className="w-full min-h-[360px]">
                   {centerView === 'hourly' ? (
-                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
+                    <Suspense fallback={<div className="min-h-[360px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}
@@ -439,18 +416,14 @@ export default function App() {
                 </div>
 
                 {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <DeferredMount fallback={<div className="h-[400px] w-full" />}>
-                  <Suspense fallback={<div className="h-[400px] w-full" />}>
-                    <Slider slides={sliderData} />
-                  </Suspense>
-                </DeferredMount>
+                <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
+                  <Slider slides={sliderData} />
+                </LazySection>
 
                  {/* 🆕 სიახლეები */}
-                <DeferredMount fallback={<div className="min-h-[650px] w-full" />}>
-                  <Suspense fallback={<div className="min-h-[650px] w-full" />}>
-                    <NewsSection />
-                  </Suspense>
-                </DeferredMount>
+                <LazySection fallback={<div className="min-h-[650px] w-full" />}>
+                  <NewsSection />
+                </LazySection>
 
                 {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
               </main>
@@ -479,11 +452,9 @@ export default function App() {
               </aside>
 
               <div className="w-full lg:col-start-2 lg:row-start-3">
-                <DeferredMount fallback={<div className="min-h-[500px] w-full" />}>
-                  <Suspense fallback={<div className="min-h-[500px] w-full" />}>
-                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                  </Suspense>
-                </DeferredMount>
+                <LazySection fallback={<div className="min-h-[500px] w-full" />}>
+                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                </LazySection>
               </div>
 
             </div>

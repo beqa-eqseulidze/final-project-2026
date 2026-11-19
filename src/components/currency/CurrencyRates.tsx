@@ -63,8 +63,7 @@ export function CurrencyRates() {
         });
 
         setLoading(false);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError('Failed to fetch data');
         setLoading(false);
       }

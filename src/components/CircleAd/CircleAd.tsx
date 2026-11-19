@@ -162,7 +162,15 @@ export function CircleAd({ href, size = 60 }: CircleAdProps) {
         onPointerCancel={handlePointerUp}
         onClick={handleClick}
       >
-        <img src={adImage} alt="Radio Palitra" className="pointer-events-none h-full w-full object-cover" />
+        <img
+          src={adImage}
+          alt="Radio Palitra"
+          width={size}
+          height={size}
+          loading="lazy"
+          decoding="async"
+          className="pointer-events-none h-full w-full object-cover"
+        />
       </div>
     </>
   );
