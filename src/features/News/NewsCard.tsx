@@ -16,17 +16,8 @@ export function NewsCard({ item }: NewsCardProps) {
       
       <div className="w-full h-[190px] overflow-hidden relative">
         {item.imageUrl ? (
-<<<<<<< HEAD
-          <img 
-            src={item.imageUrl} 
-            alt={item.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
-            loading="lazy" 
-          />
-=======
           <img src={item.imageUrl} alt={item.title} loading="lazy" decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
->>>>>>> master
         ) : (
           <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-bpg">
             {tr(language, 'სურათი არ არის', 'No image', 'Нет изображения')}
