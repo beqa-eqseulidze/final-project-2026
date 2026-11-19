@@ -397,9 +397,9 @@ export default function App() {
               {/* ცენტრალური სვეტი */}
               <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
                 {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
-                <div className="w-full min-h-[360px]">
+                <div className="w-full">
                   {centerView === 'hourly' ? (
-                    <Suspense fallback={<div className="min-h-[360px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
+                    <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                   ) : (
                     <WeatherForecast city={city} coordinates={coordinates} />
                   )}
