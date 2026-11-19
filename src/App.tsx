@@ -5,6 +5,7 @@
 
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { LazySection } from './components/LazySection';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
@@ -15,7 +16,7 @@ import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
 const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
 const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
 const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
@@ -366,12 +367,12 @@ export default function App() {
                 <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                   {/* 1. მიმდინარე ამინდი */}
-                  <div className="w-full pb-3 border-b border-white/20">
+                  <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
                     <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                   </div>
 
                   {/* 2. ამინდი საათების მიხედვით */}
-                  <div className="w-full pb-3 border-b border-white/20">
+                  <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
                     <HourlyWeatherForecast
                       city={city}
                       coordinates={coordinates}
@@ -386,7 +387,7 @@ export default function App() {
                   </div>
 
                   {/* 4. ვალუტის კურსები */}
-                  <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                  <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
                     <CurrencyRates />
                   </div>
 
@@ -414,14 +415,14 @@ export default function App() {
                   </div>
 
                   {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                  <Suspense fallback={<div className="h-[400px] w-full" />}>
+                  <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
                     <Slider slides={sliderData} />
-                  </Suspense>
+                  </LazySection>
 
                   {/* 🆕 სიახლეები */}
-                  <Suspense fallback={<div className="min-h-[650px] w-full" />}>
+                  <LazySection fallback={<div className="min-h-[650px] w-full" />}>
                     <NewsSection />
-                  </Suspense>
+                  </LazySection>
 
                   {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
                 </main>
@@ -450,9 +451,9 @@ export default function App() {
                 </aside>
 
                 <div className="w-full lg:col-start-2 lg:row-start-3">
-                  <Suspense fallback={<div className="min-h-[500px] w-full" />}>
+                  <LazySection fallback={<div className="min-h-[500px] w-full" />}>
                     <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                  </Suspense>
+                  </LazySection>
                 </div>
 
               </div>
