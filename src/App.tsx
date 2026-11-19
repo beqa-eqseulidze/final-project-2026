@@ -364,7 +364,7 @@ export default function App() {
                 </div>
 
                 {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
-                <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
+                <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm lg:self-start lg:sticky lg:top-3 lg:col-start-1 lg:row-start-1 lg:row-span-3">
 
                   {/* 1. მიმდინარე ამინდი */}
                   <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
@@ -428,7 +428,7 @@ export default function App() {
                 </main>
 
                 {/* მარჯვენა სვეტი */}
-                <aside className="space-y-3 sm:space-y-4 flex flex-col lg:col-start-3 lg:row-start-2">
+                <aside className="space-y-3 sm:space-y-4 flex flex-col lg:self-start lg:sticky lg:top-3 lg:col-start-3 lg:row-start-2 lg:row-span-2">
                   {/* ზედა რეკლამა (Palitra News) */}
                   <div className="w-full h-[230px] sm:h-[310px]">
                     <PalitraShortAd />
