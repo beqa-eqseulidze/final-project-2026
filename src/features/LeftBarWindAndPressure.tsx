@@ -84,7 +84,7 @@ export const WindAndPressure = ({ city, coordinates }: Props) => {
     } = data;
 
     return (
-        <div className="w-full bg-[#1a2c42]/60 backdrop-blur-md text-white font-sans shadow-xl border-t border-white/10 overflow-hidden">
+        <section aria-label={tr(language, 'ქარი და წნევა', 'Wind and pressure', 'Ветер и давление')} aria-busy={isLoading} className="w-full bg-[#1a2c42]/60 backdrop-blur-md text-white font-sans shadow-xl border-t border-white/10 overflow-hidden">
             {isLoading ? (
                 <div className="font-sanet text-center py-6 text-sm text-slate-300">
                     {tr(language, 'იტვირთება მონაცემები...', 'Loading weather data...', 'Загрузка погоды...')}
@@ -138,6 +138,6 @@ export const WindAndPressure = ({ city, coordinates }: Props) => {
                     </div>
                 </div>
             )}
-        </div>
+        </section>
     );
 };
