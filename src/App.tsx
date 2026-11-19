@@ -3,9 +3,11 @@
  * @description Root Application Entrypoint amindi.ge-ს ზუსტი დიზაინით
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
-import { InteractiveWeatherMap, type MapWeather } from './features/InteractiveWeatherMap';
+import { LazySection } from './components/LazySection';
+import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
+import type { MapWeather } from './features/InteractiveWeatherMap';
 import { BackgroundSky } from './components/layout/BackgroundSky';
 import { Footer } from './components/layout/Footer';
 import { Converter } from './components/Converter';
@@ -13,11 +15,11 @@ import { WindAndPressure } from './features/LeftBarWindAndPressure';
 import { WeatherForecast } from './features/WeatherForecast';
 import { CurrentWeather } from './features/CurrentWeather';
 import { HourlyWeatherForecast } from './features/HourlyWeatherForecast';
-import { FullHourlyForecast } from './features/FullHourlyForecast';
-import { AstrologyHoroscope } from './features/AstrologyHoroscope';
-import { ZodiacDetailPage } from './features/ZodiacDetailPage';
+const FullHourlyForecast = lazy(() => import('./features/FullHourlyForecast').then(m => ({ default: m.FullHourlyForecast })));
+const AstrologyHoroscope = lazy(() => import('./features/AstrologyHoroscope').then((module) => ({ default: module.AstrologyHoroscope })));
+const ZodiacDetailPage = lazy(() => import('./features/ZodiacDetailPage').then(m => ({ default: m.ZodiacDetailPage })));
 import { CurrencyRates } from './components/currency/CurrencyRates';
-import { Slider } from './features/Slider';
+const Slider = lazy(() => import('./features/Slider').then((module) => ({ default: module.Slider })));
 import { sliderData } from './services/data';
 import { detectUserCity, fetchCurrentWeather, UserCoordinates } from './services/weatherService';
 import { PalitraLongAd } from './components/ads/PalitraLongAd'; //რეკლამა
@@ -28,78 +30,74 @@ import CitySearch from './my_search/CitySearch';
 import LanguageSelector from './my_search/LanguageSelector';
 import TemperatureUnitSelector from './my_search/TemperatureUnitSelector';
 import { LanguageProvider, formatTemperature, type SiteLanguage, type TemperatureUnit } from './context/LanguageContext';
-import { NewsSection } from './features/News/NewsSection';
+const NewsSection = lazy(() => import('./features/News/NewsSection').then((module) => ({ default: module.NewsSection })));
 import { CircleAd } from './components/CircleAd/CircleAd';
 
 interface CityOption {
   id: number;
   name: string;
-  temp: number;
+  temp: number | null;
   query: string;
 }
 
 const CITY_OPTIONS: CityOption[] = [
-  { id: 1, name: 'თბილისი', temp: 9, query: 'Tbilisi' },
-  { id: 2, name: 'ბათუმი', temp: 12, query: 'Batumi' },
-  { id: 3, name: 'ქუთაისი', temp: 10, query: 'Kutaisi' },
-  { id: 4, name: 'რუსთავი', temp: 11, query: 'Rustavi' },
-  { id: 5, name: 'გორი', temp: 7, query: 'Gori' },
-  { id: 6, name: 'თელავი', temp: 9, query: 'Telavi' },
-  { id: 7, name: 'ზუგდიდი', temp: 10, query: 'Zugdidi' },
-  { id: 8, name: 'ფოთი', temp: 12, query: 'Poti' },
-  { id: 9, name: 'ბაკურიანი', temp: 3, query: 'Bakuriani' },
-  { id: 10, name: 'ახალციხე', temp: 4, query: 'Akhaltsikhe' },
-  { id: 11, name: 'ბორჯომი', temp: 3, query: 'Borjomi' },
-  { id: 12, name: 'გურჯაანი', temp: 11, query: 'Gurjaani' },
-  { id: 13, name: 'ლანჩხუთი', temp: 11, query: 'Lanchkhuti' },
-  { id: 14, name: 'მცხეთა', temp: 4, query: 'Mtskheta' },
-  { id: 15, name: 'სენაკი', temp: 11, query: 'Senaki' },
-  { id: 16, name: 'ქობულეთი', temp: 12, query: 'Kobuleti' },
-  { id: 17, name: 'ყვარელი', temp: 8, query: 'Kvareli' },
-  { id: 18, name: 'ჩხოროწყუ', temp: 9, query: 'Chkhorotsku' },
-  { id: 19, name: 'ჩოხატაური', temp: 8, query: 'Chokhatauri' },
-  { id: 20, name: 'ხაშური', temp: 7, query: 'Khashuri' },
-  { id: 21, name: 'ხობი', temp: 11, query: 'Khobi' },
-  { id: 22, name: 'აბასთუმანი', temp: 1, query: 'Abastumani' },
-  { id: 23, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
-  { id: 24, name: 'მესტია', temp: -6, query: 'Mestia' },
-  { id: 25, name: 'ოჩამჩირე', temp: 10, query: 'Ochamchire' },
-  { id: 26, name: 'დავით-გარეჯი', temp: 12, query: 'Davit Gareji' },
-  { id: 27, name: 'მანგლისი', temp: 3, query: 'Manglisi' },
-  { id: 28, name: 'ჟინვალი', temp: 5, query: 'Zhinvali' },
-  { id: 29, name: 'ჯვარი', temp: 2, query: 'Jvari' },
-  { id: 30, name: 'საჩხერე', temp: 5, query: 'Sachkhere' },
-  { id: 31, name: 'სოხუმი', temp: 10, query: 'Sokhumi' },
-  { id: 32, name: 'წალენჯიხა', temp: 5, query: 'Tsalenjikha' },
-  { id: 33, name: 'წნორი', temp: 9, query: 'Tsnori' },
-  { id: 34, name: 'სამტრედია', temp: 4, query: 'Samtredia' },
-  { id: 35, name: 'ამბროლაური', temp: 6, query: 'Ambrolauri' },
-  { id: 36, name: 'ონი', temp: 5, query: 'Oni' },
-  { id: 37, name: 'ცაგერი', temp: 8, query: 'Tsageri' },
-  { id: 38, name: 'ლენტეხი', temp: 4, query: 'Lentekhi' },
-  { id: 39, name: 'მარნეული', temp: 10, query: 'Marneuli' },
-  { id: 40, name: 'ბოლნისი', temp: 10, query: 'Bolnisi' },
-  { id: 41, name: 'დმანისი', temp: 1, query: 'Dmanisi' },
-  { id: 42, name: 'წალკა', temp: 2, query: 'Tsalka' },
-  { id: 43, name: 'გარდაბანი', temp: 11, query: 'Gardabani' },
-  { id: 44, name: 'ბაღდათი', temp: 7, query: 'Baghdati' },
-  { id: 45, name: 'ვანი', temp: 8, query: 'Vani' },
-  { id: 46, name: 'თერჯოლა', temp: 9, query: 'Terjola' },
-  { id: 47, name: 'ზესტაფონი', temp: 5, query: 'Zestafoni' },
-  { id: 48, name: 'ტყიბული', temp: 5, query: 'Tkibuli' },
-  { id: 49, name: 'ჭიათურა', temp: 5, query: 'Chiatura' },
-  { id: 50, name: 'ხარაგაული', temp: 7, query: 'Kharagauli' },
-  { id: 51, name: 'ბედია', temp: 9, query: 'Bedia' },
-  { id: 52, name: 'გალი', temp: 11, query: 'Gali' },
-  { id: 53, name: 'გუდაუთა', temp: 8, query: 'Gudauta' },
-  { id: 54, name: 'გაგრა', temp: 10, query: 'Gagra' },
-  { id: 55, name: 'ახალი ათონი', temp: 10, query: 'New Athos' },
-  { id: 56, name: 'ყაზბეგი', temp: -2, query: 'Kazbegi' },
-  { id: 57, name: 'სიღნაღი', temp: 11, query: 'Sighnaghi' },
-  { id: 58, name: 'დედოფლისწყარო', temp: 10, query: 'Dedoplistskaro' },
-  { id: 59, name: 'ლაგოდეხი', temp: 9, query: 'Lagodekhi' },
-  { id: 60, name: 'საგარეჯო', temp: 7, query: 'Sagarejo' },
-  { id: 61, name: 'გლდანი', temp: 9, query: 'Gldani' },
+  { id: 1, name: 'თბილისი', temp: null, query: 'Tbilisi' },
+  { id: 2, name: 'ბათუმი', temp: null, query: 'Batumi' },
+  { id: 3, name: 'ქუთაისი', temp: null, query: 'Kutaisi' },
+  { id: 4, name: 'რუსთავი', temp: null, query: 'Rustavi' },
+  { id: 5, name: 'გორი', temp: null, query: 'Gori' },
+  { id: 6, name: 'თელავი', temp: null, query: 'Telavi' },
+  { id: 7, name: 'ზუგდიდი', temp: null, query: 'Zugdidi' },
+  { id: 8, name: 'ფოთი', temp: null, query: 'Poti' },
+  { id: 9, name: 'ბაკურიანი', temp: null, query: 'Bakuriani' },
+  { id: 10, name: 'ახალციხე', temp: null, query: 'Akhaltsikhe' },
+  { id: 11, name: 'ბორჯომი', temp: null, query: 'Borjomi' },
+  { id: 12, name: 'გურჯაანი', temp: null, query: 'Gurjaani' },
+  { id: 13, name: 'ლანჩხუთი', temp: null, query: 'Lanchkhuti' },
+  { id: 14, name: 'მცხეთა', temp: null, query: 'Mtskheta' },
+  { id: 15, name: 'სენაკი', temp: null, query: 'Senaki' },
+  { id: 16, name: 'ქობულეთი', temp: null, query: 'Kobuleti' },
+  { id: 17, name: 'ყვარელი', temp: null, query: 'Kvareli' },
+  { id: 18, name: 'ჩხოროწყუ', temp: null, query: 'Chkhorotsku' },
+  { id: 19, name: 'ჩოხატაური', temp: null, query: 'Chokhatauri' },
+  { id: 20, name: 'ხაშური', temp: null, query: 'Khashuri' },
+  { id: 21, name: 'ხობი', temp: null, query: 'Khobi' },
+  { id: 22, name: 'აბასთუმანი', temp: null, query: 'Abastumani' },
+  { id: 23, name: 'ბოლნისი', temp: null, query: 'Bolnisi' },
+  { id: 24, name: 'მესტია', temp: null, query: 'Mestia' },
+  { id: 25, name: 'ოჩამჩირე', temp: null, query: 'Ochamchire' },
+  { id: 27, name: 'მანგლისი', temp: null, query: 'Manglisi' },
+  { id: 28, name: 'ჟინვალი', temp: null, query: 'Zhinvali' },
+  { id: 29, name: 'ჯვარი', temp: null, query: 'Jvari' },
+  { id: 30, name: 'საჩხერე', temp: null, query: 'Sachkhere' },
+  { id: 31, name: 'სოხუმი', temp: null, query: 'Sokhumi' },
+  { id: 32, name: 'წალენჯიხა', temp: null, query: 'Tsalenjikha' },
+  { id: 33, name: 'წნორი', temp: null, query: 'Tsnori' },
+  { id: 34, name: 'სამტრედია', temp: null, query: 'Samtredia' },
+  { id: 35, name: 'ამბროლაური', temp: null, query: 'Ambrolauri' },
+  { id: 36, name: 'ონი', temp: null, query: 'Oni' },
+  { id: 37, name: 'ცაგერი', temp: null, query: 'Tsageri' },
+  { id: 38, name: 'ლენტეხი', temp: null, query: 'Lentekhi' },
+  { id: 39, name: 'მარნეული', temp: null, query: 'Marneuli' },
+  { id: 40, name: 'ბოლნისი', temp: null, query: 'Bolnisi' },
+  { id: 41, name: 'დმანისი', temp: null, query: 'Dmanisi' },
+  { id: 42, name: 'წალკა', temp: null, query: 'Tsalka' },
+  { id: 43, name: 'გარდაბანი', temp: null, query: 'Gardabani' },
+  { id: 44, name: 'ბაღდათი', temp: null, query: 'Baghdati' },
+  { id: 45, name: 'ვანი', temp: null, query: 'Vani' },
+  { id: 46, name: 'თერჯოლა', temp: null, query: 'Terjola' },
+  { id: 48, name: 'ტყიბული', temp: null, query: 'Tkibuli' },
+  { id: 49, name: 'ჭიათურა', temp: null, query: 'Chiatura' },
+  { id: 50, name: 'ხარაგაული', temp: null, query: 'Kharagauli' },
+  { id: 51, name: 'ბედია', temp: null, query: 'Bedia' },
+  { id: 52, name: 'გალი', temp: null, query: 'Gali' },
+  { id: 53, name: 'გუდაუთა', temp: null, query: 'Gudauta' },
+  { id: 54, name: 'გაგრა', temp: null, query: 'Gagra' },
+  { id: 55, name: 'ახალი ათონი', temp: null, query: 'New Athos' },
+  { id: 57, name: 'სიღნაღი', temp: null, query: 'Sighnaghi' },
+  { id: 58, name: 'დედოფლისწყარო', temp: null, query: 'Dedoplistskaro' },
+  { id: 59, name: 'ლაგოდეხი', temp: null, query: 'Lagodekhi' },
+  { id: 60, name: 'საგარეჯო', temp: null, query: 'Sagarejo' },
 ];
 const Box = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => {
   const hasBg = className.includes('bg-');
@@ -138,6 +136,8 @@ export default function App() {
   const [mapWeather, setMapWeather] = useState<MapWeather | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityOption | null>(null);
   const citySelectedByUser = useRef(false);
+  const cityTemperaturesStarted = useRef(false);
+  const cancelled = useRef(false);
   // ცენტრალური სექციის ხედი: 'daily' (დღეების პროგნოზი) ან 'hourly' (24-საათიანი ბადე)
   const [centerView, setCenterView] = useState<'daily' | 'hourly'>('daily');
 
@@ -169,7 +169,7 @@ export default function App() {
 
   const localizedCityOptions = cityOptions.map((item) => ({
     ...item,
-    temp: formatTemperature(item.temp, temperatureUnit),
+    temp: item.temp === null ? '…' : formatTemperature(item.temp, temperatureUnit),
     name: language === 'ka' ? item.name : language === 'en' ? item.query : ({
       Tbilisi: 'Тбилиси', Batumi: 'Батуми', Kutaisi: 'Кутаиси', Rustavi: 'Рустави',
       Gori: 'Гори', Telavi: 'Телави', Zugdidi: 'Зугдиди', Poti: 'Поти',
@@ -177,40 +177,57 @@ export default function App() {
     } as Record<string, string>)[item.query] ?? item.query,
   }));
 
-  useEffect(() => {
-    let cancelled = false;
+  const citySearchOptions: Array<Omit<CityOption, 'temp'> & { temp: number }> = localizedCityOptions.map((item) => ({
+    ...item,
+    temp: typeof item.temp === 'number' ? item.temp : 0,
+  }));
+
+  useEffect(() => () => { cancelled.current = true; }, []);
+
+  const loadCityTemperatures = () => {
+    if (cityTemperaturesStarted.current) return;
+    cancelled.current = false;
+    cityTemperaturesStarted.current = true;
 
     const loadTemperatures = async () => {
-      for (const option of CITY_OPTIONS) {
-        if (cancelled) return;
+      let nextIndex = 0;
+      const temperatureCache = new Map<string, Promise<number>>();
 
-        try {
-          const weather = await fetchCurrentWeather(option.query);
-          if (cancelled) return;
+      const loadNextTemperature = async () => {
+        while (!cancelled.current) {
+          const option = CITY_OPTIONS[nextIndex++];
+          if (!option) return;
 
-          setCityOptions((current) =>
-            current.map((cityOption) =>
-              cityOption.id === option.id ? { ...cityOption, temp: weather.temp } : cityOption,
-            ),
-          );
-          setSelectedCity((current) =>
-            current?.id === option.id ? { ...current, temp: weather.temp } : current,
-          );
-        } catch {
-          // Keep the existing fallback temperature if the API request fails.
+          try {
+            let temperatureRequest = temperatureCache.get(option.query);
+            if (!temperatureRequest) {
+              temperatureRequest = fetchCurrentWeather(option.query).then((weather) => weather.temp);
+              temperatureCache.set(option.query, temperatureRequest);
+            }
+            const temperature = await temperatureRequest;
+            if (cancelled.current) return;
+
+            setCityOptions((current) =>
+              current.map((cityOption) =>
+                cityOption.id === option.id ? { ...cityOption, temp: temperature } : cityOption,
+              ),
+            );
+            setSelectedCity((current) =>
+              current?.id === option.id ? { ...current, temp: temperature } : current,
+            );
+          } catch {
+            // Keep the existing fallback temperature if the API request fails.
+          }
         }
+      };
 
-        await new Promise<void>((resolve) => {
-          window.setTimeout(resolve, 1000);
-        });
-      }
+      await Promise.all(
+        Array.from({ length: Math.min(8, CITY_OPTIONS.length) }, () => loadNextTemperature()),
+      );
     };
 
     void loadTemperatures();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  };
   // URL hash-ის მოსმენა (ბრაუზერის Back/Forward ღილაკებისთვის)
   useEffect(() => {
     const handleUrlChange = () => {
@@ -262,26 +279,33 @@ export default function App() {
   };
 
   const cityToolbar = (
-    <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:gap-3">
-      <div className="[&>div>button]:!h-[37px] [&>div>button]:!box-border">
+    <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap sm:justify-between sm:gap-3">
+      <div className="flex w-full justify-center sm:w-auto sm:justify-start [&>div]:!w-full [&>div>button]:!h-[37px] [&>div>button]:!w-full [&>div>button]:!max-w-full [&>div>button]:!justify-center [&>div>button]:!box-border [&>div>button]:!gap-1 [&>div>button]:!px-2 [&>div>button]:!text-[11px] sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto sm:[&>div>button]:!justify-between sm:[&>div>button]:!gap-[6px] sm:[&>div>button]:!px-[14px] sm:[&>div>button]:!text-[13px]">
         <CityDropdown
           cities={localizedCityOptions}
           selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
           language={language}
           unit={temperatureUnit}
+          onOpen={loadCityTemperatures}
           onSelectCity={handleSelectCity}
         />
       </div>
-      <div className="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
-        <CitySearch
-          cities={localizedCityOptions}
-          selectedCity={localizedCityOptions.find((item) => item.id === selectedCity?.id) ?? null}
-          language={language}
-          unit={temperatureUnit}
-          onSelectCity={handleSelectCity}
-        />
-        <LanguageSelector language={language} onChange={setLanguage} />
-        <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+      <div className="contents sm:ml-auto sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+        <div className="w-full min-w-0 [&>div]:!w-full sm:w-[170px] sm:flex-none">
+          <CitySearch
+            cities={citySearchOptions}
+            selectedCity={citySearchOptions.find((item) => item.id === selectedCity?.id) ?? null}
+            language={language}
+            unit={temperatureUnit}
+            onSelectCity={handleSelectCity}
+          />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <LanguageSelector language={language} onChange={setLanguage} />
+        </div>
+        <div className="w-full [&>div]:!w-full [&>div>button]:!w-full [&>div>button]:!justify-center sm:w-auto sm:[&>div]:!w-auto sm:[&>div>button]:!w-auto">
+          <TemperatureUnitSelector unit={temperatureUnit} onChange={setTemperatureUnit} />
+        </div>
       </div>
     </div>
   );
@@ -314,12 +338,12 @@ export default function App() {
           {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
           {activeZodiacPage ? (
             <main role="main" className="flex-1 w-full">
-              <ZodiacDetailPage
+              <Suspense fallback={<div className="p-4" role="status">Loading...</div>}><ZodiacDetailPage
                 signId={activeZodiacPage}
                 initialTab={activeZodiacTab}
                 onBack={handleBackToMain}
                 onSelectSign={handleNavigateToZodiac}
-              />
+              /></Suspense>
             </main>
           ) : (
             <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
@@ -343,12 +367,12 @@ export default function App() {
                 <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
 
                   {/* 1. მიმდინარე ამინდი */}
-                  <div className="w-full pb-3 border-b border-white/20">
+                  <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
                     <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
                   </div>
 
                   {/* 2. ამინდი საათების მიხედვით */}
-                  <div className="w-full pb-3 border-b border-white/20">
+                  <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
                     <HourlyWeatherForecast
                       city={city}
                       coordinates={coordinates}
@@ -363,7 +387,7 @@ export default function App() {
                   </div>
 
                   {/* 4. ვალუტის კურსები */}
-                  <div className="w-full flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                  <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
                     <CurrencyRates />
                   </div>
 
@@ -374,7 +398,7 @@ export default function App() {
                   {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
                   <div className="w-full">
                     {centerView === 'hourly' ? (
-                      <FullHourlyForecast city={city} coordinates={coordinates} />
+                      <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
                     ) : (
                       <WeatherForecast city={city} coordinates={coordinates} />
                     )}
@@ -391,17 +415,16 @@ export default function App() {
                   </div>
 
                   {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                  <div className="w-full">
+                  <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
                     <Slider slides={sliderData} />
-                  </div>
+                  </LazySection>
 
                   {/* 🆕 სიახლეები */}
-                  <NewsSection />
+                  <LazySection fallback={<div className="min-h-[650px] w-full" />}>
+                    <NewsSection />
+                  </LazySection>
 
                   {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-                  <div className="w-full">
-                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                  </div>
                 </main>
 
                 {/* მარჯვენა სვეტი */}
@@ -417,15 +440,21 @@ export default function App() {
                   </div>
 
                   {/* ქვედა რეკლამა */}
-                  <div className="w-full h-[260px] sm:h-[520px]">
+                  <div className="hidden w-full sm:block sm:h-[520px]">
                     <PalitraLongAd />
                   </div>
 
                   {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
-                  <div className="w-full h-[260px] sm:h-[520px]">
+                  <div className="hidden w-full lg:block lg:h-[520px]">
                     <PalitraLongAd />
                   </div>
                 </aside>
+
+                <div className="w-full lg:col-start-2 lg:row-start-3">
+                  <LazySection fallback={<div className="min-h-[500px] w-full" />}>
+                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                  </LazySection>
+                </div>
 
               </div>
             </div>
@@ -433,7 +462,6 @@ export default function App() {
 
           {/* 3. Footer */}
           <Footer />
-
 
           {/* Circle AD  */}
           <CircleAd href="https://radiopalitra.ge/" size={75} />

@@ -19,8 +19,18 @@ interface AstrologyHoroscopeProps {
 }
 
 /* ამინდი.ჯი-ს ჰამბურგერ მენიუს ვექტორული ხატულები წრეში */
-const YinYangIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white shrink-0" stroke="currentColor" strokeWidth="1.6">
+const YinYangIcon = ({ alt = 'ასტრო-შეთავსება' }: { alt?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="w-5 h-5 text-white shrink-0"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    role="img"
+    aria-label={alt}
+    {...({ alt } as Record<string, unknown>)}
+  >
+    <title>{alt}</title>
     <circle cx="12" cy="12" r="10" />
     <path
       d="M12 2a10 10 0 0 1 0 20 5 5 0 0 1 0-10 5 5 0 0 0 0-10z"
@@ -31,8 +41,18 @@ const YinYangIcon = () => (
   </svg>
 );
 
-const NumerologyIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white shrink-0" stroke="currentColor" strokeWidth="1.6">
+const NumerologyIcon = ({ alt = 'ნუმეროლოგია' }: { alt?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="w-5 h-5 text-white shrink-0"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    role="img"
+    aria-label={alt}
+    {...({ alt } as Record<string, unknown>)}
+  >
+    <title>{alt}</title>
     <circle cx="12" cy="12" r="10" />
     <circle cx="12" cy="12" r="4.2" strokeWidth="1.4" />
     <path
@@ -43,8 +63,18 @@ const NumerologyIcon = () => (
   </svg>
 );
 
-const ZodiacRamIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white shrink-0" stroke="currentColor" strokeWidth="1.6">
+const ZodiacRamIcon = ({ alt = 'ზოდიაქო' }: { alt?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="w-5 h-5 text-white shrink-0"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    role="img"
+    aria-label={alt}
+    {...({ alt } as Record<string, unknown>)}
+  >
+    <title>{alt}</title>
     <circle cx="12" cy="12" r="10" />
     <path
       d="M7.5 9.5a2.5 2.5 0 0 1 4.5 1.8V17M16.5 9.5a2.5 2.5 0 0 0-4.5 1.8V17"
@@ -55,8 +85,18 @@ const ZodiacRamIcon = () => (
   </svg>
 );
 
-const HoroscopeEyeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white shrink-0" stroke="currentColor" strokeWidth="1.6">
+const HoroscopeEyeIcon = ({ alt = 'ჰოროსკოპი' }: { alt?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className="w-5 h-5 text-white shrink-0"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    role="img"
+    aria-label={alt}
+    {...({ alt } as Record<string, unknown>)}
+  >
+    <title>{alt}</title>
     <circle cx="12" cy="12" r="10" />
     <path
       d="M5.5 12s2.8-4.2 6.5-4.2 6.5 4.2 6.5 4.2-2.8 4.2-6.5 4.2-6.5-4.2-6.5-4.2z"
@@ -101,9 +141,16 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
       {/* 1. ზედა თეთრი ზოლი ნიშნების ჩამონათვალით */}
       <div className="bg-white px-1.5 sm:px-2.5 h-11 sm:h-12 border-b-2 border-[#083b6f] relative z-20 flex items-center justify-between gap-1 sm:gap-1.5">
         {/* ლოგო: Astrologi */}
-        <div className="flex items-center gap-0.5 shrink-0 pr-0.5">
+        <div className="flex items-center gap-0.5 shrink-0 pr-0.5" title="Astrologi" aria-label="Astrologi">
           <span className="text-[#0e5aa7] text-sm xs:text-base sm:text-lg xl:text-2xl font-black font-amindi1 tracking-tight flex items-center">
-            <span className="text-base xs:text-xl sm:text-2xl xl:text-3xl leading-none mr-0.5">♃</span>
+            <span
+              className="text-base xs:text-xl sm:text-2xl xl:text-3xl leading-none mr-0.5"
+              role="img"
+              aria-label="ასტროლოგია"
+              {...({ alt: 'ასტროლოგია' } as Record<string, unknown>)}
+            >
+              ♃
+            </span>
             strologi
           </span>
         </div>
@@ -118,6 +165,10 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
             return (
               <div
                 key={zodiac.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`ზოდიაქოს ნიშანი ${zodiac.name}`}
+                title={zodiac.name}
                 className="flex flex-col items-center justify-center relative cursor-pointer group flex-1 h-full min-w-0"
                 onMouseEnter={() => setHoveredZodiacId(zodiac.id)}
                 onMouseLeave={() => setHoveredZodiacId(null)}
@@ -126,6 +177,7 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
                 {/* SVG ვექტორული ხატულა რესპონსიული ზომით */}
                 <ZodiacIcon
                   signId={zodiac.id}
+                  alt={zodiac.name}
                   className={`
                     w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-[17px] sm:h-[17px] xl:w-5 xl:h-5 max-w-full transition-colors
                     ${isHovered || isSelected ? 'text-[#083b6f]' : 'text-[#0e5aa7] group-hover:text-[#083b6f]'}
@@ -161,6 +213,7 @@ export const AstrologyHoroscope: React.FC<AstrologyHoroscopeProps> = ({
             type="button"
             className="text-[#0e5aa7] hover:text-[#083b6f] text-base sm:text-xl px-1 cursor-pointer border-0 bg-transparent leading-none transition-colors"
             aria-label={tr(language, 'მენიუ', 'Menu', 'Меню')}
+            title={tr(language, 'მენიუ', 'Menu', 'Меню')}
             aria-expanded={menuOpen}
           >
             ☰

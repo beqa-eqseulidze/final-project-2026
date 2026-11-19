@@ -97,6 +97,10 @@ export const FullHourlyForecast: React.FC<FullHourlyForecastProps> = ({
                 <img
                   src={`https://amindi.ge/static/img/weather_small_${item.iconCode}.png`}
                   alt={item.description}
+                  width={44}
+                  height={44}
+                  loading="lazy"
+                  decoding="async"
                   className="w-9 h-9 sm:w-11 sm:h-11 object-contain my-0.5 sm:my-1"
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).src =

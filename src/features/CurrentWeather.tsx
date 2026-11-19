@@ -140,7 +140,9 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ city = 'Tbilisi'
           <img
             src={`https://amindi.ge/static/img/weather_big_${weather.iconCode}.png`}
             alt={weather.description}
-            className="w-[95px] sm:w-[130px] h-auto object-contain drop-shadow"
+            width={130}
+            height={130}
+            className="w-[95px] sm:w-[130px] h-[95px] sm:h-[130px] object-contain drop-shadow"
             onError={(e) => {
               // fallback: თუ weather_big ვერ ჩაიტვირთა
               (e.currentTarget as HTMLImageElement).src =

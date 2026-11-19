@@ -52,6 +52,8 @@ export const Header: React.FC = () => {
               <img
                 src="https://amindi.ge/static/img/header-logo.png"
                 alt="amindi.ge"
+                width={140}
+                height={40}
                 className="h-[32px] sm:h-[40px] w-auto object-contain"
               />
             </a>
@@ -70,7 +72,7 @@ export const Header: React.FC = () => {
               <a
                 href="https://mkurnali.ge/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
               >
                 {tr(language, 'ჯანმრთელობა', 'Health', 'Здоровье')}
@@ -80,9 +82,9 @@ export const Header: React.FC = () => {
             {/* 3. რადიო */}
             <li className="relative font-sanet h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
-                href="http://radiopalitra.ge/"
+                href="https://radiopalitra.ge/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
               >
                 {tr(language, 'რადიო', 'Radio', 'Радио')}
@@ -111,7 +113,7 @@ export const Header: React.FC = () => {
                       <a
                         href="https://amindi.ge/ka/world-clock/"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         {tr(language, 'მსოფლიო დრო', 'World clock', 'Мировое время')}
@@ -121,7 +123,7 @@ export const Header: React.FC = () => {
                       <a
                         href="https://amindi.ge/ka/georgian-holiday/"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         {tr(language, 'საქართველოს დღესასწაულები', 'Georgian holidays', 'Праздники Грузии')}
@@ -131,7 +133,7 @@ export const Header: React.FC = () => {
                       <a
                         href="https://www.bpn.ge/currency"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="font-sanet block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         {tr(language, 'ვალუტა', 'Currency', 'Валюта')}
@@ -142,7 +144,7 @@ export const Header: React.FC = () => {
                       <a
                         href="https://www.ambebi.ge/astrology/"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="block w-full py-[5px] px-[10px] text-white hover:bg-white hover:text-black no-underline transition-colors"
                       >
                         {tr(language, 'ჰოროსკოპი', 'Horoscope', 'Гороскоп')}
@@ -155,9 +157,9 @@ export const Header: React.FC = () => {
 
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
               <a
-                href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
+                href="https://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-sanet block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]"
               >
                 {tr(language, 'რეკლამა', 'Advertise', 'Реклама')}
@@ -191,15 +193,15 @@ export const Header: React.FC = () => {
             <a
               href="https://mkurnali.ge/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               ჯანმრთელობა
             </a>
             <a
-              href="http://radiopalitra.ge/"
+              href="https://radiopalitra.ge/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               რადიო
@@ -210,7 +212,7 @@ export const Header: React.FC = () => {
                 <a
                   href="https://amindi.ge/ka/world-clock/"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   მსოფლიო დრო
@@ -218,7 +220,7 @@ export const Header: React.FC = () => {
                 <a
                   href="https://amindi.ge/ka/georgian-holiday/"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   საქართველოს დღესასწაულები
@@ -226,7 +228,7 @@ export const Header: React.FC = () => {
                 <a
                   href="https://www.bpn.ge/currency"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   ვალუტა
@@ -234,7 +236,7 @@ export const Header: React.FC = () => {
                 <a
                   href="https://www.ambebi.ge/astrology/"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="font-sanet py-1 text-[13px] text-white hover:bg-white hover:text-black px-2 no-underline"
                 >
                   ჰოროსკოპი
@@ -242,9 +244,9 @@ export const Header: React.FC = () => {
               </div>
             </div>
             <a
-              href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
+              href="https://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               რეკლამა

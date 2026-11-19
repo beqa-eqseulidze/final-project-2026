@@ -45,7 +45,11 @@ export const Footer: React.FC = () => {
             <img
               src="https://amindi.ge/static/img/header-logo.png"
               alt="amindi.ge"
-              style={{ height: '40px' }}
+              width={140}
+              height={40}
+              loading="lazy"
+              decoding="async"
+              style={{ height: '40px', width: 'auto' }}
             />
           </a>
         </div>
@@ -68,7 +72,7 @@ export const Footer: React.FC = () => {
               <a
                 href="https://mkurnali.ge/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 {tr(language, 'ჯანმრთელობა', 'Health', 'Здоровье')}
@@ -78,9 +82,9 @@ export const Footer: React.FC = () => {
             {/* 3. რადიო */}
             <li>
               <a
-                href="http://radiopalitra.ge/"
+                href="https://radiopalitra.ge/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 {tr(language, 'რადიო', 'Radio', 'Радио')}
@@ -92,7 +96,7 @@ export const Footer: React.FC = () => {
               <a
                 href="https://amindi.ge/ka/world-clock/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 {tr(language, 'სასარგებლო ინფორმაცია', 'Useful information', 'Полезная информация')}
@@ -102,9 +106,9 @@ export const Footer: React.FC = () => {
             {/* 5. რეკლამა */}
             <li>
               <a
-                href="http://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
+                href="https://adline.ge/advertisements/internet?filter[id]=2&filter[start_age]=&filter[end_age]=&filter[sex]=&filter[interest]=&filter[regions]="
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 {tr(language, 'რეკლამა', 'Advertise', 'Реклама')}
@@ -118,13 +122,17 @@ export const Footer: React.FC = () => {
           <a
             href="https://www.top.ge/index.php?h=24228#24228"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="block"
             title="TOP.GE რეიტინგი"
           >
             <img
-              src="//counter.top.ge/cgi-bin/count?ID:24228+JS:true"
+              src="https://counter.top.ge/cgi-bin/count?ID:24228+JS:true"
               alt="TOP.GE"
+              width={88}
+              height={31}
+              loading="lazy"
+              decoding="async"
               className="border-0"
               onError={(e) => {
                 // სარეზერვო ვიზუალი, თუ რეალური სურათი დროებით ვერ ჩაიტვირთება
