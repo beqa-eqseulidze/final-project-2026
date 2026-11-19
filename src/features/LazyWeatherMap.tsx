@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { InteractiveWeatherMap, type MapWeather } from './InteractiveWeatherMap';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import type { MapWeather } from './InteractiveWeatherMap';
+
+const InteractiveWeatherMap = lazy(() =>
+  import('./InteractiveWeatherMap').then((module) => ({ default: module.InteractiveWeatherMap })),
+);
 
 declare global { interface Window { maplibregl?: any } }
 
@@ -91,7 +95,11 @@ export function LazyWeatherMap({ onWeatherSelect }: { onWeatherSelect: (weather:
   return (
     <div ref={containerRef} className="h-full w-full">
       {ready || failed
-        ? <InteractiveWeatherMap onWeatherSelect={onWeatherSelect} />
+        ? (
+            <Suspense fallback={<div className="h-full w-full bg-[#d8e4ed]" aria-hidden="true" />}>
+              <InteractiveWeatherMap onWeatherSelect={onWeatherSelect} />
+            </Suspense>
+          )
         : <div className="h-full w-full bg-[#d8e4ed]" aria-hidden="true" />}
     </div>
   );
