@@ -419,7 +419,7 @@ export default function App() {
                     <Slider slides={sliderData} />
                   </LazySection>
 
-                  {/* 🆕 სიახლეები */}
+                  {/* სიახლეები */}
                   <LazySection fallback={<div className="min-h-[650px] w-full" />}>
                     <NewsSection />
                   </LazySection>
