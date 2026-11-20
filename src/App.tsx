@@ -105,9 +105,8 @@ const Box = ({ children, className = '' }: { children?: React.ReactNode; classNa
   const hasBorder = className.includes('border-');
   return (
     <div
-      className={`flex items-center justify-center text-center text-[11px] font-bold rounded-[4px] ${
-        hasBorder ? '' : 'border-2 border-dashed border-slate-400'
-      } ${hasBg ? '' : 'bg-white/90'} ${hasText ? '' : 'text-slate-600'} ${className}`}
+      className={`flex items-center justify-center text-center text-[11px] font-bold rounded-[4px] ${hasBorder ? '' : 'border-2 border-dashed border-slate-400'
+        } ${hasBg ? '' : 'bg-white/90'} ${hasText ? '' : 'text-slate-600'} ${className}`}
     >
       {children}
     </div>
@@ -217,7 +216,7 @@ export default function App() {
               current?.id === option.id ? { ...current, temp: temperature } : current,
             );
           } catch {
-            // Keep the existing fallback temperature if the API request fails.
+            // Keep the placeholder if the API request fails.
           }
         }
       };
@@ -330,145 +329,145 @@ export default function App() {
 
   return (
     <LanguageProvider language={language} unit={temperatureUnit}>
-    <BackgroundSky>
-      <div className="min-h-screen text-slate-700 flex flex-col">
+      <BackgroundSky>
+        <div className="min-h-screen text-slate-700 flex flex-col">
 
-        {/* 1. Header (სრული სიგანით ზემოთ) */}
-        <Header />
+          {/* 1. Header (სრული სიგანით ზემოთ) */}
+          <Header />
 
-        {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
-        {activeZodiacPage ? (
-          <main role="main" className="flex-1 w-full">
-            <Suspense fallback={<div className="p-4" role="status">Loading...</div>}><ZodiacDetailPage
-              signId={activeZodiacPage}
-              initialTab={activeZodiacTab}
-              onBack={handleBackToMain}
-              onSelectSign={handleNavigateToZodiac}
-            /></Suspense>
-          </main>
-        ) : (
-          <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
+          {/* 2. ცენტრალური შეფუთვა: ზოდიაქოს ცალკე გვერდი ან მთავარი პანელი */}
+          {activeZodiacPage ? (
+            <main role="main" className="flex-1 w-full">
+              <Suspense fallback={<div className="p-4" role="status">Loading...</div>}><ZodiacDetailPage
+                signId={activeZodiacPage}
+                initialTab={activeZodiacTab}
+                onBack={handleBackToMain}
+                onSelectSign={handleNavigateToZodiac}
+              /></Suspense>
+            </main>
+          ) : (
+            <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-4 pt-2 sm:pt-3 pb-1 flex-1 flex flex-col">
 
-            {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
-            <div className="w-full mb-3">
-              <div className="h-[70px] sm:h-[90px] w-full">
-                <PalitraNewsAd />
+              {/* Top Banner (რადიო პალიტრა / რეკლამა) */}
+              <div className="w-full mb-3">
+                <div className="h-[70px] sm:h-[90px] w-full">
+                  <PalitraNewsAd />
+                </div>
+              </div>
+
+
+              {/* 3-Column Grid Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)_260px] xl:grid-cols-[310px_minmax(0,1fr)_260px] gap-3 sm:gap-4 flex-1">
+
+                <div className="rounded-[4px] bg-[rgba(25,55,92,0.88)] px-2 py-1.5 sm:px-4 lg:col-start-2 lg:col-end-4 lg:row-start-1">
+                  {cityToolbar}
+                </div>
+
+                {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
+                <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm lg:self-start lg:sticky lg:top-3 lg:col-start-1 lg:row-start-1 lg:row-span-3">
+
+                  {/* 1. მიმდინარე ამინდი */}
+                  <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
+                    <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
+                  </div>
+
+                  {/* 2. ამინდი საათების მიხედვით */}
+                  <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
+                    <HourlyWeatherForecast
+                      city={city}
+                      coordinates={coordinates}
+                      isFullHourlyOpen={centerView === 'hourly'}
+                      onViewFullHourly={() => setCenterView((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
+                    />
+                  </div>
+
+                  {/* 3. ქარი და წნევა (დინამიური მონაცემებით) */}
+                  <div className="w-full">
+                    <WindAndPressure city={city} />
+                  </div>
+
+                  {/* 4. ვალუტის კურსები */}
+                  <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
+                    <CurrencyRates />
+                  </div>
+
+                </aside>
+
+                {/* ცენტრალური სვეტი */}
+                <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
+                  {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
+                  <div className="w-full">
+                    {centerView === 'hourly' ? (
+                      <Suspense fallback={<div className="min-h-[120px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
+                    ) : (
+                      <WeatherForecast city={city} coordinates={coordinates} />
+                    )}
+                  </div>
+
+                  {/* ვიდეო / ლაივ კამერა */}
+                  <div className="w-full h-[260px] sm:h-[340px] overflow-hidden rounded-[4px] border border-slate-500 bg-[#1e2a3b]">
+                    <InteractiveWeatherMap onWeatherSelect={(data) => {
+                      citySelectedByUser.current = true;
+                      setMapWeather(data);
+                      setCity(data.name);
+                      setCoordinates({ latitude: data.latitude, longitude: data.longitude });
+                    }} />
+                  </div>
+
+                  {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
+                  <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
+                    <Slider slides={sliderData} />
+                  </LazySection>
+
+                  {/* 🆕 სიახლეები */}
+                  <LazySection fallback={<div className="min-h-[650px] w-full" />}>
+                    <NewsSection />
+                  </LazySection>
+
+                  {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
+                </main>
+
+                {/* მარჯვენა სვეტი */}
+                <aside className="space-y-3 sm:space-y-4 flex flex-col lg:self-start lg:sticky lg:top-3 lg:col-start-3 lg:row-start-2 lg:row-span-2">
+                  {/* ზედა რეკლამა (Palitra News) */}
+                  <div className="w-full h-[230px] sm:h-[310px]">
+                    <PalitraShortAd />
+                  </div>
+
+                  {/* კონვერტორი (ზუსტად ბანერის ქვეშ) */}
+                  <div className="w-full">
+                    <Converter />
+                  </div>
+
+                  {/* ქვედა რეკლამა */}
+                  <div className="hidden w-full sm:block sm:h-[520px]">
+                    <PalitraLongAd />
+                  </div>
+
+                  {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
+                  <div className="hidden w-full lg:block lg:h-[520px]">
+                    <PalitraLongAd />
+                  </div>
+                </aside>
+
+                <div className="w-full lg:col-start-2 lg:row-start-3">
+                  <LazySection fallback={<div className="min-h-[500px] w-full" />}>
+                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                  </LazySection>
+                </div>
+
               </div>
             </div>
+          )}
 
+          {/* 3. Footer */}
+          <Footer />
 
-            {/* 3-Column Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)_260px] xl:grid-cols-[310px_minmax(0,1fr)_260px] gap-3 sm:gap-4 flex-1">
+          {/* Circle AD  */}
+          <CircleAd href="https://radiopalitra.ge/" size={75} />
 
-              <div className="rounded-[4px] bg-[rgba(25,55,92,0.88)] px-2 py-1.5 sm:px-4 lg:col-start-2 lg:col-end-4 lg:row-start-1">
-                {cityToolbar}
-              </div>
-
-              {/* მარცხენა სვეტი: ერთიანი მუქი პანელი amindi.ge-ს სტილში */}
-              <aside className="w-full shrink-0 bg-[#2f4058]/90 text-white rounded-[4px] p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 shadow-lg backdrop-blur-sm h-full lg:col-start-1 lg:row-start-1 lg:row-span-2">
-
-                {/* 1. მიმდინარე ამინდი */}
-                <div className="w-full min-h-[210px] pb-3 border-b border-white/20">
-                  <CurrentWeather city={city} coordinates={coordinates} mapWeather={mapWeather} />
-                </div>
-
-                {/* 2. ამინდი საათების მიხედვით */}
-                <div className="w-full min-h-[260px] pb-3 border-b border-white/20">
-                  <HourlyWeatherForecast
-                    city={city}
-                    coordinates={coordinates}
-                    isFullHourlyOpen={centerView === 'hourly'}
-                    onViewFullHourly={() => setCenterView((prev) => (prev === 'hourly' ? 'daily' : 'hourly'))}
-                  />
-                </div>
-
-                {/* 3. ქარი და წნევა (დინამიური მონაცემებით) */}
-                <div className="w-full">
-                  <WindAndPressure city={city} />
-                </div>
-
-                {/* 4. ვალუტის კურსები */}
-                <div className="w-full min-h-[160px] flex justify-center bg-[#1e2a3b] overflow-hidden rounded">
-                  <CurrencyRates />
-                </div>
-
-              </aside>
-
-              {/* ცენტრალური სვეტი */}
-              <main className="space-y-3 sm:space-y-4 min-w-0 lg:col-start-2 lg:row-start-2">
-                {/* ამინდის პროგნოზი: დღეების მიხედვით ან 24-საათიანი სრული ბადე */}
-                <div className={`w-full ${centerView === 'hourly' ? 'min-h-[360px]' : ''}`}>
-                  {centerView === 'hourly' ? (
-                    <Suspense fallback={<div className="min-h-[360px]" role="status">Loading forecast...</div>}><FullHourlyForecast city={city} coordinates={coordinates} /></Suspense>
-                  ) : (
-                    <WeatherForecast city={city} coordinates={coordinates} />
-                  )}
-                </div>
-
-                {/* ვიდეო / ლაივ კამერა */}
-                <div className="w-full h-[260px] sm:h-[340px] overflow-hidden rounded-[4px] border border-slate-500 bg-[#1e2a3b]">
-                  <InteractiveWeatherMap onWeatherSelect={(data) => {
-                    citySelectedByUser.current = true;
-                    setMapWeather(data);
-                    setCity(data.name);
-                    setCoordinates({ latitude: data.latitude, longitude: data.longitude });
-                  }} />
-                </div>
-
-                {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
-                  <Slider slides={sliderData} />
-                </LazySection>
-
-                 {/* 🆕 სიახლეები */}
-                <LazySection fallback={<div className="min-h-[650px] w-full" />}>
-                  <NewsSection />
-                </LazySection>
-
-                {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
-              </main>
-
-              {/* მარჯვენა სვეტი */}
-              <aside className="space-y-3 sm:space-y-4 flex flex-col lg:col-start-3 lg:row-start-2">
-                {/* ზედა რეკლამა (Palitra News) */}
-                <div className="w-full h-[230px] sm:h-[310px]">
-                  <PalitraShortAd />
-                </div>
-
-                {/* კონვერტორი (ზუსტად ბანერის ქვეშ) */}
-                <div className="w-full">
-                  <Converter />
-                </div>
-
-                {/* ქვედა რეკლამა */}
-                <div className="hidden w-full sm:block sm:h-[520px]">
-                  <PalitraLongAd />
-                </div>
-
-                {/* დამატებითი რეკლამა ქვედა თავისუფალ სივრცეში */}
-                <div className="hidden w-full lg:block lg:h-[520px]">
-                  <PalitraLongAd />
-                </div>
-              </aside>
-
-              <div className="w-full lg:col-start-2 lg:row-start-3">
-                <LazySection fallback={<div className="min-h-[500px] w-full" />}>
-                  <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                </LazySection>
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        {/* 3. Footer */}
-        <Footer />
-
-        {/* Circle AD  */}
-         <CircleAd href="https://radiopalitra.ge/" size={75} />
-
-      </div>
-    </BackgroundSky>
+        </div>
+      </BackgroundSky>
     </LanguageProvider>
   );
 }
