@@ -1,7 +1,7 @@
 import type { NewsItem } from './types';
 
 const API_KEY = '55Ty2tklXvzsNZgjqxZjLjh5cQ3uBPaMIyfhKVh5u08i33KA';
-const BASE_URL = 'https://api.currentsapi.services/v1/latest-news?language=en&page_size=20';
+const BASE_URL = 'fA-utDP81zYafh1eU8yKWtGcFqDfxQUb8QRrSshte6D7INTM';
 
 export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
   let allArticles: any[] = [];
