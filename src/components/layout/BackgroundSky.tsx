@@ -44,7 +44,7 @@ export const BackgroundSky: React.FC<BackgroundSkyProps> = ({ children }) => {
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-x-hidden flex flex-col justify-between transition-[background-image] duration-700 ease-in-out"
+      className="relative min-h-screen w-full overflow-x-clip flex flex-col justify-between transition-[background-image] duration-700 ease-in-out"
       style={{
         backgroundImage: `url('${bgImage}')`,
         backgroundRepeat: 'no-repeat',
