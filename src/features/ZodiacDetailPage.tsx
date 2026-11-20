@@ -13,6 +13,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Calendar, Flame, Globe, Sparkles } from 'lucide-react';
 import {
   ZODIAC_SIGNS,
   ZODIAC_ARRAY,
@@ -151,7 +152,7 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-4 mb-3 sm:mb-3.5 mt-1">
               {/* რიცხვი/თარიღის დიაპაზონი */}
               <div className="inline-flex items-center gap-1.5 text-white/90 font-sanet text-xs sm:text-base font-semibold">
-                <span>📅</span>
+                <Calendar className="w-4 h-4 shrink-0" aria-hidden="true" />
                 <span>{zodiac.dateRange}</span>
               </div>
 
@@ -185,14 +186,14 @@ export const ZodiacDetailPage: React.FC<ZodiacDetailPageProps> = ({
 
             {/* პარამეტრების ბეჯები */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2">
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
-                🔥 {tr(language, 'სტიქია:', 'Element:', 'Стихия:')} <strong className="text-amber-300">{zodiac.element}</strong>
+              <span className="inline-flex items-center gap-1 bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
+                <Flame className="w-3.5 h-3.5 text-amber-300 shrink-0" aria-hidden="true" /> {tr(language, 'სტიქია:', 'Element:', 'Стихия:')} <strong className="text-amber-300">{zodiac.element}</strong>
               </span>
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
-                🪐 {tr(language, 'პლანეტა:', 'Planet:', 'Планета:')} <strong className="text-sky-300">{zodiac.rulingPlanet}</strong>
+              <span className="inline-flex items-center gap-1 bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
+                <Globe className="w-3.5 h-3.5 text-sky-300 shrink-0" aria-hidden="true" /> {tr(language, 'პლანეტა:', 'Planet:', 'Планета:')} <strong className="text-sky-300">{zodiac.rulingPlanet}</strong>
               </span>
-              <span className="bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
-                ✨ {tr(language, 'იღბლიანი რიცხვები:', 'Lucky numbers:', 'Счастливые числа:')} <strong>{zodiac.luckyNumbers}</strong>
+              <span className="inline-flex items-center gap-1 bg-white/15 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded text-[11px] sm:text-sm font-sanet">
+                <Sparkles className="w-3.5 h-3.5 text-amber-200 shrink-0" aria-hidden="true" /> {tr(language, 'იღბლიანი რიცხვები:', 'Lucky numbers:', 'Счастливые числа:')} <strong>{zodiac.luckyNumbers}</strong>
               </span>
             </div>
           </div>

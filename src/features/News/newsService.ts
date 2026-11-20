@@ -21,7 +21,7 @@ export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
     const data = await res.json();
     const articles = data.news || [];
 
-    // 🆕 ვფილტრავთ მხოლოდ მათ, რომლებსაც აქვთ image ველი
+    // ვფილტრავთ მხოლოდ მათ, რომლებსაც აქვთ image ველი
     const withImages = articles.filter((a: any) => a.image);
     
     // ვამატებთ ახლებს, რომ არ გავიმეოროთ

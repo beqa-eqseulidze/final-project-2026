@@ -1,35 +1,10 @@
-/**
- * @file Header.tsx
- * @description amindi.ge-ს ზედა ნავიგაციის კომპონენტი
- */
-
 import React, { useState } from 'react';
 import { tr, useLanguage } from '../../context/LanguageContext';
-// ქალაქის ტიპი
-interface CityItem {
-  id: number;
-  name: string;
-  temp: number;
-}
-
-// ქალაქების სია
-const CITIES_LIST: CityItem[] = [
-  { id: 1, name: 'Tbilisi', temp: 9 },
-  { id: 2, name: 'Batumi', temp: 12 },
-  { id: 3, name: 'Kutaisi', temp: 10 },
-  { id: 4, name: 'Rustavi', temp: 11 },
-  { id: 5, name: 'Gori', temp: 7 },
-  { id: 6, name: 'Telavi', temp: 9 },
-  { id: 7, name: 'Zugdidi', temp: 10 },
-  { id: 8, name: 'Poti', temp: 12 },
-  { id: 9, name: 'Bakuriani', temp: 3 },
-];
 
 export const Header: React.FC = () => {
   const language = useLanguage();
   const [infoDropdownOpen, setInfoDropdownOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [selectedCity, setSelectedCity] = useState<CityItem>(CITIES_LIST[0]);
 
   return (
     <header className="w-full select-none">
@@ -41,11 +16,11 @@ export const Header: React.FC = () => {
         }}
       >
         <div className="amindi-container h-[50px] flex items-center justify-between">
-          
+
           {/* მარცხენა მხარე: ლოგო და ქალაქების ჩამოშლადი მენიუ */}
-        <div className="flex items-center">
+          <div className="flex items-center">
             <a
-              href="/ka/"
+              href="/"
               className="flex items-center shrink-0"
               title="Amindi.ge - მთავარი"
             >
@@ -61,7 +36,7 @@ export const Header: React.FC = () => {
           {/* დესკტოპ ნავიგაცია */}
           <ul className="hidden lg:flex items-center ml-auto m-0 p-0 list-none h-[50px]">
             <li className="relative h-[50px] flex items-center hover:bg-[#19375c] transition-colors">
-              <a href="/ka/"
+              <a href="/"
                 className="font-sanet block px-[8px] py-[14px] text-[14px] text-white hover:text-white no-underline leading-[22px]">
                 {tr(language, 'ამინდის პროგნოზი', 'Weather forecast', 'Прогноз погоды')}
               </a>
@@ -93,9 +68,8 @@ export const Header: React.FC = () => {
 
             {/* სასარგებლო ინფორმაცია (Dropdown) */}
             <li
-              className={`relative h-[50px] flex items-center transition-colors ${
-                infoDropdownOpen ? 'bg-[#19375c]' : 'hover:bg-[#19375c]'
-              }`}
+              className={`relative h-[50px] flex items-center transition-colors ${infoDropdownOpen ? 'bg-[#19375c]' : 'hover:bg-[#19375c]'
+                }`}
               onMouseEnter={() => setInfoDropdownOpen(true)}
               onMouseLeave={() => setInfoDropdownOpen(false)}
             >
@@ -185,7 +159,7 @@ export const Header: React.FC = () => {
             style={{ backgroundColor: '#19375c' }}
           >
             <a
-              href="/ka/"
+              href="/"
               className="font-sanet py-1.5 text-[14px] text-white no-underline"
             >
               ამინდის პროგნოზი
