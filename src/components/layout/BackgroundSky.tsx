@@ -1,21 +1,5 @@
-/**
- * @file BackgroundSky.tsx
- * @description amindi.ge-ს დინამიური ფონი GMT+4 დროის მიხედვით.
- *
- * ლოგიკა:
- * - GMT+4 დროის სარტყელი:
- *   * 07:00 – 19:00 -> დღის მზიანი ცა (sun2.jpg)
- *   * 19:00 – 07:00 -> ღამის მოღრუბლული ცა (clouds_night2.jpg)
- */
-
 import React, { useState, useEffect } from 'react';
 
-/**
- * განსაზღვრავს დღეა თუ ღამე GMT+4 დროის სარტყელში:
- * UTC საათს ემატება +4 საათი (GMT+4)
- * - 07:00-დან 18:59:59-მდე -> დღე (true)
- * - 19:00-დან 06:59:59-მდე -> ღამე (false)
- */
 const checkIsDay = (): boolean => {
   const gmt4Hour = (new Date().getUTCHours() + 4) % 24;
   return gmt4Hour >= 7 && gmt4Hour < 19;
