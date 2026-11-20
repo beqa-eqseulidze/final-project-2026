@@ -1,28 +1,3 @@
-/**
- * @file Footer.tsx
- * @description amindi.ge-ს იდენტური ქვედა ნაწილი (Footer Component).
- *
- * კომპონენტის შემადგენლობა:
- * 1. მარცხენა სექცია:
- *    - amindi.ge-ს ოფიციალური ლოგო (https://amindi.ge/static/img/header-logo.png)
- *
- * 2. ცენტრალური ნავიგაცია (Footer Navigation):
- *    - ზუსტად ის 5 ძირითადი ბმული, რაც ორიგინალ საიტზეა:
- *      1) ამინდის პროგნოზი
- *      2) ჯანმრთელობა (mkurnali.ge)
- *      3) რადიო (radiopalitra.ge)
- *      4) სასარგებლო ინფორმაცია (world-clock)
- *      5) რეკლამა (adline.ge)
- *    - ფერი: ნაგულისხმევად შავი (#000), Hover-ზე თეთრი (#fff), შრიფტი font1.
- *
- * 3. მარჯვენა სექცია (TOP.GE Counter):
- *    - TOP.GE-ს ოფიციალური რეიტინგის მთვლელის ბეიჯი რეალური სტატისტიკით.
- *    - გათვალისწინებულია სარეზერვო ვიზუალი (Fallback UI), თუ სურათი დროებით მიუწვდომელი იქნება.
- *
- * 4. რესპონსიულობა:
- *    - შიგთავსი შემოფარგლულია `.amindi-container`-ით, რომელსაც გვერდებზე აქვს დაცული დაშორებები.
- */
-
 import React from 'react';
 import { tr, useLanguage } from '../../context/LanguageContext';
 
@@ -38,10 +13,10 @@ export const Footer: React.FC = () => {
     >
       {/* amindi.ge-ს რესპონსიული კონტეინერი */}
       <div className="amindi-container flex flex-col md:flex-row items-center justify-between gap-4">
-        
+
         {/* მარცხენა მხარე: ლოგო */}
         <div className="shrink-0">
-          <a href="/ka/" className="flex items-center" title="Amindi.ge">
+          <a href="/" className="flex items-center" title="Amindi.ge">
             <img
               src="https://amindi.ge/static/img/header-logo.png"
               alt="amindi.ge"
@@ -60,7 +35,7 @@ export const Footer: React.FC = () => {
             {/* 1. ამინდის პროგნოზი */}
             <li>
               <a
-                href="/ka/"
+                href="/"
                 className="font-sanet text-[#000] hover:text-white transition-colors no-underline"
               >
                 {tr(language, 'ამინდის პროგნოზი', 'Weather forecast', 'Прогноз погоды')}
