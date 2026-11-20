@@ -29,6 +29,8 @@ export const Header: React.FC = () => {
                 alt="amindi.ge"
                 width={140}
                 height={40}
+                fetchPriority="high"
+                decoding="async"
                 className="h-[32px] sm:h-[40px] w-auto object-contain"
               />
             </a>
