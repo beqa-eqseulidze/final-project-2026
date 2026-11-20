@@ -1,6 +1,6 @@
 import type { NewsItem } from './types';
 
-const API_KEY = '55Ty2tklXvzsNZgjqxZjLjh5cQ3uBPaMIyfhKVh5u08i33KA';
+const API_KEY = 'fA-utDP81zYafh1eU8yKWtGcFqDfxQUb8QRrSshte6D7INTM';
 const BASE_URL = 'https://api.currentsapi.services/v1/latest-news?language=en&page_size=20';
 
 export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
@@ -23,7 +23,7 @@ export async function fetchLatestNews(limit = 10): Promise<NewsItem[]> {
 
     // ვფილტრავთ მხოლოდ მათ, რომლებსაც აქვთ image ველი
     const withImages = articles.filter((a: any) => a.image);
-    
+
     // ვამატებთ ახლებს, რომ არ გავიმეოროთ
     withImages.forEach((article: any) => {
       if (!allArticles.find((existing) => existing.id === article.id)) {
