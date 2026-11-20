@@ -25,14 +25,11 @@ export function Slider({ slides }: SliderProps) {
       {/* სლაიდერი */}
       <div className="relative flex-1 p-2.5 sm:p-4 bg-white/40">
         <div className="absolute top-[12px] sm:top-[16px] right-[12px] sm:right-[16px] z-20 flex gap-1">
-<<<<<<< HEAD
+
           {/* 🆕 დავამატეთ aria-label-ები წინა და შემდეგ ღილაკებს */}
-=======
-<<<<<<< HEAD
-=======
+
           {/* დავამატეთ aria-label-ები წინა და შემდეგ ღილაკებს */}
->>>>>>> 7ad2997b40c070642a1993233010d4028caa44c0
->>>>>>> master
+
           <button 
             className="custom-prev w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 hover:bg-gray-300 text-[#00a8e8] flex items-center justify-center transition-colors cursor-pointer rounded-sm"
             aria-label="წინა სლაიდი"
