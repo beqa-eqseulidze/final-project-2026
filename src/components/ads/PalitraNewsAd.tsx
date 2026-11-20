@@ -23,7 +23,7 @@ export function PalitraNewsAd() {
           muted
           playsInline
           aria-label="რეკლამა: პალიტრა ნიუსი - ახალი ამბების ტელევიზია"
-          className="w-full h-full object-contain scale-[1.02]"
+          className="w-full h-full object-contain scale-[1.02] translate-y-px"
         />
       ) : null}
     </div>
