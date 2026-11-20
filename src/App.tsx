@@ -5,6 +5,7 @@
 
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { Header } from './components/layout/Header';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { LazySection } from './components/LazySection';
 import { LazyWeatherMap as InteractiveWeatherMap } from './features/LazyWeatherMap';
 import type { MapWeather } from './features/InteractiveWeatherMap';
@@ -415,14 +416,18 @@ export default function App() {
                   </div>
 
                   {/* სლაიდერი (შეიძინე დანაზოგით - Hotsale) */}
-                  <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
-                    <Slider slides={sliderData} />
-                  </LazySection>
+                  <ErrorBoundary>
+                    <LazySection fallback={<div className="h-[400px] sm:h-[460px] w-full" />}>
+                      <Slider slides={sliderData} />
+                    </LazySection>
+                  </ErrorBoundary>
 
                   {/* სიახლეები */}
-                  <LazySection fallback={<div className="min-h-[650px] w-full" />}>
-                    <NewsSection />
-                  </LazySection>
+                  <ErrorBoundary>
+                    <LazySection fallback={<div className="min-h-[650px] w-full" />}>
+                      <NewsSection />
+                    </LazySection>
+                  </ErrorBoundary>
 
                   {/* ასტროლოგია / ჰოროსკოპი (სულ ბოლოში) */}
                 </main>
@@ -451,9 +456,11 @@ export default function App() {
                 </aside>
 
                 <div className="w-full lg:col-start-2 lg:row-start-3">
-                  <LazySection fallback={<div className="min-h-[500px] w-full" />}>
-                    <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
-                  </LazySection>
+                  <ErrorBoundary>
+                    <LazySection fallback={<div className="min-h-[500px] w-full" />}>
+                      <AstrologyHoroscope onNavigateToZodiac={handleNavigateToZodiac} />
+                    </LazySection>
+                  </ErrorBoundary>
                 </div>
 
               </div>
